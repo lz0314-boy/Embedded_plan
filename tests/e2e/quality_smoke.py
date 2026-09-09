@@ -70,6 +70,30 @@ class QualitySmokeTests(unittest.TestCase):
         self.assertEqual(canonical_url.path.rstrip("/"), "/questions")
         self.assertIsNone(canonical_url.query or None)
 
+    def test_mobile_navigation_has_five_items_and_reaches_secondary_routes(self):
+        context = self.browser.new_context(viewport={"width": 360, "height": 800}, service_workers="block")
+        self.addCleanup(context.close)
+        page = context.new_page()
+        page.goto(f"{self.base_url}/", wait_until="domcontentloaded", timeout=15000)
+
+        mobile_nav = page.locator(".mobile-nav")
+        self.assertEqual(mobile_nav.locator(".mobile-nav-link").count(), 4)
+        self.assertEqual(
+            mobile_nav.locator(".mobile-nav-link").all_inner_texts(),
+            ["今日", "路线", "题库", "复习"],
+        )
+        self.assertLessEqual(page.evaluate("document.body.scrollWidth"), 360)
+
+        page.get_by_role("button", name="更多").click()
+        more_menu = page.locator("#mobile-more-menu")
+        more_menu.get_by_role("link", name="章节测验").wait_for()
+        more_menu.get_by_role("link", name="我的笔记").wait_for()
+        more_menu.get_by_role("link", name="设置与数据").wait_for()
+        more_menu.get_by_role("link", name="离线状态").wait_for()
+        more_menu.get_by_role("link", name="章节测验").click()
+        page.wait_for_url("**/quiz/")
+        self.assertEqual(page.get_by_role("heading", name="主动回忆").count(), 1)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
