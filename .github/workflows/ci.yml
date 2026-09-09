@@ -29,6 +29,17 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install playwright==1.62.0
       - run: python -m playwright install --with-deps chromium
+      - name: Start static preview server
+        run: |
+          pnpm start > /tmp/embedded-learning-platform-server.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/embedded-learning-platform-server.log
+          exit 1
       - run: pnpm test:e2e
       - run: pnpm test:e2e:quality
       - run: pnpm test:e2e:runner
