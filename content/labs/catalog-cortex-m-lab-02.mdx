@@ -1,0 +1,37 @@
+---
+id: catalog-cortex-m-lab-02
+type: code-lab
+title: PendSV 与上下文切换接口 故障树分析实验
+slug: catalog-cortex-m-pendsv-context-lab-02
+pillar: cortex-m
+module: exceptions-and-context
+difficulty: advanced
+priority: core
+estimatedMinutes: 25
+scope: cortex-m
+platforms: [cortex-m3, cortex-m4]
+prerequisites: []
+related: []
+sourceIds: [arm-cortex-m3-guide, arm-cortex-m4-guide]
+verifiedAt: null
+status: draft
+keywords: [PendSV 与上下文切换接口, 故障树分析实验, cortex-m]
+---
+
+## 实验目标
+
+为“PendSV 与上下文切换接口”建立一份不依赖猜测的故障树分析实验记录。
+
+## 输入
+
+登记的一手资料、明确的版本与配置、脱敏后的最小代码或日志。只在架构层解释 PendSV；实际寄存器保存必须回到对应 RT-Thread libcpu 端口。
+
+## 步骤
+
+1. 写出待验证结论及其所属层级。
+2. 收集可重复的输入、观测点和失败条件。
+3. 对照来源记录一致项、差异项和仍待核验项。
+
+## 验收
+
+输出包含版本、配置、步骤、实际结果和限制；没有真板或匹配资料时不得填写为“已验证”。浏览器不会模拟 MCU、RTOS 或板卡。

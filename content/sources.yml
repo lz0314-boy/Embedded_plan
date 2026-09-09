@@ -1,0 +1,201 @@
+sources:
+  - id: c-wg14-n1570
+    title: WG14 N1570 C11 草案
+    organization: ISO/IEC WG14
+    url: https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf
+    versionOrCommit: N1570
+    accessedAt: 2026-09-08
+    platforms: c, standard-c
+    citationNote: 用于标准 C 语义与未定义行为边界
+  - id: arm-cortex-m3-guide
+    title: Cortex-M3 Generic User Guide
+    organization: Arm
+    url: https://developer.arm.com/documentation/dui0552/latest/
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-08
+    platforms: cortex-m3
+    citationNote: 用于异常模型、栈和 PendSV 通用机制
+  - id: arm-cortex-m4-guide
+    title: Cortex-M4 Generic User Guide
+    organization: Arm
+    url: https://developer.arm.com/documentation/dui0553/latest/
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-08
+    platforms: cortex-m4
+    citationNote: 用于 Cortex-M4 异常与 FPU 上下文边界
+  - id: rtt-thread-manual
+    title: RT-Thread 线程管理手册
+    organization: RT-Thread
+    url: https://github.com/RT-Thread/rtthread-manual-doc/blob/master/thread/thread.md
+    versionOrCommit: master-unpinned
+    accessedAt: 2026-09-08
+    platforms: rt-thread
+    citationNote: 概念层来源；具体实现仍需固定 tag/commit 核验
+  - id: rtt-scheduler-source
+    title: RT-Thread scheduler source
+    organization: RT-Thread
+    url: https://github.com/RT-Thread/rt-thread/tree/master/src
+    versionOrCommit: master-unpinned
+    accessedAt: 2026-09-08
+    platforms: rt-thread
+    citationNote: 实现层占位来源，当前黄金样本保持 draft
+  - id: nxp-imx6ull
+    title: i.MX6ULL 产品与文档入口
+    organization: NXP
+    url: https://www.nxp.com/products/i.MX6ULL
+    versionOrCommit: product-page
+    accessedAt: 2026-09-08
+    platforms: imx6ull, cortex-a7
+    citationNote: SoC 与启动链通用事实来源
+  - id: uboot-bootz
+    title: U-Boot bootz command
+    organization: U-Boot
+    url: https://docs.u-boot.org/en/latest/usage/cmd/bootz.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-08
+    platforms: u-boot, arm32-linux
+    citationNote: 用于 bootz 输入输出边界
+  - id: linux-arm-boot
+    title: Linux ARM booting protocol
+    organization: Linux kernel
+    url: https://docs.kernel.org/arch/arm/booting.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-08
+    platforms: linux-arm
+    citationNote: 用于 bootloader 到内核的通用链路
+  - id: linux-init-source
+    title: Linux init/main.c
+    organization: Linux kernel
+    url: https://github.com/torvalds/linux/blob/master/init/main.c
+    versionOrCommit: master-unpinned
+    accessedAt: 2026-09-08
+    platforms: linux
+    citationNote: PID 1 与用户空间启动来源占位
+  - id: esp-idf-guide
+    title: ESP-IDF Programming Guide
+    organization: Espressif
+    url: https://docs.espressif.com/projects/esp-idf/en/stable/esp32/
+    versionOrCommit: stable-guide
+    accessedAt: 2026-09-08
+    platforms: esp32, xtensa
+    citationNote: ESP32 独立架构分支来源
+  - id: arm-cmsis-core
+    title: CMSIS-Core Documentation
+    organization: Arm
+    url: https://arm-software.github.io/CMSIS_6/latest/Core/index.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-09
+    platforms: cortex-m
+    citationNote: 用于 Cortex-M 核心外设与通用接口边界；具体芯片仍查 reference manual
+  - id: stm32f1-rm0008
+    title: STM32F1 RM0008 Reference Manual
+    organization: STMicroelectronics
+    url: https://www.st.com/resource/en/reference_manual/rm0008-stm32f101xx-stm32f102xx-stm32f103xx-stm32f105xx-and-stm32f107xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf
+    versionOrCommit: document-entry
+    accessedAt: 2026-09-09
+    platforms: stm32f1
+    citationNote: STM32F1 芯片实现入口；具体修订号待逐条内容核验
+  - id: stm32f4-rm0090
+    title: STM32F4 RM0090 Reference Manual
+    organization: STMicroelectronics
+    url: https://www.st.com/resource/en/reference_manual/rm0090-stm32f405415-stm32f407417-stm32f427437-and-stm32f429439-advanced-armbased-32bit-mcus-stmicroelectronics.pdf
+    versionOrCommit: document-entry
+    accessedAt: 2026-09-09
+    platforms: stm32f4
+    citationNote: STM32F4 芯片实现入口；具体修订号待逐条内容核验
+  - id: gd32f103-product
+    title: GD32F103 Product Documentation
+    organization: GigaDevice
+    url: https://www.gigadevice.com/product/mcu/main-stream-mcus/gd32f10x-series/gd32f103
+    versionOrCommit: product-page
+    accessedAt: 2026-09-09
+    platforms: gd32f103
+    citationNote: GD32F103 官方资料入口；不得据 STM32 参数推断 GD32 行为
+  - id: rtt-ipc-source
+    title: RT-Thread ipc.c
+    organization: RT-Thread
+    url: https://github.com/RT-Thread/rt-thread/blob/master/src/ipc.c
+    versionOrCommit: master-unpinned
+    accessedAt: 2026-09-09
+    platforms: rt-thread
+    citationNote: IPC 实现层来源占位；发布前必须绑定 tag 或 commit
+  - id: rtt-timer-source
+    title: RT-Thread timer.c and clock.c
+    organization: RT-Thread
+    url: https://github.com/RT-Thread/rt-thread/tree/master/src
+    versionOrCommit: master-unpinned
+    accessedAt: 2026-09-09
+    platforms: rt-thread
+    citationNote: 时钟与定时器实现入口；具体配置宏待核验
+  - id: rtt-memory-source
+    title: RT-Thread Memory Management Sources
+    organization: RT-Thread
+    url: https://github.com/RT-Thread/rt-thread/tree/master/src
+    versionOrCommit: master-unpinned
+    accessedAt: 2026-09-09
+    platforms: rt-thread
+    citationNote: 多种内存分配器实现入口；不得描述成唯一算法
+  - id: rtt-cortexm-context
+    title: RT-Thread Cortex-M Context Port
+    organization: RT-Thread
+    url: https://github.com/RT-Thread/rt-thread/tree/master/libcpu/arm
+    versionOrCommit: master-unpinned
+    accessedAt: 2026-09-09
+    platforms: rt-thread, cortex-m
+    citationNote: 端口实现入口；必须按 Cortex-M 型号、工具链和 commit 核验
+  - id: linux-device-tree
+    title: Linux Devicetree Usage Model
+    organization: Linux kernel
+    url: https://docs.kernel.org/devicetree/usage-model.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-09
+    platforms: linux
+    citationNote: 主线 Linux 设备树模型来源
+  - id: linux-driver-api
+    title: Linux Driver Implementer's API Guide
+    organization: Linux kernel
+    url: https://docs.kernel.org/driver-api/index.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-09
+    platforms: linux
+    citationNote: 主线驱动模型来源入口
+  - id: nxp-linux-bsp
+    title: Embedded Linux for i.MX Applications Processors
+    organization: NXP
+    url: https://www.nxp.com/design/design-center/software/embedded-software/i-mx-software/embedded-linux-for-i-mx-applications-processors:IMXLINUX
+    versionOrCommit: product-page
+    accessedAt: 2026-09-09
+    platforms: imx-linux
+    citationNote: NXP BSP 发布入口；不得与主线 Linux 或板厂改动混写
+  - id: buildroot-manual
+    title: Buildroot Manual
+    organization: Buildroot
+    url: https://buildroot.org/downloads/manual/manual.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-09
+    platforms: buildroot
+    citationNote: Buildroot 工作流来源
+  - id: yocto-docs
+    title: Yocto Project Documentation
+    organization: Yocto Project
+    url: https://docs.yoctoproject.org/
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-09
+    platforms: yocto
+    citationNote: Yocto 工作流来源入口
+  - id: linux-man-pages
+    title: Linux man-pages Project
+    organization: Linux kernel
+    url: https://www.kernel.org/doc/man-pages/
+    versionOrCommit: project-page
+    accessedAt: 2026-09-09
+    platforms: linux-user
+    citationNote: Linux 系统调用和 libc 接口语义来源入口
+  - id: posix-2024
+    title: POSIX.1-2024
+    organization: The Open Group
+    url: https://pubs.opengroup.org/onlinepubs/9799919799/
+    versionOrCommit: Issue 8
+    accessedAt: 2026-09-09
+    platforms: posix
+    citationNote: POSIX 接口语义与可移植性边界

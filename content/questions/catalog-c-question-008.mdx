@@ -1,0 +1,33 @@
+---
+id: catalog-c-question-008
+type: interview-question
+title: volatile 原子与同步边界 故障定位
+slug: catalog-c-volatile-atomic-question-008
+pillar: c
+module: concurrency
+difficulty: intermediate
+priority: supporting
+estimatedMinutes: 8
+scope: rtos-generic
+platforms: [standard-c]
+prerequisites: []
+related: []
+sourceIds: [c-wg14-n1570]
+verifiedAt: null
+status: draft
+keywords: [volatile 原子与同步边界, 故障定位, rtos-generic]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“volatile 原子与同步边界”要解决的问题和前置条件。
+- 分别讨论可观察访问、原子性和线程同步，不能用 volatile 替代同步原语。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

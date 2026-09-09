@@ -1,0 +1,31 @@
+---
+id: imx6ull-boot-chain
+type: lesson
+title: i.MX6ULL 从 Boot ROM 到用户程序
+slug: imx6ull-boot-chain
+pillar: linux-bsp
+module: boot-chain
+difficulty: advanced
+priority: core
+estimatedMinutes: 45
+scope: linux-bsp
+platforms: [imx6ull, cortex-a7, u-boot, linux]
+prerequisites: [c-memory-model]
+related: [linux-process-io]
+sourceIds: [nxp-imx6ull, uboot-bootz, linux-arm-boot, linux-init-source]
+verifiedAt: null
+status: draft
+keywords: [i.MX6ULL, Boot ROM, U-Boot, bootz, 设备树, PID 1]
+---
+
+## 通用链路
+
+上电后由 SoC Boot ROM 选择启动路径，随后可能进入 SPL/U-Boot，再由 U-Boot 加载内核、DTB 和可选 initramfs。Linux 早期启动、驱动探测、根文件系统和 PID 1 属于不同阶段。
+
+## ALPHA 板级边界
+
+正点原子 ALPHA 的拨码、介质偏移、分区、默认环境、DTS 和 init 脚本均标记为“待板级核验”。没有与手中板卡及教程版本匹配的官方资料时，不填常见网络教程参数。
+
+## 实验状态
+
+当前实验是启动日志分析，不是对具体 ALPHA 镜像的复现。

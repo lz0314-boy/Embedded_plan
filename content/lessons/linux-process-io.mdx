@@ -1,0 +1,27 @@
+---
+id: linux-process-io
+type: lesson
+title: Linux 进程与文件 I/O 基础
+slug: linux-process-io
+pillar: linux-user
+module: processes-and-io
+difficulty: intermediate
+priority: core
+estimatedMinutes: 30
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: [c-memory-model]
+related: [imx6ull-boot-chain]
+sourceIds: [linux-init-source]
+verifiedAt: null
+status: draft
+keywords: [Linux, 进程, fork, exec, 文件 I/O, POSIX]
+---
+
+## 分层
+
+分别标记 POSIX 接口、Linux 特有系统调用和 glibc 封装。交叉编译目标、内核版本和 libc 实现必须在具体实验中说明。
+
+## 练习
+
+从 `fork`、`exec`、`wait` 和文件描述符继承关系画出父子进程时序，并列出失败定位信息。

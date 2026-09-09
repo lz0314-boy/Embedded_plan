@@ -1,0 +1,33 @@
+---
+id: catalog-linux-user-question-017
+type: interview-question
+title: 进程创建执行与回收 相邻机制比较
+slug: catalog-linux-user-fork-exec-wait-question-017
+pillar: linux-user
+module: process
+difficulty: intermediate
+priority: core
+estimatedMinutes: 8
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: []
+related: []
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: null
+status: draft
+keywords: [进程创建执行与回收, 相邻机制比较, linux-user]
+---
+
+## 先回答
+
+选择一个容易混淆的相邻机制，比较语义、代价、失败模式和适用条件。
+
+## 评分点草稿
+
+- 先说明“进程创建执行与回收”要解决的问题和前置条件。
+- 区分 POSIX 接口、Linux 行为和 libc 包装；每个返回值与错误路径需查对应手册。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

@@ -1,0 +1,31 @@
+---
+id: cortex-m-exception-model
+type: lesson
+title: Cortex-M 异常、栈与 PendSV
+slug: cortex-m-exception-model
+pillar: cortex-m
+module: exceptions-and-context
+difficulty: advanced
+priority: core
+estimatedMinutes: 35
+scope: cortex-m
+platforms: [cortex-m3, cortex-m4]
+prerequisites: [c-memory-model]
+related: [rtt-scheduler]
+sourceIds: [arm-cortex-m3-guide, arm-cortex-m4-guide]
+verifiedAt: null
+status: draft
+keywords: [Cortex-M, NVIC, PendSV, SysTick, 栈帧]
+---
+
+## 分层边界
+
+Cortex-M 异常入口、自动压栈和 PendSV 是架构层内容；具体启动文件、向量表地址和芯片外设仍需回到 MCU 官方手册。
+
+## 学习路径
+
+从异常模型进入 RTOS 上下文切换，再阅读对应 RT-Thread `libcpu` 端口。不能仅凭 RTOS API 推断汇编行为。
+
+## 实验状态
+
+当前只提供栈帧推演和代码阅读题，未宣称在任何实际芯片上运行。

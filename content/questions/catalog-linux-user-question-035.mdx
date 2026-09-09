@@ -1,0 +1,33 @@
+---
+id: catalog-linux-user-question-035
+type: interview-question
+title: 互斥量与条件变量协作 反例与取舍
+slug: catalog-linux-user-mutex-condvar-question-035
+pillar: linux-user
+module: concurrency
+difficulty: intermediate
+priority: core
+estimatedMinutes: 8
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: []
+related: []
+sourceIds: [posix-2024]
+verifiedAt: null
+status: draft
+keywords: [互斥量与条件变量协作, 反例与取舍, linux-user]
+---
+
+## 先回答
+
+给出一个结论失效的边界或反例，并说明工程取舍。
+
+## 评分点草稿
+
+- 先说明“互斥量与条件变量协作”要解决的问题和前置条件。
+- 围绕谓词、等待循环和唤醒条件分析，不把条件变量当作事件计数器。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

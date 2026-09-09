@@ -1,0 +1,33 @@
+---
+id: catalog-rt-thread-question-013
+type: interview-question
+title: 事件邮箱与消息队列选择 故障定位
+slug: catalog-rt-thread-event-mailbox-mq-question-013
+pillar: rt-thread
+module: ipc
+difficulty: beginner
+priority: core
+estimatedMinutes: 6
+scope: rt-thread
+platforms: [rt-thread]
+prerequisites: []
+related: []
+sourceIds: [rtt-thread-manual, rtt-ipc-source]
+verifiedAt: null
+status: draft
+keywords: [事件邮箱与消息队列选择, 故障定位, rt-thread]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“事件邮箱与消息队列选择”要解决的问题和前置条件。
+- 比较同步与传数据需求；对象容量、阻塞顺序和复制语义必须回到固定版本。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

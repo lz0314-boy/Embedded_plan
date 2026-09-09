@@ -1,0 +1,33 @@
+---
+id: catalog-rt-thread-question-030
+type: interview-question
+title: tick 延时与软硬定时器 反例与取舍
+slug: catalog-rt-thread-tick-timer-question-030
+pillar: rt-thread
+module: time
+difficulty: advanced
+priority: supporting
+estimatedMinutes: 10
+scope: rt-thread
+platforms: [rt-thread]
+prerequisites: []
+related: []
+sourceIds: [rtt-thread-manual, rtt-timer-source]
+verifiedAt: null
+status: draft
+keywords: [tick 延时与软硬定时器, 反例与取舍, rt-thread]
+---
+
+## 先回答
+
+给出一个结论失效的边界或反例，并说明工程取舍。
+
+## 评分点草稿
+
+- 先说明“tick 延时与软硬定时器”要解决的问题和前置条件。
+- 区分系统 tick、线程超时、硬定时器回调与软定时器线程上下文。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

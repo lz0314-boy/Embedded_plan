@@ -1,0 +1,33 @@
+---
+id: catalog-linux-bsp-question-018
+type: interview-question
+title: SPL 与 U-Boot proper 边界 故障定位
+slug: catalog-linux-bsp-spl-uboot-question-018
+pillar: linux-bsp
+module: bootloader
+difficulty: advanced
+priority: supporting
+estimatedMinutes: 10
+scope: linux-bsp
+platforms: [u-boot, imx6ull]
+prerequisites: []
+related: []
+sourceIds: [nxp-imx6ull, uboot-bootz]
+verifiedAt: null
+status: draft
+keywords: [SPL 与 U-Boot proper 边界, 故障定位, linux-bsp]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“SPL 与 U-Boot proper 边界”要解决的问题和前置条件。
+- 是否使用 SPL 和介质布局是板级构建选择，不写成 i.MX6ULL 固有事实。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

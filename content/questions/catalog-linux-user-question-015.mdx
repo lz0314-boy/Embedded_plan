@@ -1,0 +1,33 @@
+---
+id: catalog-linux-user-question-015
+type: interview-question
+title: TCP UDP 与套接字故障定位 反例与取舍
+slug: catalog-linux-user-tcp-udp-question-015
+pillar: linux-user
+module: network
+difficulty: advanced
+priority: core
+estimatedMinutes: 10
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: []
+related: []
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: null
+status: draft
+keywords: [TCP UDP 与套接字故障定位, 反例与取舍, linux-user]
+---
+
+## 先回答
+
+给出一个结论失效的边界或反例，并说明工程取舍。
+
+## 评分点草稿
+
+- 先说明“TCP UDP 与套接字故障定位”要解决的问题和前置条件。
+- 协议语义、socket API、内核状态和抓包证据分层分析。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

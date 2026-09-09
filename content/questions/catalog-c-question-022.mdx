@@ -1,0 +1,33 @@
+---
+id: catalog-c-question-022
+type: interview-question
+title: 函数指针与回调边界 相邻机制比较
+slug: catalog-c-function-callback-question-022
+pillar: c
+module: language-and-memory
+difficulty: beginner
+priority: supporting
+estimatedMinutes: 6
+scope: rtos-generic
+platforms: [standard-c]
+prerequisites: []
+related: []
+sourceIds: [c-wg14-n1570]
+verifiedAt: null
+status: draft
+keywords: [函数指针与回调边界, 相邻机制比较, rtos-generic]
+---
+
+## 先回答
+
+选择一个容易混淆的相邻机制，比较语义、代价、失败模式和适用条件。
+
+## 评分点草稿
+
+- 先说明“函数指针与回调边界”要解决的问题和前置条件。
+- 先核对函数类型兼容性，再讨论 RTOS、驱动或 ISR 回调所附加的平台约束。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

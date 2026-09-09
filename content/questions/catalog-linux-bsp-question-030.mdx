@@ -1,0 +1,33 @@
+---
+id: catalog-linux-bsp-question-030
+type: interview-question
+title: 根文件系统挂载与 PID 1 反例与取舍
+slug: catalog-linux-bsp-rootfs-init-question-030
+pillar: linux-bsp
+module: rootfs
+difficulty: advanced
+priority: supporting
+estimatedMinutes: 10
+scope: linux-bsp
+platforms: [linux, arm32-linux]
+prerequisites: []
+related: []
+sourceIds: [linux-arm-boot, linux-init-source]
+verifiedAt: null
+status: draft
+keywords: [根文件系统挂载与 PID 1, 反例与取舍, linux-bsp]
+---
+
+## 先回答
+
+给出一个结论失效的边界或反例，并说明工程取舍。
+
+## 评分点草稿
+
+- 先说明“根文件系统挂载与 PID 1”要解决的问题和前置条件。
+- 内核通用启动、root 参数、用户空间 init 与板级脚本分别记录。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

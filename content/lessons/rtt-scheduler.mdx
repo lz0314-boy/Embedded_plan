@@ -1,0 +1,31 @@
+---
+id: rtt-scheduler
+type: lesson
+title: RT-Thread 线程调度与就绪队列
+slug: rt-thread-scheduler
+pillar: rt-thread
+module: scheduler
+difficulty: advanced
+priority: core
+estimatedMinutes: 40
+scope: rt-thread
+platforms: [rt-thread, cortex-m3, cortex-m4]
+prerequisites: [cortex-m-exception-model]
+related: [imx6ull-boot-chain]
+sourceIds: [rtt-thread-manual, rtt-scheduler-source]
+verifiedAt: null
+status: draft
+keywords: [RT-Thread, 调度器, 就绪队列, 优先级位图, PendSV]
+---
+
+## 固定分层
+
+RTOS 通用机制讨论可抢占、优先级和阻塞；RT-Thread 实现讨论对象模型、公共调度代码和 UP 端口；Cortex-M 实现讨论 SysTick/PendSV；具体 STM32/GD32 料号另行核验。
+
+## 阅读顺序
+
+先看线程状态和就绪队列，再追踪调度点，最后阅读对应版本的 `scheduler_comm.c`、`scheduler_up.c` 和 Cortex-M 上下文入口。当前没有绑定固定 RT-Thread tag/commit，因此状态为“待核验”。
+
+## 练习
+
+画出高优先级线程解除阻塞到 PendSV 执行的调用链，并标记线程态与异常态边界。

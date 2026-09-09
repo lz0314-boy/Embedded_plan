@@ -1,0 +1,33 @@
+---
+id: catalog-linux-user-question-028
+type: interview-question
+title: 信号处理与异步安全边界 故障定位
+slug: catalog-linux-user-signal-safety-question-028
+pillar: linux-user
+module: signals
+difficulty: beginner
+priority: supporting
+estimatedMinutes: 6
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: []
+related: []
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: null
+status: draft
+keywords: [信号处理与异步安全边界, 故障定位, linux-user]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“信号处理与异步安全边界”要解决的问题和前置条件。
+- 区分信号上下文允许的操作、线程掩码和普通控制流，具体函数查 async-signal-safe 列表。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

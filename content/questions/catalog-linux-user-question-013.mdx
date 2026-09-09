@@ -1,0 +1,33 @@
+---
+id: catalog-linux-user-question-013
+type: interview-question
+title: 管道与共享内存 IPC 故障定位
+slug: catalog-linux-user-pipe-shm-question-013
+pillar: linux-user
+module: ipc
+difficulty: beginner
+priority: core
+estimatedMinutes: 6
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: []
+related: []
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: null
+status: draft
+keywords: [管道与共享内存 IPC, 故障定位, linux-user]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“管道与共享内存 IPC”要解决的问题和前置条件。
+- 比较字节流、生命周期、同步责任和故障恢复，不只比较吞吐。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

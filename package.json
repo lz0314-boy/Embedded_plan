@@ -1,0 +1,62 @@
+{
+  "name": "embedded-learning-platform",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "node scripts/build-content.mjs && next build --webpack && node scripts/build-security.mjs && node scripts/build-pwa.mjs",
+    "quality:check": "node scripts/check-quality.mjs",
+    "test:e2e:quality": "python tests/e2e/quality_smoke.py",
+    "start": "python -m http.server 4173 --bind 127.0.0.1 --directory out",
+    "test:e2e": "python tests/e2e/pwa_smoke.py",
+    "test:e2e:runner": "python tests/e2e/runner_smoke.py",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "supabase:test": "corepack pnpm dlx supabase test db",
+    "supabase:lint": "corepack pnpm dlx supabase db lint --local",
+    "content:build": "node scripts/build-content.mjs",
+    "content:validate": "node scripts/validate-content.mjs",
+    "content:check": "node scripts/validate-content.mjs && node scripts/build-content.mjs",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@mdx-js/mdx": "^3.1.0",
+    "@mdx-js/react": "^3.1.0",
+    "@monaco-editor/react": "4.7.0",
+    "@runno/runtime": "0.10.0",
+    "@supabase/supabase-js": "2.116.0",
+    "clsx": "^2.1.1",
+    "dexie": "4.4.5",
+    "monaco-editor": "0.56.0",
+    "next": "16.3.4",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "ts-fsrs": "5.4.2",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@serwist/build": "9.5.12",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "axe-core": "4.13.0",
+    "esbuild": "0.28.2",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "16.3.4",
+    "fake-indexeddb": "6.2.5",
+    "jsdom": "^27.1.0",
+    "prettier": "^3.7.4",
+    "serwist": "9.5.12",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  },
+  "packageManager": "pnpm@10.17.1",
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}

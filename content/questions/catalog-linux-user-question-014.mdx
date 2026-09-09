@@ -1,0 +1,33 @@
+---
+id: catalog-linux-user-question-014
+type: interview-question
+title: select poll 与 epoll 边界 版本核验
+slug: catalog-linux-user-select-poll-epoll-question-014
+pillar: linux-user
+module: io
+difficulty: intermediate
+priority: supporting
+estimatedMinutes: 8
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: []
+related: []
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: null
+status: draft
+keywords: [select poll 与 epoll 边界, 版本核验, linux-user]
+---
+
+## 先回答
+
+说明需要记录哪些版本、配置、源码位置和硬件条件，才能让结论可复现。
+
+## 评分点草稿
+
+- 先说明“select poll 与 epoll 边界”要解决的问题和前置条件。
+- POSIX I/O 多路复用与 Linux epoll 分层，边沿触发等细节只按 Linux 手册核验。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

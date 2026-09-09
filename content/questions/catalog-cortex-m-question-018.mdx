@@ -1,0 +1,33 @@
+---
+id: catalog-cortex-m-question-018
+type: interview-question
+title: NVIC 优先级与屏蔽 故障定位
+slug: catalog-cortex-m-nvic-priority-question-018
+pillar: cortex-m
+module: interrupts
+difficulty: advanced
+priority: supporting
+estimatedMinutes: 10
+scope: cortex-m
+platforms: [cortex-m3, cortex-m4]
+prerequisites: []
+related: []
+sourceIds: [arm-cortex-m3-guide, arm-cmsis-core]
+verifiedAt: null
+status: draft
+keywords: [NVIC 优先级与屏蔽, 故障定位, cortex-m]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“NVIC 优先级与屏蔽”要解决的问题和前置条件。
+- 架构优先级模型与芯片实现的有效位数分开记录，不能猜测某型号的优先级位宽。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

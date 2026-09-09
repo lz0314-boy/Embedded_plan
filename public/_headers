@@ -1,0 +1,12 @@
+# Cloudflare Pages / Netlify static headers.
+# GitHub Pages ignores this file; the generated CSP meta tag remains active there.
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(self), geolocation=(), payment=(), usb=()
+  Content-Security-Policy: frame-ancestors 'none'
+
+/sw.js
+  Cache-Control: no-cache

@@ -1,0 +1,4 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "本地测验", robots: { index: false, follow: false } };
+export default function QuizLayout({ children }: Readonly<{ children: React.ReactNode }>) { return children; }

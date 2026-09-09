@@ -1,0 +1,33 @@
+---
+id: catalog-c-question-035
+type: interview-question
+title: 表达式求值与副作用 反例与取舍
+slug: catalog-c-expression-order-question-035
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+estimatedMinutes: 8
+scope: rtos-generic
+platforms: [standard-c]
+prerequisites: []
+related: []
+sourceIds: [c-wg14-n1570]
+verifiedAt: null
+status: draft
+keywords: [表达式求值与副作用, 反例与取舍, rtos-generic]
+---
+
+## 先回答
+
+给出一个结论失效的边界或反例，并说明工程取舍。
+
+## 评分点草稿
+
+- 先说明“表达式求值与副作用”要解决的问题和前置条件。
+- 只引用标准 C 可保证的顺序；编译器优化现象需要记录版本和选项。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

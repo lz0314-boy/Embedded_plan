@@ -1,0 +1,33 @@
+---
+id: catalog-c-question-033
+type: interview-question
+title: 指针与对象生命周期 故障定位
+slug: catalog-c-pointer-lifetime-question-033
+pillar: c
+module: language-and-memory
+difficulty: advanced
+priority: core
+estimatedMinutes: 10
+scope: rtos-generic
+platforms: [standard-c]
+prerequisites: []
+related: []
+sourceIds: [c-wg14-n1570]
+verifiedAt: null
+status: draft
+keywords: [指针与对象生命周期, 故障定位, rtos-generic]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“指针与对象生命周期”要解决的问题和前置条件。
+- 先讨论标准 C 的对象、存储期和生命周期，再单独记录编译器扩展与目标 ABI。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

@@ -1,0 +1,33 @@
+---
+id: catalog-linux-user-question-008
+type: interview-question
+title: Linux I/O 与系统调用调试 故障定位
+slug: catalog-linux-user-io-debugging-question-008
+pillar: linux-user
+module: debugging
+difficulty: intermediate
+priority: supporting
+estimatedMinutes: 8
+scope: linux-user
+platforms: [linux]
+prerequisites: []
+related: []
+sourceIds: [linux-man-pages]
+verifiedAt: null
+status: draft
+keywords: [Linux I/O 与系统调用调试, 故障定位, linux-user]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“Linux I/O 与系统调用调试”要解决的问题和前置条件。
+- 从返回值、errno、系统调用跟踪和内核日志建立证据链，不把工具输出当作根因。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。

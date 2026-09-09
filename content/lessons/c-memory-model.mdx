@@ -1,0 +1,31 @@
+---
+id: c-memory-model
+type: lesson
+title: C 数据与内存模型
+slug: c-memory-model
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+estimatedMinutes: 30
+scope: rtos-generic
+platforms: [standard-c, gcc]
+prerequisites: []
+related: [cortex-m-exception-model]
+sourceIds: [c-wg14-n1570]
+verifiedAt: null
+status: draft
+keywords: [C, 内存模型, 指针, 未定义行为]
+---
+
+## 学习目标
+
+区分对象、存储期、对齐、生命周期和未定义行为。本文是通用 C 基础，不把编译器扩展或具体 MCU 地址当成标准 C 结论。
+
+## 核心结论
+
+先描述标准语义，再标明 GCC、编译器选项和目标 ABI。未运行的代码只作为分析题，不标记为已验证实验。
+
+## 最小练习
+
+分析一个指针是否仍指向有效对象，并说明需要哪些编译参数。来源和版本状态保持“待核验”，因为本条黄金内容尚未完成逐条人工复核。

@@ -1,0 +1,33 @@
+---
+id: catalog-rt-thread-question-018
+type: interview-question
+title: RT-Thread 就绪队列与选线程 故障定位
+slug: catalog-rt-thread-ready-queue-question-018
+pillar: rt-thread
+module: scheduler
+difficulty: advanced
+priority: supporting
+estimatedMinutes: 10
+scope: rt-thread
+platforms: [rt-thread]
+prerequisites: []
+related: []
+sourceIds: [rtt-thread-manual, rtt-scheduler-source]
+verifiedAt: null
+status: draft
+keywords: [RT-Thread 就绪队列与选线程, 故障定位, rt-thread]
+---
+
+## 先回答
+
+给出一个可能的故障现象，说明最小复现、观测点和排除顺序。
+
+## 评分点草稿
+
+- 先说明“RT-Thread 就绪队列与选线程”要解决的问题和前置条件。
+- 区分调度策略、RT-Thread UP/SMP 实现与 Cortex-M 端口，不把旧版单文件结构当成现状。
+- 给出可复现的版本、配置、输入、观测点和失败路径。
+
+## 参考方向
+
+答案应形成“定义 -> 机制 -> 实现 -> 边界 -> 验证”的链路。当前评分点是待人工核验草稿，不代表对应平台已经实测。
