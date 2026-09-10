@@ -18,7 +18,7 @@
 | Supabase CLI | `2.117.0`，通过 `pnpm dlx`；linked schema lint 已通过 |
 | Playwright Python | `1.62.0`，E2E 环境 |
 | axe-core | `4.13.0`，仅用于质量 E2E |
-| RT-Thread | 内容来源尚未固定统一 tag/commit，扩充条目保持 `draft` |
+| RT-Thread | 核心实现固定为 `v5.2.2`，commit `ddf52e2cdd977f14fc04035c88672ac204aec713`；手册来源固定为 `16eb4600ec7f8ea8b037abd7e1cfc2eaba9baf39` |
 | 正点原子 ALPHA | 板级参数、启动偏移、分区和脚本仍待匹配版本官方资料核验 |
 
 Runno 0.10.0 默认从 `https://runno.dev/langs/` 获取编译器资产。npm 包已锁定，但远端资产 URL 未版本化；发布前需要重新核验可用性、大小和供应链策略。

@@ -3,6 +3,8 @@ import { listContentFiles, parseFrontmatter, readSources } from "./content-utils
 
 const files = listContentFiles();
 const sources = readSources();
+const verificationManifest = JSON.parse(fs.readFileSync("content/verification/batches.json", "utf8"));
+const approvedContentIds = new Set(verificationManifest.batches.flatMap((batch) => batch.contentIds.filter((id) => !id.startsWith("catalog-") || batch.allowCatalog === true)));
 const sourceIds = new Set(sources.map((source) => source.id));
 const ids = new Set();
 const slugs = new Set();
@@ -32,7 +34,7 @@ for (const file of files) {
   if (!allowedPillars.has(metadata.pillar)) errors.push(`${relative}: 非法 pillar ${metadata.pillar}`);
   if (!allowedStatuses.has(metadata.status)) errors.push(`${relative}: 非法 status ${metadata.status}`);
   if (metadata.status === "verified" && (!metadata.verifiedAt || metadata.verifiedAt === "null")) errors.push(`${relative}: verified 内容必须有 verifiedAt`);
-  if (metadata.id?.startsWith("catalog-") && (metadata.status !== "draft" || metadata.verifiedAt !== null)) errors.push(`${relative}: 阶段 5 扩充批次必须保持 draft 且 verifiedAt 为 null`);
+  if (metadata.id?.startsWith("catalog-") && metadata.status === "verified" && !approvedContentIds.has(metadata.id)) errors.push(`${relative}: catalog 内容必须先登记在核验批次中`);
   if (metadata.scope === "esp32" && metadata.platforms?.some((platform) => platform.startsWith("cortex-m"))) errors.push(`${relative}: ESP32 不得混入 Cortex-M 平台`);
   const directory = relative.split("/").at(-2);
   if (directoryTypes.has(directory) && directoryTypes.get(directory) !== metadata.type) errors.push(`${relative}: 目录与 type 不一致`);

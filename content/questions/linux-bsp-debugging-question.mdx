@@ -1,0 +1,29 @@
+---
+id: linux-bsp-debugging-question
+type: interview-question
+title: i.MX6ULL 启动停在 bootz 后应如何排查？
+slug: linux-bsp-debugging-question
+pillar: linux-bsp
+module: debugging
+difficulty: advanced
+priority: core
+estimatedMinutes: 8
+scope: linux-bsp
+platforms: [imx6ull, u-boot, linux]
+prerequisites: [linux-bsp-boot-debugging]
+related: []
+sourceIds: [nxp-imx6ull, uboot-bootz, linux-arm-boot, linux-device-tree, alientek-alpha-v24]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [i.MX6ULL, bootz, U-Boot, DTB, BSP, 面试]
+---
+
+## 参考回答
+
+先保存完整串口日志和 U-Boot 环境，再分别核对内核格式与加载地址、DTB 地址、`bootargs`、解压输出、内核早期日志和根文件系统挂载错误。每次只改变一个变量。ALPHA V2.4 的启动偏移、分区、拨码、DTS 和脚本必须由匹配版本官方资料确认，不能从通用 i.MX6ULL 教程推导。
+
+## 评分点
+
+- 按 Boot ROM、U-Boot、内核、根文件系统、PID 1 分段。
+- 能区分 NXP 通用事实与板卡厂商差异。
+- 不把“能启动一次”当作介质、版本和配置已经兼容。

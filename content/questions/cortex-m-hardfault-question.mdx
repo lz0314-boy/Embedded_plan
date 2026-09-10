@@ -1,0 +1,29 @@
+---
+id: cortex-m-hardfault-question
+type: interview-question
+title: Cortex-M HardFault 现场应如何定位到源码？
+slug: cortex-m-hardfault-question
+pillar: cortex-m
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 7
+scope: cortex-m
+platforms: [cortex-m3, cortex-m4]
+prerequisites: [cortex-m-hardfault-debugging]
+related: []
+sourceIds: [arm-cortex-m3-guide, arm-cortex-m4-guide, arm-cmsis-core]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [Cortex-M, HardFault, PC, 栈帧, 面试]
+---
+
+## 参考回答
+
+先保存异常返回标记、MSP/PSP 和基本栈帧，再读取可用的故障状态寄存器；从栈帧中的 `PC` 结合匹配版本的 ELF、符号和链接地址映射到源码。随后判断访问错误、栈耗尽、异常升级或 FPU 扩展栈帧。不能只打印一个 `PC`，也不能把 M3 基本栈帧解释器直接套到所有 M4 FPU 配置。
+
+## 评分点
+
+- 说明现场保存优先于重启。
+- 区分架构通用、Cortex-M、具体 MCU 和 BSP 证据。
+- 能给出复现、修复和回归验证方法。

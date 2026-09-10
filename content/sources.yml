@@ -26,19 +26,19 @@ sources:
   - id: rtt-thread-manual
     title: RT-Thread 线程管理手册
     organization: RT-Thread
-    url: https://github.com/RT-Thread/rtthread-manual-doc/blob/master/thread/thread.md
-    versionOrCommit: master-unpinned
+    url: https://github.com/RT-Thread/rtthread-manual-doc/blob/16eb4600ec7f8ea8b037abd7e1cfc2eaba9baf39/thread/thread.md
+    versionOrCommit: 16eb4600ec7f8ea8b037abd7e1cfc2eaba9baf39
     accessedAt: 2026-09-08
     platforms: rt-thread
-    citationNote: 概念层来源；具体实现仍需固定 tag/commit 核验
+    citationNote: 线程管理概念层来源；实现层内容绑定 RT-Thread v5.2.2 核心 commit
   - id: rtt-scheduler-source
     title: RT-Thread scheduler source
     organization: RT-Thread
-    url: https://github.com/RT-Thread/rt-thread/tree/master/src
-    versionOrCommit: master-unpinned
+    url: https://github.com/RT-Thread/rt-thread/tree/ddf52e2cdd977f14fc04035c88672ac204aec713/src
+    versionOrCommit: v5.2.2 (ddf52e2cdd977f14fc04035c88672ac204aec713)
     accessedAt: 2026-09-08
     platforms: rt-thread
-    citationNote: 实现层占位来源，当前黄金样本保持 draft
+    citationNote: 调度实现层来源，内容绑定 RT-Thread v5.2.2 核心 commit
   - id: nxp-imx6ull
     title: i.MX6ULL 产品与文档入口
     organization: NXP
@@ -114,32 +114,32 @@ sources:
   - id: rtt-ipc-source
     title: RT-Thread ipc.c
     organization: RT-Thread
-    url: https://github.com/RT-Thread/rt-thread/blob/master/src/ipc.c
-    versionOrCommit: master-unpinned
+    url: https://github.com/RT-Thread/rt-thread/blob/ddf52e2cdd977f14fc04035c88672ac204aec713/src/ipc.c
+    versionOrCommit: v5.2.2 (ddf52e2cdd977f14fc04035c88672ac204aec713)
     accessedAt: 2026-09-09
     platforms: rt-thread
-    citationNote: IPC 实现层来源占位；发布前必须绑定 tag 或 commit
+    citationNote: IPC 实现层来源，内容绑定 RT-Thread v5.2.2 核心 commit
   - id: rtt-timer-source
     title: RT-Thread timer.c and clock.c
     organization: RT-Thread
-    url: https://github.com/RT-Thread/rt-thread/tree/master/src
-    versionOrCommit: master-unpinned
+    url: https://github.com/RT-Thread/rt-thread/tree/ddf52e2cdd977f14fc04035c88672ac204aec713/src
+    versionOrCommit: v5.2.2 (ddf52e2cdd977f14fc04035c88672ac204aec713)
     accessedAt: 2026-09-09
     platforms: rt-thread
     citationNote: 时钟与定时器实现入口；具体配置宏待核验
   - id: rtt-memory-source
     title: RT-Thread Memory Management Sources
     organization: RT-Thread
-    url: https://github.com/RT-Thread/rt-thread/tree/master/src
-    versionOrCommit: master-unpinned
+    url: https://github.com/RT-Thread/rt-thread/tree/ddf52e2cdd977f14fc04035c88672ac204aec713/src
+    versionOrCommit: v5.2.2 (ddf52e2cdd977f14fc04035c88672ac204aec713)
     accessedAt: 2026-09-09
     platforms: rt-thread
     citationNote: 多种内存分配器实现入口；不得描述成唯一算法
   - id: rtt-cortexm-context
     title: RT-Thread Cortex-M Context Port
     organization: RT-Thread
-    url: https://github.com/RT-Thread/rt-thread/tree/master/libcpu/arm
-    versionOrCommit: master-unpinned
+    url: https://github.com/RT-Thread/rt-thread/tree/ddf52e2cdd977f14fc04035c88672ac204aec713/libcpu/arm
+    versionOrCommit: v5.2.2 (ddf52e2cdd977f14fc04035c88672ac204aec713)
     accessedAt: 2026-09-09
     platforms: rt-thread, cortex-m
     citationNote: 端口实现入口；必须按 Cortex-M 型号、工具链和 commit 核验
@@ -191,6 +191,30 @@ sources:
     accessedAt: 2026-09-09
     platforms: linux-user
     citationNote: Linux 系统调用和 libc 接口语义来源入口
+  - id: gcc-warning-options
+    title: GCC Warning Options
+    organization: GNU Project
+    url: https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-10
+    platforms: gcc, c
+    citationNote: 用于区分编译器告警选项与标准 C 语义；具体编译器版本仍需记录
+  - id: gdb-user-manual
+    title: GDB User Manual
+    organization: GNU Project
+    url: https://sourceware.org/gdb/documentation/
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-10
+    platforms: linux-user, arm32-linux
+    citationNote: 用于 Linux 用户态调试流程；命令行为需结合目标 GDB 版本
+  - id: alientek-alpha-v24
+    title: 正点原子 ALPHA i.MX6ULL 官方资料入口
+    organization: 正点原子
+    url: https://www.openedv.com/docs/boards/arm-linux/zdyz-i.mx6ull.html
+    versionOrCommit: ALPHA V2.4 hardware evidence reviewed 2026-09-10
+    accessedAt: 2026-09-10
+    platforms: imx6ull, alpha-v2.4
+    citationNote: 仅作为官方资料入口；板级偏移、分区、拨码、DTS 和脚本必须匹配具体资料后单独核验
   - id: posix-2024
     title: POSIX.1-2024
     organization: The Open Group

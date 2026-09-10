@@ -1,0 +1,27 @@
+---
+id: linux-user-debugging-quiz
+type: quiz-question
+title: strace 最适合观察哪一类边界？
+slug: linux-user-debugging-quiz
+pillar: linux-user
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 3
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: []
+related: []
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [Linux, strace, 系统调用]
+---
+
+题干：strace 最适合观察哪一类边界？
+
+- A. 进程发起的系统调用及返回值
+- B. CPU 内部每条流水线指令
+- C. 目标板所有电源轨波形
+
+参考答案：A。它不能替代 GDB、示波器或内核/驱动专用证据。

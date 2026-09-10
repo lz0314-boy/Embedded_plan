@@ -11,6 +11,6 @@
 - [ ] 在真实 Android、iOS、Safari 和桌面浏览器完成安装、离线、存储与可访问性验收。
 - [ ] 在候选静态托管平台核对 COOP/COEP、CSP、`nosniff`、Referrer-Policy 和 Permissions-Policy。
 - [ ] 验证性能预算、SEO、三网访问和主站/镜像切换。
-- [ ] 为 RT-Thread 内容绑定 tag/commit，并逐条人工核验扩充内容。
+- [x] 为 RT-Thread 核心来源绑定 tag/commit；扩充内容仍须按 `content/verification/batches.json` 分批核验。
 - [ ] 为 ALPHA 板级内容匹配官方版本；无法匹配的条目继续显示“待核验”。
 - [ ] 完成 JSON 恢复、账号登出保留本机数据、云端故障和托管故障演练。

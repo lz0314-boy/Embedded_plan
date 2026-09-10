@@ -19,6 +19,7 @@
     "supabase:lint": "corepack pnpm dlx supabase db lint --local",
     "content:build": "node scripts/build-content.mjs",
     "content:validate": "node scripts/validate-content.mjs",
+    "content:verify": "node scripts/verify-content.mjs",
     "content:check": "node scripts/validate-content.mjs && node scripts/build-content.mjs",
     "format": "prettier --write ."
   },

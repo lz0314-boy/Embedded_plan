@@ -1,0 +1,29 @@
+---
+id: c-debugging-question
+type: interview-question
+title: 编译器没有告警能否证明 C 代码安全？
+slug: c-debugging-question
+pillar: c
+module: debugging
+difficulty: beginner
+priority: core
+estimatedMinutes: 6
+scope: rtos-generic
+platforms: [standard-c, gcc]
+prerequisites: [c-debugging-diagnostics]
+related: []
+sourceIds: [c-wg14-n1570, gcc-warning-options]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [C, 编译器告警, 未定义行为, 面试]
+---
+
+## 参考回答
+
+不能。告警只覆盖编译器能够识别并配置为报告的路径；未定义行为可能依赖运行输入、跨函数状态、优化和目标 ABI。合格回答应继续给出最小复现、构建矩阵、运行时检查和回归用例，并区分标准 C 约束与 GCC 扩展。
+
+## 评分点
+
+- 能说明“没有告警”与“满足语言约束”不是同一命题。
+- 能记录编译器、标准、目标和完整告警选项。
+- 能用可重复实验而不是一次运行结果证明修复。

@@ -1,0 +1,49 @@
+---
+id: c-debugging-diagnostics
+type: lesson
+title: C 编译器告警与未定义行为调试
+slug: c-debugging-diagnostics
+pillar: c
+module: debugging
+difficulty: beginner
+priority: core
+estimatedMinutes: 35
+scope: rtos-generic
+platforms: [standard-c, gcc]
+prerequisites: [c-memory-model]
+related: []
+sourceIds: [c-wg14-n1570, gcc-warning-options]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [C, 编译器告警, 未定义行为, 调试, 最小复现]
+---
+
+## 调试目标
+
+企业代码中的“偶发崩溃”通常不是从调试器开始，而是从把问题分类开始：这是标准 C 语义问题、编译器实现差异、链接布局问题，还是目标平台的并发与硬件问题？如果分类错误，换优化级别或加日志只能改变现象，不能证明修复成立。
+
+## 四层排查法
+
+1. **先让编译器说话**：记录编译器、目标三元组、语言标准和完整告警选项。主机练习可以从 `-std=c11 -Wall -Wextra -Wpedantic -Wconversion -Wshadow -g3 -O0` 开始；这些是工具链选项，不是标准 C 的保证。
+2. **缩小到最小复现**：删除业务模块、线程、外设和日志，只保留能稳定触发问题的输入、状态转移和一条失败断言。
+3. **区分未定义行为**：越界、悬空指针、错误的生命周期和不满足约束的类型转换不能用“一次运行没出错”证明安全。按照 C 标准判断，不能把某个 GCC 版本的结果当成语言规则。
+4. **对比构建矩阵**：至少记录 `-O0` 与发布优化、主机与交叉编译器、32 位与 64 位 ABI 的差异。差异是定位线索，不是修复证据。
+
+## 结果记录模板
+
+```text
+现象：
+触发输入：
+最小复现：
+编译器/版本/目标：
+标准与告警选项：
+观察点：
+假设：
+反例或排除实验：
+修复：
+回归用例：
+```
+
+## 边界
+
+本课只核验标准 C 和编译器诊断的分层方法，不声称某个编译器已经运行了本课示例，也不把 `volatile` 当作线程同步原语。涉及 ISR、缓存、DMA 或 RTOS 调度时，必须转到对应架构和实现层继续核验。

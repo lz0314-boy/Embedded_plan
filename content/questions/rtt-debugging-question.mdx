@@ -1,0 +1,29 @@
+---
+id: rtt-debugging-question
+type: interview-question
+title: 如何定位 RT-Thread 中一个长期阻塞的线程？
+slug: rtt-debugging-question
+pillar: rt-thread
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 7
+scope: rt-thread
+platforms: [rt-thread-v5.2.2]
+prerequisites: [rtt-debugging-deadlock]
+related: []
+sourceIds: [rtt-thread-manual, rtt-scheduler-source, rtt-ipc-source]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [RT-Thread, 阻塞, 死锁, IPC, 面试]
+---
+
+## 参考回答
+
+先记录线程状态、优先级、等待对象、等待超时、栈余量和最后一次状态变化，再追踪对象持有者和释放路径。若有多个互斥量，画出锁依赖图检查环；若是优先级反转，核对具体 RT-Thread 互斥量实现和配置。不要只提高线程优先级或增加日志后就宣布修复。
+
+## 评分点
+
+- 能把阻塞者、生产者和持有者连成证据链。
+- 能区分信号量、互斥量和消息队列的责任。
+- 能说明 ISR 不应执行可能阻塞的路径。

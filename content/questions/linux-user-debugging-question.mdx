@@ -1,0 +1,29 @@
+---
+id: linux-user-debugging-question
+type: interview-question
+title: GDB 和 strace 在 Linux 故障定位中如何分工？
+slug: linux-user-debugging-question
+pillar: linux-user
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 6
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: [linux-user-debugging-workflow]
+related: []
+sourceIds: [linux-man-pages, posix-2024, gdb-user-manual]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [Linux, GDB, strace, 系统调用, 面试]
+---
+
+## 参考回答
+
+GDB 主要观察进程内部的线程、调用栈、变量和信号现场；strace 观察进程与内核之间的系统调用、返回值和 `errno`。先按故障边界选择工具，再保留匹配的二进制、符号、共享库和目标架构信息。二者都不能替代驱动日志、网络对端证据或真实板卡测试。
+
+## 评分点
+
+- 能说清用户态内部状态和系统调用边界的差异。
+- 能提到多线程、符号匹配和交叉调试环境。
+- 能给出可复现的命令和回归记录，而不是只背工具名称。

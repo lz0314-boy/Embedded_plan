@@ -40,6 +40,7 @@
 - 尚未从中国大陆不同运营商网络完成三网访问，也未实际部署并比较 Cloudflare Pages、GitHub Pages 和 Vercel；不能宣称大陆访问质量或 SLA。
 - 尚未创建两个真实登录用户完成 Supabase Auth、RLS、项目经历同步、双设备冲突和网络恢复演练；匿名拒绝和 linked schema lint 不等价于双用户验收。
 - 本地 pgTAP 仍受 Podman machine 镜像下载网络中断影响；不能将远端 lint 当作本地 pgTAP 通过。
-- 扩充内容仍为 `draft`/待核验；RT-Thread tag/commit 和正点原子 ALPHA 匹配版本资料尚未完成逐条核验。
+- RT-Thread 核心来源已固定为 `v5.2.2`；扩充内容仍按批次保持 `draft`，仅 `content/verification/batches.json` 登记并实际审阅的条目可以改为 `verified`。
+- ALPHA V2.4 的版本对应关系已经记录，但板级偏移、分区、拨码、DTS 和脚本仍待逐项核验。
 
 这些事项需要真实设备、真实网络、托管账号或个人 Supabase 登录账号，不能由当前工作区自动代替。

@@ -1,0 +1,43 @@
+---
+id: rtt-debugging-deadlock
+type: lesson
+title: RT-Thread 线程阻塞、死锁与优先级反转定位
+slug: rtt-debugging-deadlock
+pillar: rt-thread
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 40
+scope: rt-thread
+platforms: [rt-thread-v5.2.2]
+prerequisites: [rtt-scheduler]
+related: []
+sourceIds: [rtt-thread-manual, rtt-scheduler-source, rtt-ipc-source]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [RT-Thread, 调度, 死锁, 优先级反转, IPC, 调试]
+---
+
+## 先区分机制层
+
+RTOS 的阻塞、就绪和调度是通用机制；线程控制块、就绪队列、IPC 对象和 API 名称是 RT-Thread 实现；PendSV、栈帧和中断屏蔽是 Cortex-M port；具体 tick、时钟源和板级串口又属于芯片与 BSP。排查时必须把四层证据分开。
+
+## 阻塞问题的证据链
+
+为每个线程记录：线程名、优先级、当前状态、最近一次状态变化、等待对象、等待超时、栈余量和最后一条业务日志。然后画出“线程 → 等待对象 → 持有者 → 释放路径”，而不是只看某个线程为什么没有继续打印。
+
+常见分支包括：
+
+- 线程永远等待信号量或消息，生产者没有运行、没有发送，或发送路径被错误条件绕过。
+- 互斥量形成环形持有关系；检查锁顺序和所有提前返回路径。
+- 高优先级线程等待低优先级线程持有的资源；核对 RT-Thread 互斥量的优先级继承行为和配置，不要把它泛化为所有信号量。
+- ISR 中执行了不允许阻塞的操作，导致上下文边界被破坏；中断只采集必要信息，把后续工作交给线程。
+
+## 可复现调试步骤
+
+1. 固定 RT-Thread `v5.2.2` 核心实现来源，并记录 BSP 配置和工具链。
+2. 给线程切换、IPC 获取/释放和超时返回增加低扰动事件记录。
+3. 人为缩短超时并注入单一故障，确认状态图能显示等待者和持有者。
+4. 修复锁顺序或生命周期后，回归检查超时、取消、删除和重启路径。
+
+本课核验的是 RT-Thread v5.2.2 来源支持的分析框架，不声称已在真实 RT-Thread 板卡上运行或测得调度延迟。

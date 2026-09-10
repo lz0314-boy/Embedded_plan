@@ -1,0 +1,27 @@
+---
+id: rtt-debugging-quiz
+type: quiz-question
+title: RT-Thread 死锁排查首先应补充什么证据？
+slug: rtt-debugging-quiz
+pillar: rt-thread
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 3
+scope: rt-thread
+platforms: [rt-thread-v5.2.2]
+prerequisites: []
+related: []
+sourceIds: [rtt-thread-manual, rtt-scheduler-source, rtt-ipc-source]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [RT-Thread, 死锁, IPC]
+---
+
+题干：RT-Thread 死锁排查首先应补充什么证据？
+
+- A. 所有线程的等待对象、持有者和锁顺序
+- B. 只提高疑似线程的优先级
+- C. 删除所有超时日志
+
+参考答案：A。没有依赖关系图就无法区分生产者未运行、资源未释放和锁环。

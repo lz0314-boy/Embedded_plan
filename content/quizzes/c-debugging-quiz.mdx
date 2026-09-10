@@ -1,0 +1,27 @@
+---
+id: c-debugging-quiz
+type: quiz-question
+title: 哪项最能证明一个 C 修复有效？
+slug: c-debugging-quiz
+pillar: c
+module: debugging
+difficulty: beginner
+priority: core
+estimatedMinutes: 3
+scope: rtos-generic
+platforms: [standard-c, gcc]
+prerequisites: []
+related: []
+sourceIds: [c-wg14-n1570, gcc-warning-options]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [C, 调试, 回归测试]
+---
+
+题干：哪项最能证明一个 C 修复有效？
+
+- A. 在一次 `-O0` 运行中没有崩溃
+- B. 更换日志文本后现象消失
+- C. 有固定环境的最小复现、反例测试和回归结果
+
+参考答案：C。单次运行和日志变化都可能只是改变了未定义行为的表现。

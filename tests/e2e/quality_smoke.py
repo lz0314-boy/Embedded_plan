@@ -58,6 +58,16 @@ class QualitySmokeTests(unittest.TestCase):
             violations = result["violations"]
             self.assertEqual([], violations, f"axe violations on {route}: {violations}")
 
+        verified = context.new_page()
+        self.addCleanup(verified.close)
+        verified.goto(f"{self.base_url}/learn/c-debugging-diagnostics/", wait_until="domcontentloaded", timeout=15000)
+        self.assertEqual(verified.locator(".status.verified").inner_text(), "已核验")
+
+        draft = context.new_page()
+        self.addCleanup(draft.close)
+        draft.goto(f"{self.base_url}/learn/rt-thread-scheduler/", wait_until="domcontentloaded", timeout=15000)
+        self.assertEqual(draft.locator(".status.pending").inner_text(), "待核验")
+
         filtered = context.new_page()
         self.addCleanup(filtered.close)
         filtered.goto(f"{self.base_url}/questions/?q=PendSV", wait_until="domcontentloaded", timeout=15000)

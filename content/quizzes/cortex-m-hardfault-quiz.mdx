@@ -1,0 +1,27 @@
+---
+id: cortex-m-hardfault-quiz
+type: quiz-question
+title: Cortex-M 异常现场中哪个值最适合开始做源码映射？
+slug: cortex-m-hardfault-quiz
+pillar: cortex-m
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 3
+scope: cortex-m
+platforms: [cortex-m3, cortex-m4]
+prerequisites: []
+related: []
+sourceIds: [arm-cortex-m3-guide, arm-cortex-m4-guide, arm-cmsis-core]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [Cortex-M, HardFault, PC]
+---
+
+题干：在匹配 ELF 和链接地址的前提下，哪个现场值通常用于开始源码映射？
+
+- A. `PC`
+- B. 任意 GPIO 电平
+- C. 下一次复位后的系统时间
+
+参考答案：A。但 `PC` 只是线索，仍需结合栈帧类型、故障状态寄存器和完整构建信息。

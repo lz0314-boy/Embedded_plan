@@ -1,0 +1,42 @@
+---
+id: cortex-m-hardfault-debugging
+type: lesson
+title: Cortex-M HardFault 与异常现场定位
+slug: cortex-m-hardfault-debugging
+pillar: cortex-m
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 40
+scope: cortex-m
+platforms: [cortex-m3, cortex-m4, cmsis-core]
+prerequisites: [cortex-m-exception-model]
+related: []
+sourceIds: [arm-cortex-m3-guide, arm-cortex-m4-guide, arm-cmsis-core]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [Cortex-M, HardFault, 异常栈帧, CFSR, 调试]
+---
+
+## 先保留现场
+
+HardFault 不是根因名称，而是需要继续解码的异常入口。第一步不是重启，而是保存异常发生时的栈指针、异常返回标记和可用的故障状态寄存器。调试固件应避免在异常处理函数里进行复杂分配、阻塞等待或大量格式化输出。
+
+## 分层理解
+
+- **架构通用层**：异常进入时，处理器会把基本寄存器现场压入当前使用的栈；常见现场包括 `R0-R3`、`R12`、`LR`、`PC` 和 `xPSR`。异常返回标记可用于判断现场来自 MSP 还是 PSP。
+- **Cortex-M3/M4 层**：异常模型、优先级和故障状态寄存器由内核架构定义。具体芯片是否实现额外的 fault、MPU 或调试资源，仍要回到芯片手册。
+- **Cortex-M4 FPU 层**：启用浮点上下文时，栈帧可能有扩展部分；不能把 M3 的基本栈帧解释器直接套到所有 M4 配置。
+- **芯片实现层**：时钟、外设寄存器、复位原因、看门狗和板级日志需要具体 MCU reference manual，不能从 Cortex-M 通用手册猜测。
+
+## 企业排障顺序
+
+1. 记录 `PC`、`LR`、`xPSR`、使用的 MSP/PSP 和故障状态寄存器。
+2. 用与固件完全匹配的 ELF、编译选项和链接地址把 `PC` 映射到源码行。
+3. 判断是非法地址、总线错误、权限错误、未对齐访问、栈耗尽还是被更早异常升级。
+4. 检查最近一次线程切换、ISR 嵌套、DMA 缓冲区生命周期和栈高水位。
+5. 用最小复现和回归断言验证修复，不能只以“设备没有再次重启”为结论。
+
+## 证据要求
+
+没有匹配芯片型号、编译产物和异常现场时，只能记录为分析方法或待核验假设。本课不宣称已在某个 STM32、GD32 或具体开发板上捕获过 HardFault；ESP32 另走 Xtensa/RISC-V 和 ESP-IDF 的独立架构分支。

@@ -1,0 +1,50 @@
+{
+  "batches": [
+    {
+      "id": "debugging-core-20260910",
+      "title": "分层调试核心内容",
+      "reviewedAt": "2026-09-10",
+      "sourceIds": [
+        "c-wg14-n1570",
+        "gcc-warning-options",
+        "arm-cortex-m3-guide",
+        "arm-cortex-m4-guide",
+        "arm-cmsis-core",
+        "rtt-thread-manual",
+        "rtt-scheduler-source",
+        "rtt-ipc-source",
+        "linux-man-pages",
+        "posix-2024",
+        "linux-init-source",
+        "uboot-bootz",
+        "linux-arm-boot",
+        "linux-device-tree",
+        "nxp-imx6ull",
+        "gdb-user-manual",
+        "alientek-alpha-v24"
+      ],
+      "contentIds": [
+        "c-debugging-diagnostics",
+        "c-debugging-question",
+        "c-debugging-quiz",
+        "cortex-m-hardfault-debugging",
+        "cortex-m-hardfault-question",
+        "cortex-m-hardfault-quiz",
+        "rtt-debugging-deadlock",
+        "rtt-debugging-question",
+        "rtt-debugging-quiz",
+        "linux-user-debugging-workflow",
+        "linux-user-debugging-question",
+        "linux-user-debugging-quiz",
+        "linux-bsp-boot-debugging",
+        "linux-bsp-debugging-question",
+        "linux-bsp-debugging-quiz"
+      ],
+      "allowCatalog": false,
+      "notes": [
+        "核验范围是来源支持的通用机制和调试流程，不等于在真实 MCU、RTOS 或 ALPHA 板上完成运行测试。",
+        "ALPHA V2.4 的拨码、启动偏移、分区、DTS 和脚本继续标记为待板级核验。"
+      ]
+    }
+  ]
+}

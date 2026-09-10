@@ -1,0 +1,46 @@
+---
+id: linux-user-debugging-workflow
+type: lesson
+title: Linux 用户态调试：GDB、日志与系统调用
+slug: linux-user-debugging-workflow
+pillar: linux-user
+module: debugging
+difficulty: intermediate
+priority: core
+estimatedMinutes: 40
+scope: linux-user
+platforms: [linux, posix, arm32-linux]
+prerequisites: [linux-process-io]
+related: []
+sourceIds: [linux-man-pages, posix-2024, gdb-user-manual]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [Linux, GDB, strace, core dump, 系统调用, 调试]
+---
+
+## 从现象到边界
+
+先确认故障发生在进程、系统调用、内核驱动还是网络对端。应用日志回答业务状态，`strace` 观察系统调用边界，GDB 观察进程内的线程、栈和变量，内核日志工具则不能替代用户态证据。
+
+## 推荐流程
+
+1. 用带符号的构建复现，记录目标架构、libc、编译器、优化等级和构建提交；发布构建保留可匹配的未剥离符号文件。
+2. 使用 GDB 在稳定断点、异常信号和关键状态转移处采样。多线程问题要记录线程 ID、锁顺序和等待条件，而不是只看主线程。
+3. 用 `strace -f -tt -o trace.log ./app` 观察 `openat`、`read`、`poll`、`connect` 等边界；重点看返回值和 `errno`，不要把系统调用日志当成源代码执行顺序的完整替代。
+4. 对崩溃启用 core dump，保留可执行文件、共享库版本、core、命令行和环境变量。core 缺少匹配符号时，堆栈只能作为线索。
+5. 在目标板交叉调试时，确认 GDB、sysroot、动态加载器和目标 libc 相互匹配；主机上成功不代表 ARM 目标上 ABI 相同。
+
+## 故障报告最小字段
+
+```text
+目标与固件：
+输入与复现率：
+进程/线程：
+GDB backtrace：
+关键系统调用及 errno：
+core 与符号是否匹配：
+已排除的假设：
+修复与回归结果：
+```
+
+本课覆盖 POSIX/Linux 用户态调试方法，不把 `strace`、GDB 或浏览器 C runner 描述成真实 i.MX6ULL 内核或驱动调试器。

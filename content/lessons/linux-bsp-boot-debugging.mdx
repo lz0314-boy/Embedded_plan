@@ -1,0 +1,40 @@
+---
+id: linux-bsp-boot-debugging
+type: lesson
+title: i.MX6ULL Linux 启动链分层故障定位
+slug: linux-bsp-boot-debugging
+pillar: linux-bsp
+module: debugging
+difficulty: advanced
+priority: core
+estimatedMinutes: 45
+scope: linux-bsp
+platforms: [imx6ull, cortex-a7, u-boot, linux]
+prerequisites: [imx6ull-boot-chain]
+related: []
+sourceIds: [nxp-imx6ull, uboot-bootz, linux-arm-boot, linux-device-tree, alientek-alpha-v24]
+verifiedAt: 2026-09-10
+status: verified
+keywords: [i.MX6ULL, U-Boot, bootz, Device Tree, BSP, 启动调试]
+---
+
+## 启动链不是一条黑盒命令
+
+把故障按“是否到达下一个阶段”分段：Boot ROM/SPL（若使用）→ U-Boot proper → 内核和 DTB 加载 → Linux 早期启动 → 根文件系统 → PID 1 和用户程序。每段都要记录执行者、输入、输出、日志位置和下一步入口。
+
+## 诊断矩阵
+
+| 现象 | 先确认 | 不要直接推断 |
+| --- | --- | --- |
+| 串口没有任何输出 | 供电、串口连接、启动介质和 Boot Mode | 不能直接认定是内核崩溃 |
+| U-Boot 有提示但 `bootz` 失败 | 内核地址、解压格式、DTB 地址和 `bootargs` | 不能套用另一块板的地址 |
+| 内核开始打印后停住 | 内核配置、DTB 匹配、时钟/电源/驱动 probe | 不能把板级 DTS 当作 SoC 通用事实 |
+| 内核完成但没有用户空间 | `root=`、文件系统驱动、挂载错误和 init 路径 | 不能把 PID 1 问题归咎于 U-Boot |
+
+## 企业排障习惯
+
+先保存完整串口日志和介质校验值，再一次只改变一个变量。对 U-Boot 环境、内核、DTB、根文件系统和网络启动分别记录版本；用 `printenv`、加载地址回显、内核启动参数和设备树反编译结果建立证据链。遇到 TFTP/NFS 时，把网络链路、服务器导出、权限、文件版本和目标端 `root=` 分开验证。
+
+## ALPHA V2.4 边界
+
+本课只核验 NXP/U-Boot/Linux 的通用启动分层和诊断方法。正点原子 ALPHA V2.4 的拨码、SD/eMMC/NAND 偏移、分区、U-Boot 默认环境、DTS、脚本和镜像组合，必须与对应官方资料逐项匹配；当前不填猜测值，仍标记为“待板级核验”。
