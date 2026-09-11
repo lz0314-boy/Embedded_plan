@@ -1,4 +1,12 @@
 sources:
+  - id: c-wg14-n1256
+    title: WG14 N1256 C99/TC3 公开参考文本
+    organization: ISO/IEC WG14
+    url: https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf
+    versionOrCommit: N1256 (C99/TC3)
+    accessedAt: 2026-09-11
+    platforms: c, standard-c
+    citationNote: C99 标准语义和未定义行为边界的公开参考文本
   - id: c-wg14-n1570
     title: WG14 N1570 C11 草案
     organization: ISO/IEC WG14
@@ -211,10 +219,10 @@ sources:
     title: 正点原子 ALPHA i.MX6ULL 官方资料入口
     organization: 正点原子
     url: https://www.openedv.com/docs/boards/arm-linux/zdyz-i.mx6ull.html
-    versionOrCommit: ALPHA V2.4 hardware evidence reviewed 2026-09-10
-    accessedAt: 2026-09-10
-    platforms: imx6ull, alpha-v2.4
-    citationNote: 仅作为官方资料入口；板级偏移、分区、拨码、DTS 和脚本必须匹配具体资料后单独核验
+    versionOrCommit: ALPHA V2.4+资料包；《I.MX6U用户快速体验》V2.8；eMMC脚本v1.1
+    accessedAt: 2026-09-11
+    platforms: imx6ull, alpha-v2.4-plus
+    citationNote: 官方资料入口；本地资料包中的V2.8用户手册2.2.1.2、imx6mkemmcboot.sh和MFG-Tool eMMC配置用于本课证据。板级偏移、分区、拨码、DTS和脚本仍需匹配具体板卡
   - id: posix-2024
     title: POSIX.1-2024
     organization: The Open Group

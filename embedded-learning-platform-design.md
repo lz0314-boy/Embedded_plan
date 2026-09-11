@@ -114,7 +114,7 @@
 
 - 按方向、难度、题数和时长生成模拟面试。
 - 问题逐题展示、计时、隐藏答案、自我评分和复盘。
-- 可选本地录音，仅保存在设备端，默认不上传。
+- 仅支持文字回答、计时、自我评分、追问和复盘；不采集录音。
 - Monaco 代码编辑器、草稿保存、测试用例和答案对比。
 - 浏览器内 WebAssembly C 编译器适配层；支持时执行，失败时降级为编辑、保存和参考答案对比。
 - 代码运行必须在 Web Worker 内执行，并限制运行时间、输出长度和可用内存。
@@ -408,12 +408,12 @@ UI 必须展示构成原因，例如“最近 8 题错 5 题、3 张卡片逾期
 创建会话时可选择：
 
 - 方向、平台、模块、难度、题数和总时长。
-- 是否允许追问、是否混合项目题、是否录音。
+- 是否允许追问、是否混合项目题。
 - 新题优先、薄弱题优先或完全随机。
 
 单题流程：显示题目 -> 思考/作答 -> 展示评分点 -> 自评每个评分点 -> 查看参考答案 -> 进入追问。会话结束后生成：遗漏评分点、犹豫时间较长的问题、推荐复习内容和可重新开始的题单。
 
-录音采用浏览器 `MediaRecorder`，默认只存本地，不参与同步。浏览器不支持或用户拒绝权限时正常降级为计时和文本笔记。
+面试会话只保存文字回答、计时、自评、追问和复盘结果，写入本机 IndexedDB；不请求麦克风权限，也不提供录音降级路径。
 
 ### 6.7 代码练习
 
@@ -430,7 +430,7 @@ UI 必须展示构成原因，例如“最近 8 题错 5 题、3 张卡片逾期
 - 禁止网络访问、DOM 访问和宿主文件系统访问。
 - 限制 stdout/stderr、源文件大小和测试用例数量。
 - 编译器资源较大时允许用户单独下载离线包；移动端内存不足时显示明确降级状态。
-- 编译命令默认启用 `-std=c11 -Wall -Wextra -Werror`，题目可声明额外选项。
+- 编译命令默认启用 `-std=c99 -Wall -Wextra -Wpedantic`，题目可声明额外选项；需要把警告升级为错误时再显式加入 `-Werror`。
 - 嵌入式目标代码只做静态检查、编译产物分析或答案对照，实际时序和硬件行为必须在板卡上验证。
 
 ### 6.8 默认学习路线
@@ -660,7 +660,7 @@ docs/
   decisions/ versions.md content-authoring.md release-checklist.md
 ```
 
-`generated/` 只能由脚本生成，CI 必须验证重新生成后没有未提交差异。私人笔记、项目经历、数据库导出、录音和 `.env*` 不得放入 `content/` 或 Git；在 `.gitignore` 中显式列出。
+`generated/` 只能由脚本生成，CI 必须验证重新生成后没有未提交差异。私人笔记、项目经历、数据库导出和 `.env*` 不得放入 `content/` 或 Git；在 `.gitignore` 中显式列出。
 
 ## 10. 内容构建与搜索
 
@@ -708,7 +708,6 @@ Pagefind 的中文分词、子路径资源地址和离线缓存必须先做原�
 | `interviewSessions` | `id`; `startedAt, status` | 会话配置、逐题自评和复盘 | 是 |
 | `codeDrafts` | `id`; `labId, updatedAt` | 代码草稿和本地运行摘要 | 默认是 |
 | `projectCases` | `id`; `updatedAt` | 私有项目结构化内容 | 是 |
-| `recordings` | `id`; `sessionId` | 本机录音 Blob | **永不自动同步** |
 | `syncQueue` | `mutationId`; `state, nextAttemptAt` | 待上传变更和重试信息 | 否 |
 | `syncMeta` | `key` | 设备 ID、拉取游标、最近成功时间 | 否 |
 | `conflicts` | `id`; `recordType, createdAt` | 冲突的本地/远端版本 | 否 |
@@ -740,7 +739,7 @@ Pagefind 的中文分词、子路径资源地址和离线缓存必须先做原�
 }
 ```
 
-`checksum` 对规范化后的 `data` 字段计算，不包含 `checksum` 自身。导入前完成 schema 校验、版本迁移、记录数量/体积上限和预览；默认“合并”，另提供需要二次确认的“替换本机数据”。校验失败不能部分写入。录音默认不进入 JSON，可由用户单独导出。
+`checksum` 对规范化后的 `data` 字段计算，不包含 `checksum` 自身。导入前完成 schema 校验、版本迁移、记录数量/体积上限和预览；默认“合并”，另提供需要二次确认的“替换本机数据”。校验失败不能部分写入。备份仅包含结构化学习数据，不包含媒体或录音。
 
 ## 12. Supabase 与跨设备同步
 
@@ -967,7 +966,7 @@ SEO 不凌驾于学习体验。隐藏答案功能必须仍让静态 HTML 包含�
 - 公共仓库中的 publishable/anon key 不是密码；`service_role`、数据库密码、SMTP 密钥才是机密，必须使用平台 secret 并定期检查泄漏。
 - 不收集不必要的姓名、学校、手机号、位置或简历。项目经历字段由用户主动填写，并在同步前明确标注会上传哪些内容。
 - IndexedDB 和 JSON 备份不是端到端加密保险箱；能访问当前系统账户或导出文件的人可能读到数据。备份页必须提示妥善保管，应用内不得保存密码、密钥或公司机密。
-- Supabase 同步默认保护“其他普通用户无法访问”，但不是端到端加密。项目经历默认设为“仅本机”，用户逐条改为“同步到我的账户”后才加入队列；录音始终仅本机。
+- Supabase 同步默认保护“其他普通用户无法访问”，但不是端到端加密。项目经历默认设为“仅本机”，用户逐条改为“同步到我的账户”后才加入队列；面试数据仍遵循文字回答、自评、追问和复盘的范围。
 
 ### 15.2 浏览器代码执行
 
@@ -1118,10 +1117,10 @@ SEO 不凌驾于学习体验。隐藏答案功能必须仍让静态 HTML 包含�
 
 ### 阶段 4：模拟面试与代码实验
 
-- 完成面试配置、计时、自评、复盘和本地录音。
+- 完成面试配置、计时、自评、追问和复盘（仅文字回答）。
 - 动态加载 Monaco 和浏览器 C runner；实现 Worker 限制及降级。
 
-完成定义：代码 runner 的正常、错误、死循环和低内存场景通过；录音从不自动同步。
+完成定义：代码 runner 的正常、错误、死循环和低内存场景通过；面试模块不请求或保存录音。
 
 ### 阶段 5：项目经历模块与内容扩充
 
@@ -1150,7 +1149,7 @@ SEO 不凌驾于学习体验。隐藏答案功能必须仍让静态 HTML 包含�
 2. 使用 Node.js 22+、Next.js App Router、TypeScript、Tailwind、MDX、Dexie、ts-fsrs、Supabase 和静态导出。选择当前受维护稳定版本，固定依赖和 lockfile，并记录版本。
 3. 按阶段 0 到阶段 6 实施。每一阶段必须运行相应 lint、typecheck、unit/integration/E2E/content 测试，报告实际命令和结果，再进入下一阶段。
 4. 本地 IndexedDB 是即时事实来源；Supabase 只是可选异步同步。任何网络失败都不能阻塞学习和本地保存。
-5. 公开内容写入 content/，私人笔记、学习数据、录音、实习和项目经历绝不能写入 Git 或静态构建产物。
+5. 公开内容写入 content/，私人笔记、学习数据、实习和项目经历绝不能写入 Git 或静态构建产物；面试模块不采集录音。
 6. 所有 Supabase 表显式 grant、启用 RLS 并验证双用户隔离；浏览器内禁止 service role/secret key。
 7. 不虚构已核验内容、板卡参数或个人经历。AI 草稿保持 draft；只有一手资料逐条核对后才能设为 verified。
 8. ESP32 独立于 Cortex-M3/M4；STM32/GD32、主线 Linux/NXP BSP/正点原子板级差异必须分层。
@@ -1184,7 +1183,7 @@ SEO 不凌驾于学习体验。隐藏答案功能必须仍让静态 HTML 包含�
 
 | 建议 source ID | 一手资料 |
 |---|---|
-| `c-wg14-n1570` | [WG14 N1570 C11 草案](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf) |
+| `c-wg14-n1256` | [WG14 N1256 C99/TC3 公开参考文本](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf) |
 | `arm-cortex-m3-guide` | [Arm Cortex-M3 Generic User Guide](https://developer.arm.com/documentation/dui0552/latest/) |
 | `arm-cortex-m4-guide` | [Arm Cortex-M4 Generic User Guide](https://developer.arm.com/documentation/dui0553/latest/) |
 | `arm-cmsis-core` | [CMSIS-Core](https://arm-software.github.io/CMSIS_6/latest/Core/index.html) |

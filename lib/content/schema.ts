@@ -15,7 +15,10 @@ export const contentScopes = [
   "esp32",
   "linux-bsp",
   "linux-user",
+  "alpha-board",
 ] as const;
+
+export const contentRoles = ["core", "supporting", "placeholder"] as const;
 
 export const contentSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -26,6 +29,8 @@ export const contentSchema = z.object({
   module: z.string().min(1),
   difficulty: z.enum(["beginner", "intermediate", "advanced"]),
   priority: z.enum(["core", "supporting"]),
+  /** Maturity/plan eligibility is separate from status. */
+  contentRole: z.enum(contentRoles),
   estimatedMinutes: z.coerce.number().int().positive(),
   scope: z.enum(contentScopes),
   platforms: z.array(z.string()).min(1),
@@ -35,6 +40,9 @@ export const contentSchema = z.object({
   verifiedAt: z.string().nullable(),
   status: z.enum(["draft", "reviewed", "verified", "deprecated"]),
   keywords: z.array(z.string()).min(1),
+  questionType: z.enum(["single-choice", "multi-choice", "true-false", "short-answer"]).optional(),
+  correctAnswer: z.union([z.string(), z.array(z.string())]).optional(),
+  scoringPoints: z.array(z.string()).optional(),
 });
 
 export type ContentFrontmatter = z.infer<typeof contentSchema>;

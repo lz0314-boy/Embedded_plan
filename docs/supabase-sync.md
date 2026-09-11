@@ -2,7 +2,7 @@
 
 阶段 3 的同步仍以浏览器 IndexedDB 为事实来源。Supabase 只保存已登录用户自己的事件和文档副本；未配置、未登录、断网、超时或远端不可用时，学习、笔记、测验和复习继续使用本机数据。
 
-项目经历额外采用逐条授权：新建和编辑默认只写入 `projectCases`，不进入同步队列；用户明确勾选后才作为 `project_case` 文档同步。取消授权时，本机副本继续保留，同时为已有远端副本排入 tombstone。录音始终仅本机。
+项目经历额外采用逐条授权：新建和编辑默认只写入 `projectCases`，不进入同步队列；用户明确勾选后才作为 `project_case` 文档同步。取消授权时，本机副本继续保留，同时为已有远端副本排入 tombstone。面试数据仅包含文字回答、计时、自评、追问和复盘。
 
 ## 浏览器配置
 
@@ -22,7 +22,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-or-legacy-anon-key>
 - `user_events` 使用 UUID 幂等插入；相同 UUID 的不同内容会阻塞该项。
 - `user_documents` 使用 `version = baseVersion + 1` 条件更新；版本跳跃由 trigger 拒绝。
 - 两张暴露表均显式 revoke/grant、启用并强制 RLS，策略使用 `auth.uid()` 隔离用户。
-- 文档 payload 的客户端和数据库体积上限为 256 KiB；录音不进入同步表。
+- 文档 payload 的客户端和数据库体积上限为 256 KiB；面试数据不包含录音。
 
 ## 本地验证
 
@@ -42,7 +42,7 @@ corepack pnpm dlx supabase db lint --local
 - 区域：`ap-southeast-1`（Singapore）；Supabase 不保证中国大陆网络质量，仍以 IndexedDB 本地优先为事实来源。
 - 规格：`micro`，个人使用，不启用高可用。
 - Auth：仅保留手动创建的个人账号，关闭公开注册；邮件确认和密码重置仅在配置可用 SMTP 后启用。
-- 数据范围：只同步 `user_events` 和 `user_documents`；录音、私人项目经历原始附件和本地导出文件留在浏览器/本地，不上传。
+- 数据范围：只同步 `user_events` 和 `user_documents`；私人项目经历原始附件和本地导出文件留在浏览器/本地，不上传。面试模块不采集录音。
 - 实际项目：`embedded-learning-platform`，project ref `vzmbzpwfsxhneokypiuj`，状态 `ACTIVE_HEALTHY`。浏览器配置写入本机 `.env.local`，该文件已被 `.gitignore` 排除。
 - 当前未创建个人学习账号；由于公开注册已关闭，需要在 Supabase Dashboard 的 Authentication → Users 中手动创建唯一账号后再测试登录和双设备同步。
 

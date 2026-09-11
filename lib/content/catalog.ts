@@ -20,3 +20,13 @@ export function labelStatus(status: ContentRecord["status"], verifiedAt: string 
   if (status === "verified" && verifiedAt) return "已核验";
   return "待核验";
 }
+
+/** Content maturity is not an access gate; only deprecated entries are hidden
+ * from ordinary learning surfaces. */
+export function isLearnable(item: ContentRecord) {
+  return item.status !== "deprecated";
+}
+
+export function isDefaultPlanEligible(item: ContentRecord) {
+  return isLearnable(item) && item.contentRole === "core";
+}

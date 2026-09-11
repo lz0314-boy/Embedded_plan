@@ -44,11 +44,13 @@ export function UpdateBanner() {
       await new Promise<void>((resolve, reject) => {
         const timeout = setTimeout(() => { cleanup(); reject(new Error("更新激活超时，页面未刷新，请稍后重试")); }, 20000);
         const cleanup = () => { clearTimeout(timeout); navigator.serviceWorker.removeEventListener("controllerchange", activated); };
-        const activated = () => { cleanup(); resolve(); };
+        // Start navigation from the controllerchange callback itself. This keeps
+        // activation and reload as one browser lifecycle event, so callers can
+        // reliably wait for the resulting document before reading local data.
+        const activated = () => { cleanup(); window.location.reload(); resolve(); };
         navigator.serviceWorker.addEventListener("controllerchange", activated);
         void workerMessage(registration.waiting!, { type: "ACTIVATE_UPDATE" }).catch((reason) => { cleanup(); reject(reason); });
       });
-      window.location.reload();
     } catch (reason) { setError(reason instanceof Error ? reason.message : "更新失败，页面未刷新"); setBusy(false); }
   }
   return <div className="update-banner" role="status"><div>新版本已准备好。先保存本地草稿，再确认更新；不会自动刷新。{error && <p role="alert">{error}</p>}</div><button className="button primary" disabled={busy} onClick={applyUpdate}>{busy ? "保存并更新中…" : "保存并更新"}</button></div>;

@@ -16,7 +16,9 @@ const settingsSchema = z.object({
 }).strict();
 
 const noteSchema = z.object({
-  id: z.string().uuid(),
+  // Notes created by older local-only builds used stable non-UUID IDs; keep
+  // those records importable while still requiring a non-empty key.
+  id: z.string().min(1),
   contentId: z.string().min(1),
   body: z.string(),
   createdAt: z.string(),
@@ -62,7 +64,6 @@ const interviewSessionSchema = z.object({
   totalMinutes: z.number().int().positive().max(240),
   allowFollowUps: z.boolean(),
   mixedProjects: z.boolean(),
-  recordingRequested: z.boolean(),
   priority: z.enum(["new", "weak", "random"]),
   questionIds: z.array(z.string().min(1)).min(1).max(50),
   answers: z.array(interviewAnswerSchema).max(50),

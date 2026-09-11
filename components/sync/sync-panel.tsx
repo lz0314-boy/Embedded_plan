@@ -102,7 +102,7 @@ export function SyncPanel() {
 
   return <section className="panel" style={{ maxWidth: 680, marginTop: 24 }}>
     <h2 style={{ marginTop: 0 }}>账号与同步</h2>
-    <p className="muted">IndexedDB 是本机事实来源，Supabase 只做可选异步同步。录音和未明确选择同步的项目经历不会上传。</p>
+    <p className="muted">IndexedDB 是本机事实来源，Supabase 只做可选异步同步。未明确选择同步的项目经历不会上传。</p>
     <p className="status" role="status">同步状态：{statusLabels[snapshot.state]}{snapshot.lastRunAt ? ` · ${new Date(snapshot.lastRunAt).toLocaleString()}` : ""}</p>
     {userEmail ? <><p>当前账号：{userEmail}</p><div className="button-row"><button className="button primary" onClick={syncNow} disabled={busy}>{busy ? "处理中…" : "立即同步"}</button><button className="button" onClick={signOut} disabled={busy}>退出登录</button></div></> : <><div className="field"><label htmlFor="sync-email">邮箱</label><input id="sync-email" type="email" autoComplete="username" value={email} onChange={(event) => setEmail(event.target.value)} /></div><div className="field"><label htmlFor="sync-password">密码</label><input id="sync-password" type="password" autoComplete="current-password" value={password} onChange={(event) => setPassword(event.target.value)} /></div><div className="button-row"><button className="button primary" onClick={signIn} disabled={busy}>{busy ? "处理中…" : "登录并同步"}</button></div><p className="muted">个人使用阶段建议在 Supabase Dashboard 创建唯一账号并关闭公开注册；本页面不提供公开注册。</p></>}
     {message && <p role="status" className="muted">{message}</p>}

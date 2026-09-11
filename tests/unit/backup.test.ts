@@ -14,4 +14,9 @@ describe("backup migration", () => {
     const right = { wrongQuestions: [], quizAttempts: [], reviewCards: [], bookmarks: [], notes: [{ nested: { a: 1, b: 2 }, z: 1 }], contentProgress: [], settings: [] };
     expect(await checksumData(left)).toBe(await checksumData(right));
   });
+
+  it("rejects malformed records before import can write them", () => {
+    const data = { settings: [{ id: "default" }], contentProgress: [], notes: [], bookmarks: [], reviewCards: [], quizAttempts: [], wrongQuestions: [] };
+    expect(() => migrateBackup({ format: "embedded-learning-backup", schemaVersion: 1, exportedAt: "2026-09-08T00:00:00.000Z", contentVersion: "test", checksum: "sha256:test", data })).toThrow(/记录校验失败/);
+  });
 });

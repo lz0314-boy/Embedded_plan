@@ -116,7 +116,7 @@ export function OfflineManager() {
   return <section className="offline-manager" aria-labelledby="offline-manager-title">
     <div className="eyebrow">本机能力</div>
     <h2 id="offline-manager-title">离线包与存储</h2>
-    <p className="muted">离线包只包含公开课程 HTML。笔记、进度、测验、录音和项目经历继续保存在 IndexedDB，不会进入 Cache Storage。</p>
+    <p className="muted">离线包只包含公开课程 HTML。笔记、进度、测验和项目经历继续保存在 IndexedDB，不会进入 Cache Storage。</p>
     {status ? <>
       <p className="version-line">应用版本：{status.index.appVersion} · 内容版本：{status.index.contentVersion}</p>
       <div className="offline-packages" role="list" aria-label="可下载的离线包">

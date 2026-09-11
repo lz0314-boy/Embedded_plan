@@ -15,6 +15,8 @@ private/
 *.mp3
 *.m4a
 *.json.backup
+start..txt
+start.txt
 /notes/
 /projects/
 /recordings/

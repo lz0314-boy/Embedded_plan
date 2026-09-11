@@ -10,7 +10,7 @@
 - 所有扩充内容仍为 `draft`，只代表结构、来源入口和学习问题已经登记，不代表逐条人工核验完成。
 - 今日任务、进度、笔记、收藏、测验、复习、统计、JSON 备份和 PWA 离线包。
 - Supabase 可选同步、RLS migration、冲突副本和 linked schema lint；IndexedDB 始终是即时事实来源。
-- 模拟面试、计时、自评、复盘和仅本机录音。
+- 模拟面试、计时、自评、追问和复盘（仅文字回答）。
 - Monaco 按需加载，以及受 Worker、超时、输出和低内存限制的标准 C/WASI runner。
 - 私有项目模板、公开知识点关联和确定性追问；项目经历默认仅本机，逐条明确授权后才同步。
 
@@ -40,9 +40,9 @@ corepack pnpm test:e2e:quality
 
 ## 隐私与边界
 
-- 私人笔记、学习数据、代码草稿、项目经历、录音和导出文件不得进入 `content/`、`generated/` 或静态产物。
+- 私人笔记、学习数据、代码草稿、项目经历和导出文件不得进入 `content/`、`generated/` 或静态产物。
 - 浏览器只允许 Supabase publishable/anon key，禁止 `service_role`、`sb_secret`、数据库密码和其他 secret。
-- 录音永不自动同步，也不进入 JSON 备份或 Service Worker Cache。
+- 面试模块不采集、不保存、不导出或同步录音；回答、自评和复盘数据保存在本机 IndexedDB。
 - 标准 C/WASI runner 不模拟 Cortex-M、RT-Thread、ESP32、Linux BSP 或真实硬件。
 - RTOS 通用机制、RT-Thread 实现、Cortex-M 架构和具体芯片实现分层；ESP32 保持独立 scope。
 - 正点原子 ALPHA 的拨码、偏移、分区、DTS 和脚本未匹配对应版本官方资料时一律标记“待核验”。

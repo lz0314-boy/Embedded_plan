@@ -68,7 +68,7 @@ export default function SettingsPage() {
   async function exportBackup() {
     await track((async () => {
       const data: BackupData = { settings: await db.settings.toArray(), contentProgress: await db.contentProgress.toArray(), notes: await db.notes.toArray(), bookmarks: await db.bookmarks.toArray(), reviewCards: await db.reviewCards.toArray(), quizAttempts: await db.quizAttempts.toArray(), wrongQuestions: await db.wrongQuestions.toArray(), interviewSessions: await db.interviewSessions.toArray(), codeDrafts: await db.codeDrafts.toArray(), projectCases: await db.projectCases.toArray() };
-      const checksum = await checksumData(data); const backup = { format: "embedded-learning-backup", schemaVersion: 1, exportedAt: nowIso(), contentVersion: "local-uncommitted", checksum, data }; const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = url; anchor.download = "embedded-learning-backup.json"; anchor.click(); URL.revokeObjectURL(url); setMessage("已生成 JSON 备份；录音不会进入备份。");
+      const checksum = await checksumData(data); const backup = { format: "embedded-learning-backup", schemaVersion: 1, exportedAt: nowIso(), contentVersion: "local-uncommitted", checksum, data }; const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const anchor = document.createElement("a"); anchor.href = url; anchor.download = "embedded-learning-backup.json"; anchor.click(); URL.revokeObjectURL(url); setMessage("已生成 JSON 备份。");
     })());
   }
   async function importBackup(event: ChangeEvent<HTMLInputElement>) {

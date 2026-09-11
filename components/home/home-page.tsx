@@ -19,9 +19,8 @@ export function HomePage() {
   const score = weaknessScore(.8, .2, cards.filter((card) => new Date(card.due) < new Date()).length / Math.max(cards.length, 1), completed / Math.max(lessons.length, 1));
   async function markComplete(contentId: string) {
     const { completeContent } = await import("@/lib/sync/repository");
-    const { progress: next, card } = await completeContent(contentId);
+    const { progress: next } = await completeContent(contentId);
     setProgress((current) => [...current.filter((item) => item.contentId !== contentId), next]);
-    setCards((current) => [...current.filter((item) => item.contentId !== contentId), card]);
   }
   if (!ready) return <p className="muted">正在从本机数据库恢复学习状态…</p>;
   return <>

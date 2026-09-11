@@ -129,13 +129,12 @@ export async function completeContent(contentId: string) {
   const deviceId = await ensureDeviceId();
   const occurredAt = nowIso();
   const progress: ContentProgress = { contentId, status: "completed", position: 1, updatedAt: occurredAt };
-  const card = rateReviewCard(undefined, Rating.Good);
-  card.contentId = contentId;
-  return db.transaction("rw", [db.contentProgress, db.reviewCards, db.learningEvents, db.syncMutations], async () => {
+  // Reading completion is not a memory rating. FSRS is changed only by an
+  // explicit recall/self-rating action.
+  return db.transaction("rw", [db.contentProgress, db.learningEvents, db.syncMutations], async () => {
     await db.contentProgress.put(progress);
-    await db.reviewCards.put(card);
     await putEventInTransaction({ id: crypto.randomUUID(), type: "content_completed", entityId: contentId, payload: {}, occurredAt, deviceId }, occurredAt);
-    return { progress, card };
+    return { progress };
   });
 }
 
@@ -145,13 +144,27 @@ export async function submitQuiz(value: QuizAttempt) {
   return db.transaction("rw", [db.quizAttempts, db.wrongQuestions, db.learningEvents, db.syncMutations], async () => {
     await db.quizAttempts.put(value);
     const existing = await db.wrongQuestions.get(value.quizId);
-    if (value.correct) {
+    if (value.correct === true) {
       if (existing) await db.wrongQuestions.put({ ...existing, status: "recovered", updatedAt: occurredAt });
-    } else {
+    } else if (value.correct === false) {
       const wrong: WrongQuestion = { questionId: value.quizId, status: "active", failureCount: (existing?.failureCount ?? 0) + 1, updatedAt: occurredAt };
       await db.wrongQuestions.put(wrong);
     }
-    await putEventInTransaction({ id: crypto.randomUUID(), type: "quiz_submitted", entityId: value.quizId, payload: { selected: value.selected, correct: value.correct }, occurredAt, deviceId }, occurredAt);
+    await putEventInTransaction({ id: crypto.randomUUID(), type: "quiz_submitted", entityId: value.quizId, payload: { attemptId: value.id, selected: value.selected, correct: value.correct, durationSeconds: value.durationSeconds }, occurredAt, deviceId }, occurredAt);
+  });
+}
+
+/** Apply FSRS after the learner explicitly rates recall difficulty. */
+export async function rateQuizMemory(contentId: string, rating: Rating) {
+  const deviceId = await ensureDeviceId();
+  const occurredAt = nowIso();
+  const current = await db.reviewCards.where("contentId").equals(contentId).first();
+  const card = rateReviewCard(current, rating, new Date(occurredAt));
+  card.contentId = contentId;
+  return db.transaction("rw", [db.reviewCards, db.learningEvents, db.syncMutations], async () => {
+    await db.reviewCards.put(card);
+    await putEventInTransaction({ id: crypto.randomUUID(), type: "review_rated", entityId: card.cardId, payload: { contentId, rating }, occurredAt, deviceId }, occurredAt);
+    return card;
   });
 }
 
@@ -162,7 +175,7 @@ export async function rateReview(value: ReviewCard, rating: Rating) {
   updated.contentId = value.contentId;
   return db.transaction("rw", [db.reviewCards, db.learningEvents, db.syncMutations], async () => {
     await db.reviewCards.put(updated);
-    await putEventInTransaction({ id: crypto.randomUUID(), type: "review_rated", entityId: value.cardId, payload: { rating }, occurredAt, deviceId }, occurredAt);
+    await putEventInTransaction({ id: crypto.randomUUID(), type: "review_rated", entityId: value.cardId, payload: { contentId: value.contentId, rating }, occurredAt, deviceId }, occurredAt);
     return updated;
   });
 }
@@ -292,12 +305,7 @@ export async function rebuildEventProjections() {
     }
     if (event.type === "content_completed") {
       progress.set(event.entityId, { contentId: event.entityId, status: "completed", position: 1, updatedAt: event.occurredAt });
-      if (!cards.has(event.entityId)) {
-        const card = rateReviewCard(undefined, Rating.Good, new Date(event.occurredAt));
-        card.cardId = event.entityId;
-        card.contentId = event.entityId;
-        cards.set(event.entityId, card);
-      }
+      // Completion is progress only; do not synthesize an FSRS Good rating.
     }
     if (event.type === "review_rated") {
       const rating = numericRating(event.payload.rating);
@@ -310,19 +318,23 @@ export async function rebuildEventProjections() {
         cards.set(contentId, card);
       }
     }
-    if (event.type === "quiz_submitted" && typeof event.payload.attemptId === "string" && typeof event.payload.selected === "string" && typeof event.payload.correct === "boolean") {
-      const attempt: QuizAttempt = { id: event.payload.attemptId, quizId: event.entityId, selected: event.payload.selected, correct: event.payload.correct, submittedAt: event.occurredAt, durationSeconds: typeof event.payload.durationSeconds === "number" ? event.payload.durationSeconds : 0 };
+    if (event.type === "quiz_submitted" && typeof event.payload.attemptId === "string" && typeof event.payload.selected === "string" && (typeof event.payload.correct === "boolean" || event.payload.correct === null)) {
+      const attempt: QuizAttempt = { id: event.payload.attemptId, quizId: event.entityId, selected: event.payload.selected, correct: event.payload.correct as boolean | null, submittedAt: event.occurredAt, durationSeconds: typeof event.payload.durationSeconds === "number" ? event.payload.durationSeconds : 0 };
       attempts.set(attempt.id, attempt);
       const previous = wrongQuestions.get(event.entityId);
-      if (attempt.correct) {
+      if (attempt.correct === true) {
         if (previous) wrongQuestions.set(event.entityId, { ...previous, status: "recovered", updatedAt: event.occurredAt });
-      } else {
+      } else if (attempt.correct === false) {
         wrongQuestions.set(event.entityId, { questionId: event.entityId, status: "active", failureCount: (previous?.failureCount ?? 0) + 1, updatedAt: event.occurredAt });
       }
     }
   }
   await db.transaction("rw", [db.bookmarks, db.contentProgress, db.reviewCards, db.quizAttempts, db.wrongQuestions], async () => {
     await db.bookmarks.clear();
+    await db.contentProgress.clear();
+    await db.reviewCards.clear();
+    await db.quizAttempts.clear();
+    await db.wrongQuestions.clear();
     await db.bookmarks.bulkPut([...bookmarks.values()]);
     for (const value of progress.values()) await db.contentProgress.put(value);
     for (const value of cards.values()) await db.reviewCards.put(value);

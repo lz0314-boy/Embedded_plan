@@ -55,7 +55,8 @@ export type QuizAttempt = {
   id: string;
   quizId: string;
   selected: string;
-  correct: boolean;
+  /** null for a short-answer self-assessment that has no objective key. */
+  correct: boolean | null;
   submittedAt: string;
   durationSeconds: number;
 };
@@ -98,7 +99,6 @@ export type InterviewSession = {
   totalMinutes: number;
   allowFollowUps: boolean;
   mixedProjects: boolean;
-  recordingRequested: boolean;
   priority: InterviewPriority;
   questionIds: string[];
   answers: InterviewAnswer[];
@@ -145,16 +145,6 @@ export type ProjectCase = {
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-};
-
-export type Recording = {
-  id: string;
-  sessionId: string;
-  mimeType: string;
-  blob: Blob;
-  durationSeconds: number;
-  byteLength: number;
-  createdAt: string;
 };
 
 export type SyncMutation = {

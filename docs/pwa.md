@@ -7,7 +7,7 @@
 - 应用壳、公开导航、离线页、图标、静态 JS/CSS 和 manifest 进入版本化 precache。
 - 公开内容 HTML 按支柱组成用户主动下载的离线包，资源逐项校验 SHA-256 后原子切换。
 - Supabase、授权请求、跨源请求和未知请求不由 Service Worker 缓存。
-- 笔记、学习数据、代码草稿、项目经历和录音只使用 IndexedDB；它们不进入 Cache Storage。
+- 笔记、学习数据、代码草稿和项目经历只使用 IndexedDB；它们不进入 Cache Storage。面试模块不采集录音。
 - Monaco 与 C/WASI runner 只在实验页按需加载；Runno 跨源编译器资产不进入本站 Service Worker Cache。
 
 ## C runner

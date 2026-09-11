@@ -74,7 +74,7 @@ export function ProjectWorkspace() {
     await saveProjectCase(value);
     setProjects((current) => current.filter((item) => item.id !== value.id));
     setDraft(emptyProjectCase(nowIso()));
-    setMessage("项目经历已从本机列表归档；录音等数据不会因此上传。");
+    setMessage("项目经历已从本机列表归档；本操作不会因此上传数据。");
   }
 
   if (!draft) return <p className="muted">正在恢复本机项目经历…</p>;

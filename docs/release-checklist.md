@@ -3,7 +3,7 @@
 - [x] 类型检查、lint、单元测试、内容 CI 和静态构建通过。
 - [x] 内容数量达到 40 篇课程、200 道面试题、250 道测验、20 个实验。
 - [x] 阶段 5 扩充内容全部保持 `draft`/待核验，没有冒充人工核验结果。
-- [x] 私人项目默认仅本机，显式授权后才进入同步队列；录音永不自动同步。
+- [x] 私人项目默认仅本机，显式授权后才进入同步队列；面试模块仅支持文字回答和复盘，不采集录音。
 - [x] Supabase migration 启用 RLS，浏览器配置没有 `service_role`/secret key，linked schema lint 通过。
 - [x] 普通 PWA 回归与 COI 下标准 C/WASI runner 场景通过。
 - [x] 自动化恢复、SEO、CSP hash、gzip 预算和 axe 检查通过；结果见 `docs/phase6-report.md`。

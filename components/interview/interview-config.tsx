@@ -19,7 +19,6 @@ const directions: { value: InterviewDirection; label: string }[] = [
 
 export function InterviewConfig() {
   const [selection, setSelection] = useState<InterviewSelection>({ direction: "all", platform: "", module: "", difficulty: "any", questionCount: 3, totalMinutes: 15, priority: "new", seed: nowIso() });
-  const [recordingRequested, setRecordingRequested] = useState(false);
   const [allowFollowUps, setAllowFollowUps] = useState(true);
   const [mixedProjects, setMixedProjects] = useState(false);
   const [sessions, setSessions] = useState<InterviewSession[]>([]);
@@ -47,7 +46,6 @@ export function InterviewConfig() {
       totalMinutes: selection.totalMinutes,
       allowFollowUps,
       mixedProjects,
-      recordingRequested,
       priority: selection.priority,
       questionIds,
       answers: [],
@@ -65,7 +63,7 @@ export function InterviewConfig() {
   return <>
     <section className="panel" style={{ maxWidth: 760, marginTop: 24 }}>
       <h2 style={{ marginTop: 0 }}>创建模拟面试</h2>
-      <p className="muted">题目来源于公开题库；回答、自评和会话记录先写入本机 IndexedDB。录音需要单独点击授权，始终不进入 Supabase 同步。</p>
+      <p className="muted">题目来源于公开题库；回答、自评和会话记录先写入本机 IndexedDB。本阶段只支持文字回答、计时、自评和追问，不提供录音功能。</p>
       <div className="grid grid-2">
         <div className="field"><label htmlFor="interview-direction">方向</label><select id="interview-direction" value={selection.direction} onChange={(event) => setSelection({ ...selection, direction: event.target.value as InterviewDirection })}>{directions.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}</select></div>
         <div className="field"><label htmlFor="interview-platform">平台筛选</label><select id="interview-platform" value={selection.platform} onChange={(event) => setSelection({ ...selection, platform: event.target.value })}><option value="">不限制</option><option value="standard-c">标准 C</option><option value="cortex-m3">Cortex-M3</option><option value="cortex-m4">Cortex-M4</option><option value="rt-thread">RT-Thread</option><option value="imx6ull">i.MX6ULL</option><option value="linux">Linux</option><option value="posix">POSIX</option></select></div>
@@ -75,7 +73,7 @@ export function InterviewConfig() {
         <div className="field"><label htmlFor="interview-minutes">总时长</label><select id="interview-minutes" value={selection.totalMinutes} onChange={(event) => setSelection({ ...selection, totalMinutes: Number(event.target.value) })}><option value="5">5 分钟</option><option value="15">15 分钟</option><option value="30">30 分钟</option><option value="60">60 分钟</option></select></div>
         <div className="field"><label htmlFor="interview-priority">选题策略</label><select id="interview-priority" value={selection.priority} onChange={(event) => setSelection({ ...selection, priority: event.target.value as InterviewPriority })}><option value="new">新题优先</option><option value="weak">薄弱题优先</option><option value="random">确定性随机</option></select></div>
       </div>
-      <div className="field"><label><input type="checkbox" checked={allowFollowUps} onChange={(event) => setAllowFollowUps(event.target.checked)} /> 允许记录追问</label><label><input type="checkbox" checked={mixedProjects} onChange={(event) => setMixedProjects(event.target.checked)} /> 混合项目题（当前无私人项目题时保持关闭）</label><label><input type="checkbox" checked={recordingRequested} onChange={(event) => setRecordingRequested(event.target.checked)} /> 本次启用本地录音</label></div>
+      <div className="field"><label><input type="checkbox" checked={allowFollowUps} onChange={(event) => setAllowFollowUps(event.target.checked)} /> 允许记录追问</label><label><input type="checkbox" checked={mixedProjects} onChange={(event) => setMixedProjects(event.target.checked)} /> 混合项目题（当前无私人项目题时保持关闭）</label></div>
       <button className="button primary" onClick={startSession}>开始模拟面试</button>
       {message && <p className="muted" role="status">{message}</p>}
     </section>

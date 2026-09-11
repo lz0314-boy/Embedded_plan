@@ -7,7 +7,6 @@ import type {
   LearningEvent,
   Note,
   QuizAttempt,
-  Recording,
   ProjectCase,
   ReviewCard,
   Settings,
@@ -34,7 +33,6 @@ export class LearningDatabase extends Dexie {
   syncDocuments!: Table<SyncDocumentState, string>;
   interviewSessions!: Table<InterviewSession, string>;
   codeDrafts!: Table<CodeDraft, string>;
-  recordings!: Table<Recording, string>;
   projectCases!: Table<ProjectCase, string>;
 
   constructor() {
@@ -99,6 +97,27 @@ export class LearningDatabase extends Dexie {
       recordings: "id, sessionId, createdAt",
       projectCases: "id, updatedAt, syncEnabled",
     });
+    this.version(5).stores({
+      appMeta: "key",
+      settings: "id, updatedAt",
+      contentProgress: "contentId, status, updatedAt",
+      notes: "id, contentId, updatedAt",
+      bookmarks: "contentId, createdAt",
+      learningEvents: "id, type, entityId, occurredAt",
+      reviewCards: "cardId, contentId, due, state",
+      quizAttempts: "id, quizId, submittedAt",
+      wrongQuestions: "questionId, status, updatedAt",
+      syncMutations: "mutationId, [kind+recordType+recordId], status, nextAttemptAt, createdAt",
+      syncCursors: "id",
+      syncDocuments: "key, [documentType+entityId], remoteId, serverUpdatedAt",
+      interviewSessions: "id, status, startedAt, updatedAt",
+      codeDrafts: "id, labId, updatedAt",
+      projectCases: "id, updatedAt, syncEnabled",
+      // Explicitly remove the legacy recordings table and its data.
+      recordings: null,
+    }).upgrade((tx) => tx.table("interviewSessions").toCollection().modify((session: Record<string, unknown>) => {
+      delete session.recordingRequested;
+    }));
   }
 }
 

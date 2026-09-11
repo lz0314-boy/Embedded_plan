@@ -5,7 +5,7 @@
 ## 已实现
 
 - 模拟面试配置、确定性选题、逐题计时、文本回答、自评、参考方向和会后复盘。
-- `MediaRecorder` 本机录音；录音不进入同步队列、JSON 备份或 Cache Storage。
+- 面试模块仅保存文字回答、计时、自评、追问和复盘；不采集录音。
 - Monaco 按需加载与 IndexedDB 代码草稿。
 - 标准 C/WASI Worker runner；源码、stdin、输出、准备时间、执行时间和低内存能力均有限制。
 - Cortex-M、RT-Thread、ESP32、Linux BSP 和 i.MX6ULL 实验保持代码审查/分析边界。
