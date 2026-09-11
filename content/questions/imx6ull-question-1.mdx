@@ -19,4 +19,23 @@ status: draft
 keywords: [bootz, zImage, DTB, initrd]
 ---
 
-回答内核地址、可选 initrd、FDT 和 bootargs 的关系；ALPHA 的实际地址和命令均待板级核验。
+## 参考回答
+
+`bootz` 的输入不是一个单独的文件名，而是一组已经放入内存的启动对象：压缩的 ARM `zImage` 地址、可选的 initrd 地址范围，以及设备树 blob（FDT）地址。U-Boot 还会把 `bootargs` 作为内核命令行传入；其中根文件系统、控制台和调试开关等参数必须与实际镜像和硬件匹配。执行链可以概括为“从介质读取对象 → 校验地址和格式 → `bootz` 传递 zImage/FDT/initrd → Linux 早期代码解析 bootargs”。
+
+排查时先记录每个对象的加载地址、大小、格式检查结果和 U-Boot 环境，再确认对象之间没有覆盖。`bootz` 的通用语法来自 U-Boot 文档，但 ALPHA 板的 eMMC 分区、文件路径、地址和命令必须以对应型号、教程版本或本次串口日志为准；本题不填入未取得证据的固定数值。
+
+## 评分点
+
+- 能区分 zImage、FDT、initrd 和 bootargs 的角色。
+- 能描述从介质加载到内核接管的顺序，并检查地址重叠和格式。
+- 能明确 U-Boot 通用语法与 ALPHA 板级地址/命令的证据边界。
+
+## 递进追问
+
+1. 如果内核能解压但找不到根文件系统，你会按 zImage、FDT、bootargs、rootfs 哪个顺序取证？
+2. 为什么同一条 `bootz` 命令不能直接复制到另一块板或另一版镜像？
+
+## 证据边界
+
+U-Boot 文档和 Linux ARM 启动协议支持对象关系与通用流程。ALPHA V2.4 的 eMMC 分区、脚本和地址只采信匹配的正点原子资料或本次日志观察，不把通用教程写成该板真实日志。

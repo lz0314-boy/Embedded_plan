@@ -13,10 +13,29 @@ scope: linux-user
 platforms: [linux, posix]
 prerequisites: [linux-process-io]
 related: [imx6ull-question-2]
-sourceIds: [linux-init-source]
+sourceIds: [linux-man-pages, posix-2024]
 verifiedAt: null
 status: draft
 keywords: [fork, exec, wait, 进程]
 ---
 
-先画父子进程时序，再补文件描述符继承、错误路径和退出状态。
+## 参考回答
+
+典型流程是：父进程调用 `fork()` 创建子进程；子进程检查返回值，准备好参数后调用某个 `exec*()` 函数把自身地址空间替换为目标程序；父进程根据策略继续工作或调用 `wait()`/`waitpid()` 回收子进程并读取退出状态。`fork()` 成功后父子进程都会继续执行，返回值为子进程 PID 的一方是父进程，返回 0 的一方是子进程；失败时只有父进程得到错误。
+
+文件描述符默认在 `fork()` 后由父子进程共享底层 open file description，因此文件偏移和状态标志的关系需要明确；`exec` 会替换用户空间映像，但未设置 close-on-exec 的描述符仍可能继承。工程回答还要覆盖错误路径：子进程 `exec` 失败应记录 `errno` 并 `_exit()`，父进程必须处理超时、信号终止和退出码，避免僵尸进程。
+
+## 评分点
+
+- 能画出 `fork → exec → wait` 的父子进程时序并解释返回值。
+- 能说明文件描述符继承和 close-on-exec 边界。
+- 能覆盖 `fork/exec/wait` 失败、`errno`、`_exit` 和僵尸回收路径。
+
+## 递进追问
+
+1. 为什么 `exec` 失败的子进程通常使用 `_exit()` 而不是继续走父进程的清理逻辑？
+2. 父进程不调用 `waitpid()` 时，子进程退出后会留下什么状态，如何在服务中验证？
+
+## 证据边界
+
+接口语义以 POSIX 和 Linux man-pages 为准；具体 libc 实现、信号处理和容器运行时行为需绑定目标系统版本，不能只依据一次 shell 试验推断。

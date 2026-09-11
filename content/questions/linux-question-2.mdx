@@ -13,10 +13,29 @@ scope: linux-user
 platforms: [linux, posix]
 prerequisites: [linux-process-io]
 related: [c-memory-model-question-1]
-sourceIds: [linux-init-source]
+sourceIds: [linux-man-pages, posix-2024]
 verifiedAt: null
 status: draft
 keywords: [阻塞, 非阻塞, 文件描述符, 事件循环]
 ---
 
-区分接口语义、线程模型和事件通知机制；具体设备节点行为必须绑定 Linux 文档和目标内核版本。
+## 参考回答
+
+阻塞 I/O 会在内核无法立即完成操作时让调用线程睡眠，代码简单，适合等待时间可接受且线程数量可控的场景；非阻塞 I/O 则立即返回 `EAGAIN`/`EWOULDBLOCK`，调用方需要配合 `poll`、`select`、`epoll` 或其他事件机制安排下一次尝试。选择时先看设备或 socket 的接口语义，再看线程模型、并发量、延迟预算和取消策略，不能只因为“非阻塞更快”就替换。
+
+事件循环中要处理短读、短写、`EINTR`、对端关闭和错误事件；边沿触发模式还要持续读写直到 `EAGAIN`。阻塞和非阻塞是文件描述符及调用行为的属性，具体设备节点是否支持、`poll` 返回哪些事件以及驱动的等待队列实现，必须查目标内核版本和驱动文档。
+
+## 评分点
+
+- 能区分阻塞等待与非阻塞立即返回的接口语义。
+- 能结合线程数量、事件循环、延迟和取消需求做选择。
+- 能覆盖 `EAGAIN`、短读写、`EINTR`、关闭和触发模式等错误路径。
+
+## 递进追问
+
+1. `epoll` 返回可读后 `read` 仍得到 `EAGAIN`，可能有哪些竞态或边沿触发处理错误？
+2. 一个阻塞设备节点导致服务退出不了时，你会如何设计超时、唤醒和资源关闭路径？
+
+## 证据边界
+
+接口语义参考 POSIX 和 Linux man-pages；具体设备节点、驱动等待队列和内核版本差异不能由通用 socket 示例代替。
