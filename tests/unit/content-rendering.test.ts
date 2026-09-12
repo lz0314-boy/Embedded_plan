@@ -11,6 +11,7 @@ describe("controlled Markdown renderer", () => {
     expect(html).toContain('<h1 id="title">Title</h1>');
     expect(html).toContain("<table>");
     expect(html).toContain('class="language-c"');
+    expect(html).toMatch(/class="diagram-svg(?:\s|\")/);
     expect(html).toContain("diagram-fallback");
   });
 

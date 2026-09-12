@@ -10,6 +10,7 @@ describe("interview selection", () => {
     const second = selectInterviewQuestionIds(contentCatalog, selection, new Set(), new Set());
     expect(first).toEqual(second);
     expect(first.every((id) => contentCatalog.find((item) => item.id === id)?.pillar === "rt-thread")).toBe(true);
+    expect(first.every((id) => contentCatalog.find((item) => item.id === id)?.contentRole !== "placeholder")).toBe(true);
   });
 
   it("prioritizes weak and new questions without fabricating content", () => {

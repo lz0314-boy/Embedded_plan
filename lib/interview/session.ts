@@ -24,6 +24,9 @@ function hash(value: string) {
 export function selectInterviewQuestionIds(items: ContentRecord[], selection: InterviewSelection, weakQuestionIds: ReadonlySet<string>, completedQuestionIds: ReadonlySet<string>) {
   const candidates = items.filter((item) => {
     if (item.type !== "interview-question") return false;
+    // Interview practice is a learner-facing surface too: generic roadmap
+    // placeholders have no reference answer and must never be selected.
+    if (item.contentRole === "placeholder" || item.status === "deprecated") return false;
     if (selection.direction !== "all" && item.pillar !== selection.direction) return false;
     if (selection.platform && !item.platforms.includes(selection.platform)) return false;
     if (selection.module && item.module !== selection.module) return false;

@@ -6,7 +6,7 @@
 
 - `status: draft` 或 `reviewed` 不显示为已核验；`verifiedAt: null` 显示“待核验”。
 - 每条内容必须声明 `scope`：`rtos-generic`、`rt-thread`、`cortex-m`、`chip`、`esp32`、`linux-user`、`linux-bsp` 或 `alpha-board`。
-- 每条内容必须声明 `contentRole`：`core`（可进入默认计划）、`supporting`（补充内容）或 `placeholder`（可阅读但不进入默认计划）。`status` 只表示成熟度，`draft`/`reviewed` 仍可学习。
+- 每条内容必须声明 `contentRole`：`core`（可进入默认计划）、`supporting`（补充内容）或 `placeholder`（仅供作者整理，不出现在学习路线、题库、实验和模拟面试入口）。`status` 只表示成熟度，`draft`/`reviewed` 仍可学习；可学习不等于已核验。
 - ESP32 单独使用 `esp32` scope，不得填写 Cortex-M 平台。
 - ALPHA 板的拨码、启动偏移、分区、环境变量、DTS 和 init 脚本没有匹配厂商资料时只能写“待板级核验”。
 - `verified` 内容必须有 `sourceIds` 和 `verifiedAt`；草稿可以使用占位来源，但不能声称已核验。

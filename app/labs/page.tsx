@@ -12,5 +12,6 @@ export const metadata: Metadata = {
 };
 
 export default function LabsPage() {
-  return <><div className="eyebrow">实验</div><h1>代码与分析实验</h1><p className="muted">标准 C 练习可在满足浏览器隔离条件时按需启动 Worker/WASI；Cortex-M、RT-Thread、Linux BSP 和 i.MX6ULL 条目只做阅读、推演和保存，不伪装成硬件仿真。</p><div className="list" style={{ marginTop: 24 }}>{contentCatalog.filter((item) => item.type === "code-lab").map((item) => <article className="panel" key={item.id}><h2 style={{ margin: "0 0 8px" }}><Link href={`/labs/${item.slug}/`}>{item.title}</Link></h2><p className="muted">{item.scope} · {item.platforms.join(" / ")} · {item.estimatedMinutes} 分钟</p><p>{item.body}</p></article>)}</div></>;
+  const labs = contentCatalog.filter((item) => item.type === "code-lab" && item.contentRole !== "placeholder");
+  return <><div className="eyebrow">实验</div><h1>代码与分析实验</h1><p className="muted">标准 C 练习可在满足浏览器隔离条件时按需启动 Worker/WASI；Cortex-M、RT-Thread、Linux BSP 和 i.MX6ULL 条目只做阅读、推演和保存，不伪装成硬件仿真。</p><div className="question-grid" style={{ marginTop: 24 }}>{labs.map((item) => <article className="panel question-card" key={item.id}><h2><Link href={`/labs/${item.slug}/`}>{item.title}</Link></h2><p className="question-card-meta"><span>{item.scope}</span><span>{item.estimatedMinutes} 分钟</span></p><p className="question-card-answer">{item.body.slice(0, 180)}{item.body.length > 180 ? "…" : ""}</p><div className="question-card-action"><Link className="button primary" href={`/labs/${item.slug}/`}>打开实验</Link></div></article>)}</div></>;
 }

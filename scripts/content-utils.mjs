@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { mermaidToSvg } from "./diagram-utils.mjs";
 
 export const root = process.cwd();
 export const contentRoot = path.join(root, "content");
@@ -189,7 +190,19 @@ export function markdownToHtml(markdown) {
       while (index < lines.length && !/^\s*```\s*$/.test(lines[index])) { source.push(lines[index]); index += 1; }
       if (index >= lines.length) throw new Error("代码围栏未闭合");
       const escaped = escapeHtml(source.join("\n"));
-      if (language === "mermaid") output.push(`<div class="diagram diagram-mermaid" role="img" aria-label="Mermaid 图示（文字降级）"><pre class="mermaid-source">${escaped}</pre><p class="diagram-fallback">图示文字降级：按上方节点和箭头顺序阅读流程。</p></div>`);
+      if (language === "mermaid") {
+        // Mermaid is rendered during the content build so the exported site does
+        // not depend on a browser-side script or an online service. Keep the
+        // source in an explicit details block: it is useful for screen readers,
+        // debugging a diagram and environments that cannot display SVG.
+        const svg = mermaidToSvg(source.join("\n"), "课程流程图");
+        if (svg) {
+          const visualClass = svg.includes("diagram-horizontal") ? " diagram-horizontal-visual" : "";
+          output.push(`<figure class="diagram diagram-mermaid"><div class="diagram-visual${visualClass}">${svg}</div><details class="diagram-fallback"><summary>查看文字版与 Mermaid 源码</summary><pre class="mermaid-source">${escaped}</pre><p>按节点和箭头顺序阅读流程；图形仅用于帮助建立结构。</p></details></figure>`);
+        } else {
+          output.push(`<figure class="diagram diagram-mermaid diagram-unavailable"><figcaption>流程图（当前语法未生成图形）</figcaption><pre class="mermaid-source">${escaped}</pre><p class="diagram-fallback">文字降级：按上方节点和箭头顺序阅读流程。</p></figure>`);
+        }
+      }
       else output.push(`<pre class="code-block"><code${language ? ` class="language-${escapeHtml(language)}"` : ""}>${escaped}</code></pre>`);
       index += 1;
       continue;

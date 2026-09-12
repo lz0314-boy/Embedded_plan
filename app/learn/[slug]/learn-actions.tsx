@@ -8,6 +8,7 @@ type ExistingNote = { id: string; createdAt: string };
 
 export function LearnActions({ contentId }: { contentId: string }) {
   const [bookmarked, setBookmarked] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const [note, setNote] = useState("");
   const [message, setMessage] = useState("");
   const [loaded, setLoaded] = useState(false);
@@ -21,10 +22,11 @@ export function LearnActions({ contentId }: { contentId: string }) {
   useEffect(() => {
     let active = true;
     loadedRef.current = false;
-    const loading = Promise.all([db.bookmarks.get(contentId), db.notes.where("contentId").equals(contentId).first()]).then(([bookmark, existing]) => {
+    const loading = Promise.all([db.bookmarks.get(contentId), db.notes.where("contentId").equals(contentId).first(), db.contentProgress.get(contentId)]).then(([bookmark, existing, progress]) => {
       if (!active) return;
       const body = existing?.body ?? "";
       setBookmarked(Boolean(bookmark));
+      setCompleted(progress?.status === "completed");
       setNote(body);
       noteRef.current = body;
       savedNoteRef.current = body;
@@ -70,12 +72,26 @@ export function LearnActions({ contentId }: { contentId: string }) {
     })());
   }
 
+  async function complete() {
+    await track((async () => {
+      const { completeContent } = await import("@/lib/sync/repository");
+      await completeContent(contentId);
+      setCompleted(true);
+      setMessage("已记录为完成阅读；复习卡片需要你之后主动回忆并评分。");
+    })());
+  }
+
   useUpdateGuard(async () => {
     await loadingRef.current;
     if (pendingRef.current) await pendingRef.current;
     if (loadedRef.current && noteRef.current !== savedNoteRef.current) await saveNote();
   });
 
-  if (!loaded) return <section className="panel" style={{ maxWidth: 760, margin: "22px 0" }}><p className="muted">正在恢复本机笔记…</p></section>;
-  return <section className="panel" style={{ maxWidth: 760, margin: "22px 0" }}><div className="button-row"><button className="button" onClick={toggleBookmark}>{bookmarked ? "取消收藏" : "收藏"}</button><button className="button primary" onClick={saveNote}>保存笔记</button></div><div className="field" style={{ marginTop: 14, marginBottom: 0 }}><label htmlFor="private-note">私人笔记（不进入公开内容仓库）</label><textarea id="private-note" value={note} onChange={(event) => { noteRef.current = event.target.value; setNote(event.target.value); }} placeholder="记录自己的疑问、错点或实验结果…" /></div>{message && <p role="status" className="muted">{message}</p>}</section>;
+  if (!loaded) return <section className="panel learning-actions"><p className="muted">正在恢复本机学习状态…</p></section>;
+  return <section className="panel learning-actions" aria-label="学习动作">
+    <div className="learning-complete"><strong>{completed ? "本页已完成" : "学完这一页"}</strong>{completed ? <span className="status">已记录</span> : <button className="button primary" onClick={() => void complete()}>完成阅读</button>}</div>
+    <div className="button-row"><button className="button" onClick={toggleBookmark}>{bookmarked ? "取消收藏" : "收藏"}</button><button className="button" onClick={saveNote}>保存笔记</button></div>
+    <div className="field" style={{ marginTop: 14, marginBottom: 0 }}><label htmlFor="private-note">私人笔记（仅保存在本机）</label><textarea id="private-note" value={note} onChange={(event) => { noteRef.current = event.target.value; setNote(event.target.value); }} placeholder="记录自己的疑问、错点或实验结果…" /></div>
+    {message && <p role="status" className="muted">{message}</p>}
+  </section>;
 }
