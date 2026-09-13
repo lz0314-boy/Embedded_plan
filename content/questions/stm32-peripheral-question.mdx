@@ -1,0 +1,43 @@
+---
+id: stm32-peripheral-question
+type: interview-question
+title: STM32F103 UART 偶发丢字节如何定位？
+slug: stm32-peripheral-question
+pillar: cortex-m
+module: stm32f103-peripherals
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: chip
+platforms: [stm32f103c8t6, cortex-m3]
+prerequisites: [stm32f103-peripherals]
+related: [cortex-m-hardfault-debugging]
+sourceIds: [stm32f1-rm0008, arm-cmsis-core]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [STM32F103, UART, ORE, DMA, 丢字节]
+---
+
+## 参考回答
+
+先固定芯片、时钟、波特率、引脚复用和构建版本；再记录 RXNE、ORE、帧错误、ISR 延迟、DMA 计数器和环形缓冲区水位。用最小固定帧区分三类问题：硬件/波特率不匹配，接收状态未及时清除，或软件缓冲区/并发协议溢出。最后用逻辑分析仪看到的帧与软件时间戳对齐，不因“偶尔能收到”就认定修复。
+
+## 评分点
+
+- 按时钟/复用、外设状态、中断/DMA、缓冲区四层排查。
+- 能指出 ORE、缓冲区满和优先级/临界区过长的不同证据。
+- 能区分静态代码检查、仿真结果和真实硬件抓包。
+
+## 30 秒回答
+
+我会先记录芯片和时钟配置，再同时看 UART 错误标志、中断延迟、DMA/环形缓冲区和逻辑分析仪帧，最后用固定输入回归，而不是只改波特率或加延时。
+
+## 递进追问
+
+1. 为什么 `volatile` 能影响编译器访问，却不能保证 ISR 与线程之间的环形队列正确？
+2. DMA 接收时如何处理半传输、空闲线和缓存边界？
+
+## 证据边界
+
+通道映射、寄存器位和引脚必须以 STM32F103C8T6 对应 RM0008/数据手册为准，本题不提供未核实的寄存器地址。

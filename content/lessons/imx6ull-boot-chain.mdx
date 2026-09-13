@@ -69,7 +69,7 @@ sync
 3. 在 U-Boot 阶段记录 `mmc list`、`mmc dev`、读取文件的实际路径和 `bootargs`；在 Linux 阶段核对 `Kernel command line`、`root=` 和根分区是否一致。
 4. 每次只替换一个对象（U-Boot、zImage、DTB 或 rootfs），写入后执行 `sync`，再用校验值或文件大小确认复制结果。
 
-本仓库的 `start.txt` 只观察到一次启动中的 `mmc1`、`mmcblk1p2`、`zImage`、`imx6ull-14x14-emmc-4.3-800x480-c.dtb` 和 `root=/dev/mmcblk1p2`；它没有证明上述脚本在本机执行成功，也没有证明 TFTP/NFS 被使用。
+当前工作区没有提供 `start.txt`，因此本课没有可引用的真实启动日志证据。上面的设备节点、文件名和 `root=` 只来自资料目录中的脚本/镜像文件名，不能写成“本次日志观察到”；也没有证据证明 TFTP/NFS 被使用。
 
 反例：看到教程给出 `seek=1`、`seek=500` 或某个 DTB 文件名，就把它当成所有 eMMC、所有 DDR 配置和所有 ALPHA 版本的固定值；这会把资料绑定的实现细节误写成 SoC 通用规律。
 
@@ -77,7 +77,7 @@ sync
 
 30 秒回答：eMMC 启动要分开核对 boot0 中的 U-Boot、p1 中的内核/设备树和 p2 中的 rootfs；先确认设备节点、DDR/板卡版本和 `bootargs`，再逐项替换并记录日志。
 
-展开回答：先区分 Boot ROM、U-Boot、Linux 早期启动和用户空间阶段，再用教程脚本、镜像文件名、分区表和串口日志建立证据链。`start.txt` 只能证明本次观察到的字符串和顺序，不能代替对脚本的实际运行验证。
+展开回答：先区分 Boot ROM、U-Boot、Linux 早期启动和用户空间阶段，再用教程脚本、镜像文件名、分区表和串口日志建立证据链。当前没有 `start.txt`，因此不能宣称观察到某次启动顺序，也不能代替对脚本的实际运行验证。
 
 递进追问：
 

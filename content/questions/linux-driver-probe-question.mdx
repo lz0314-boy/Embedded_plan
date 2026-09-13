@@ -1,0 +1,43 @@
+---
+id: linux-driver-probe-question
+type: interview-question
+title: 设备树节点存在但 platform driver 的 probe 没有执行怎么办？
+slug: linux-driver-probe-question
+pillar: linux-bsp
+module: driver-model
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: linux-bsp
+platforms: [linux, imx6ull, arm32-linux]
+prerequisites: [linux-driver-device-tree]
+related: [linux-bsp-boot-debugging]
+sourceIds: [linux-device-tree, linux-driver-api]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [设备树, platform driver, probe, compatible]
+---
+
+## 参考回答
+
+先确认运行时加载的 DTB 与查看的 DTS 是同一份，再检查节点 `status`、`compatible`、驱动 `of_device_id`、内核配置/模块加载和总线注册。查看 `dmesg`、`/sys/firmware/devicetree/base`、`/sys/bus/platform/devices` 与 `.../drivers`，确认设备对象是否创建、是否已经被其他驱动占用。`probe` 触发后再逐项检查资源、时钟、复位和错误回滚。
+
+## 评分点
+
+- 有“运行时 DTB → 设备对象 → 匹配表 → probe”的证据链。
+- 能区分未匹配、probe 返回错误和 probe 成功后业务失败。
+- 不复制另一板卡的 `reg`、IRQ 或 GPIO 数字当作结论。
+
+## 30 秒回答
+
+我不会只看 DTS 文件，而会先确认运行时 DTB、节点状态和 compatible，再看 platform device/driver sysfs 和 dmesg；probe 没执行与 probe 返回错误是两条不同路径。
+
+## 递进追问
+
+1. compatible 一致但仍不匹配，如何排查驱动是否编进内核以及总线注册时序？
+2. probe 成功但 read 阻塞，下一步要记录哪些等待队列和中断证据？
+
+## 证据边界
+
+答案绑定主线 Linux 驱动模型；i.MX6ULL/ALPHA 的具体 DTS、内核版本和设备节点需引用本地资料包和实际启动日志。

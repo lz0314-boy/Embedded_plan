@@ -9,6 +9,7 @@ import type {
   QuizAttempt,
   ProjectCase,
   ReviewCard,
+  RecallMark,
   Settings,
   SyncCursor,
   SyncDocumentState,
@@ -26,6 +27,7 @@ export class LearningDatabase extends Dexie {
   bookmarks!: Table<Bookmark, string>;
   learningEvents!: Table<LearningEvent, string>;
   reviewCards!: Table<ReviewCard, string>;
+  recallMarks!: Table<RecallMark, string>;
   quizAttempts!: Table<QuizAttempt, string>;
   wrongQuestions!: Table<WrongQuestion, string>;
   syncMutations!: Table<SyncMutation, string>;
@@ -45,6 +47,7 @@ export class LearningDatabase extends Dexie {
       bookmarks: "contentId, createdAt",
       learningEvents: "id, type, entityId, occurredAt",
       reviewCards: "cardId, contentId, due, state",
+      recallMarks: "contentId, label, updatedAt, lastReviewedAt",
       quizAttempts: "id, quizId, submittedAt",
       wrongQuestions: "questionId, status, updatedAt",
     });
@@ -56,6 +59,7 @@ export class LearningDatabase extends Dexie {
       bookmarks: "contentId, createdAt",
       learningEvents: "id, type, entityId, occurredAt",
       reviewCards: "cardId, contentId, due, state",
+      recallMarks: "contentId, label, updatedAt, lastReviewedAt",
       quizAttempts: "id, quizId, submittedAt",
       wrongQuestions: "questionId, status, updatedAt",
       syncMutations: "mutationId, [kind+recordType+recordId], status, nextAttemptAt, createdAt",
@@ -70,6 +74,7 @@ export class LearningDatabase extends Dexie {
       bookmarks: "contentId, createdAt",
       learningEvents: "id, type, entityId, occurredAt",
       reviewCards: "cardId, contentId, due, state",
+      recallMarks: "contentId, label, updatedAt, lastReviewedAt",
       quizAttempts: "id, quizId, submittedAt",
       wrongQuestions: "questionId, status, updatedAt",
       syncMutations: "mutationId, [kind+recordType+recordId], status, nextAttemptAt, createdAt",
@@ -87,6 +92,7 @@ export class LearningDatabase extends Dexie {
       bookmarks: "contentId, createdAt",
       learningEvents: "id, type, entityId, occurredAt",
       reviewCards: "cardId, contentId, due, state",
+      recallMarks: "contentId, label, updatedAt, lastReviewedAt",
       quizAttempts: "id, quizId, submittedAt",
       wrongQuestions: "questionId, status, updatedAt",
       syncMutations: "mutationId, [kind+recordType+recordId], status, nextAttemptAt, createdAt",
@@ -105,6 +111,7 @@ export class LearningDatabase extends Dexie {
       bookmarks: "contentId, createdAt",
       learningEvents: "id, type, entityId, occurredAt",
       reviewCards: "cardId, contentId, due, state",
+      recallMarks: "contentId, label, updatedAt, lastReviewedAt",
       quizAttempts: "id, quizId, submittedAt",
       wrongQuestions: "questionId, status, updatedAt",
       syncMutations: "mutationId, [kind+recordType+recordId], status, nextAttemptAt, createdAt",
@@ -118,6 +125,24 @@ export class LearningDatabase extends Dexie {
     }).upgrade((tx) => tx.table("interviewSessions").toCollection().modify((session: Record<string, unknown>) => {
       delete session.recordingRequested;
     }));
+    this.version(6).stores({
+      appMeta: "key",
+      settings: "id, updatedAt",
+      contentProgress: "contentId, status, updatedAt",
+      notes: "id, contentId, updatedAt",
+      bookmarks: "contentId, createdAt",
+      learningEvents: "id, type, entityId, occurredAt",
+      reviewCards: "cardId, contentId, due, state",
+      recallMarks: "contentId, label, updatedAt, lastReviewedAt",
+      quizAttempts: "id, quizId, submittedAt",
+      wrongQuestions: "questionId, status, updatedAt",
+      syncMutations: "mutationId, [kind+recordType+recordId], status, nextAttemptAt, createdAt",
+      syncCursors: "id",
+      syncDocuments: "key, [documentType+entityId], remoteId, serverUpdatedAt",
+      interviewSessions: "id, status, startedAt, updatedAt",
+      codeDrafts: "id, labId, updatedAt",
+      projectCases: "id, updatedAt, syncEnabled",
+    });
   }
 }
 

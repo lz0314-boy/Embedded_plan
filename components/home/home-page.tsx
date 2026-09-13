@@ -3,30 +3,82 @@
 import Link from "@/components/static-link";
 import { useEffect, useMemo, useState } from "react";
 import { learningCatalog } from "@/lib/content/learning-catalog";
-import { db, ensureDefaultSettings } from "@/lib/db/database";
-import { buildDailyTasks, weaknessScore } from "@/lib/domain/study";
-import type { ContentProgress, ReviewCard, Settings } from "@/lib/domain/types";
+import { contentIndex } from "@/lib/content/content-index";
+import { db } from "@/lib/db/database";
+import type { ContentProgress, RecallMark } from "@/lib/domain/types";
+
+const domains = [
+  { id: "c", title: "C99 与嵌入式 C", summary: "类型、指针、内存、编译链接、未定义行为和调试。", href: "/roadmap/#c99" },
+  { id: "embedded", title: "嵌入式基础与协议", summary: "UART、I2C、SPI、CAN、LIN、低功耗和 MCU Bootloader。", href: "/roadmap/#embedded" },
+  { id: "cortex-m", title: "Cortex-M3 / STM32F103", summary: "启动、中断、NVIC、DMA、GPIO、定时器和外设。", href: "/roadmap/#cortex-m" },
+  { id: "rt-thread", title: "RTOS / RT-Thread", summary: "线程调度、Tick、IPC、内存、死锁和上下文切换。", href: "/roadmap/#rt-thread" },
+  { id: "linux", title: "Linux 用户态、驱动与 BSP", summary: "进程、IPC、Socket、驱动、设备树和 eMMC 启动链。", href: "/roadmap/#linux" },
+  { id: "ai", title: "AI 辅助编程", summary: "Prompt、Context、Harness、Loop、Skill、MCP 与验证闭环。", href: "/roadmap/#ai" },
+] as const;
+
+// Keep the first visit aligned with the roadmap instead of filesystem/slug order.
+const learningOrder = [
+  "c-memory-model", "c99-pointer-lifetime", "c-debugging-diagnostics",
+  "embedded-protocols", "embedded-bootloader-low-power",
+  "cortex-m-startup-flow", "cortex-m-exception-model", "stm32f103-peripherals", "cortex-m-hardfault-debugging",
+  "rt-thread-scheduler", "rtt-ipc-basics", "rtt-debugging-deadlock",
+  "linux-process-io", "linux-ipc-and-commands", "linux-driver-device-tree", "imx6ull-boot-chain", "linux-user-debugging-workflow", "linux-bsp-boot-debugging",
+  "ai-assisted-programming",
+];
 
 export function HomePage() {
-  const [settings, setSettings] = useState<Settings>();
   const [progress, setProgress] = useState<ContentProgress[]>([]);
-  const [cards, setCards] = useState<ReviewCard[]>([]);
+  const [marks, setMarks] = useState<RecallMark[]>([]);
   const [ready, setReady] = useState(false);
-  useEffect(() => { Promise.all([ensureDefaultSettings(), db.contentProgress.toArray(), db.reviewCards.toArray()]).then(([value, nextProgress, nextCards]) => { setSettings(value); setProgress(nextProgress); setCards(nextCards); setReady(true); }); }, []);
-  const tasks = useMemo(() => settings ? buildDailyTasks(settings, progress, cards) : [], [settings, progress, cards]);
-  const lessons = learningCatalog;
+
+  useEffect(() => {
+    Promise.all([db.contentProgress.toArray(), db.recallMarks.toArray()]).then(([nextProgress, nextMarks]) => {
+      setProgress(nextProgress);
+      setMarks(nextMarks);
+      setReady(true);
+    });
+  }, []);
+
   const completed = progress.filter((item) => item.status === "completed").length;
-  const score = weaknessScore(.8, .2, cards.filter((card) => new Date(card.due) < new Date()).length / Math.max(cards.length, 1), completed / Math.max(lessons.length, 1));
-  async function markComplete(contentId: string) {
-    const { completeContent } = await import("@/lib/sync/repository");
-    const { progress: next } = await completeContent(contentId);
-    setProgress((current) => [...current.filter((item) => item.contentId !== contentId), next]);
-  }
-  if (!ready) return <p className="muted">正在从本机数据库恢复学习状态…</p>;
+  const orderedLessons = useMemo(() => [...learningCatalog].sort((a, b) => (learningOrder.indexOf(a.id) < 0 ? 999 : learningOrder.indexOf(a.id)) - (learningOrder.indexOf(b.id) < 0 ? 999 : learningOrder.indexOf(b.id))), []);
+  const nextLesson = useMemo(() => {
+    const active = progress.find((item) => item.status === "in-progress");
+    return orderedLessons.find((item) => item.id === active?.contentId) ?? orderedLessons.find((item) => !progress.some((entry) => entry.contentId === item.id && entry.status === "completed"));
+  }, [orderedLessons, progress]);
+  const questions = contentIndex.filter((item) => (item.type === "interview-question" || item.type === "quiz-question") && item.contentRole !== "placeholder" && item.status !== "deprecated");
+  const markCounts = { familiar: marks.filter((item) => item.label === "familiar").length, uncertain: marks.filter((item) => item.label === "uncertain").length, unknown: marks.filter((item) => item.label === "unknown").length };
+
+  if (!ready) return <p className="muted">正在从本机恢复学习状态…</p>;
   return <>
-    <div className="eyebrow">今日学习</div><h1>继续你的嵌入式学习闭环</h1><p className="muted">不登录也能学习。数据先写入本机 IndexedDB；配置并登录后才会尝试可选云同步。</p>
-    <section className="grid grid-3" aria-label="学习概览"><div className="panel"><div className="muted">今日任务</div><div className="stat">{tasks.length}</div><div className="muted">预计 {tasks.reduce((sum, task) => sum + task.minutes, 0)} 分钟</div></div><div className="panel"><div className="muted">核心内容完成</div><div className="stat">{completed}/{lessons.length}</div><div className="muted">进度保存在本机</div></div><div className="panel"><div className="muted">薄弱项信号</div><div className="stat">{Math.round(score * 100)}%</div><div className="muted">可解释分数，非能力认证</div></div></section>
-    <section className="panel" style={{ marginTop: 24 }}><h2 style={{ marginTop: 0 }}>今天先做什么</h2>{tasks.length ? tasks.map((task) => <div className="task" key={task.id}><div><strong>{task.title}</strong><div className="muted">{task.kind === "review" ? "到期复习" : "新主题"} · {task.minutes} 分钟</div></div><div className="button-row"><Link className="button" href={`/learn/${learningCatalog.find((item) => item.id === task.contentId)?.slug ?? ""}/`}>打开</Link>{task.kind === "new" && <button className="button primary" onClick={() => markComplete(task.contentId)}>完成阅读</button>}</div></div>) : <p className="muted">今天没有生成任务。可以从知识地图开始。</p>}</section>
-    <section className="grid grid-2" style={{ marginTop: 24 }}><div className="panel"><h3>学习边界</h3><p className="muted">RTOS 通用机制、RT-Thread、Cortex-M、具体芯片和 ESP32 分开描述。ALPHA 板级参数未取得匹配官方资料前保持待核验。</p></div><div className="panel"><h3>本机数据</h3><p className="muted">设置、进度、笔记、收藏、测验和复习状态不会进入公开内容仓库。请在设置页定期导出 JSON 备份。</p><Link className="button" href="/settings/">打开设置</Link></div></section>
+    <div className="eyebrow">个人学习工作台</div>
+    <h1>把嵌入式知识学成能说、能写、能定位的能力</h1>
+    <p className="home-lead">不登录也能完整学习。课程、进度、笔记、收藏和答题状态优先保存在本机，按知识地图逐步建立自己的嵌入式面试与调试知识库。</p>
+
+    <section className="home-hero" aria-label="开始学习">
+      <div className="panel home-hero-main">
+        <span className="home-kicker">继续学习</span>
+        <h2>{nextLesson ? nextLesson.title : "从知识地图选择一个主题"}</h2>
+        <p className="muted">{nextLesson ? `${nextLesson.module} · 约 ${nextLesson.estimatedMinutes} 分钟。学完后再用随机复习检验是否真正记住。` : "六大模块已经按依赖关系整理，先选择一个你准备投递的方向。"}</p>
+        <div className="button-row">
+          {nextLesson ? <Link className="button primary" href={`/learn/${nextLesson.slug}/`}>打开下一篇课程</Link> : <Link className="button primary" href="/roadmap/">打开知识地图</Link>}
+          <Link className="button" href="/review/">开始随机复习</Link>
+        </div>
+      </div>
+      <div className="panel home-hero-stats">
+        <div><span className="muted">课程完成</span><strong>{completed}/{learningCatalog.length}</strong></div>
+        <div><span className="muted">可练习问答</span><strong>{questions.length}</strong></div>
+        <div><span className="muted">已标记卡片</span><strong>{marks.length}</strong></div>
+      </div>
+    </section>
+
+    <section className="home-section">
+      <div className="section-heading"><div><div className="eyebrow">六大主线</div><h2>从语言基础走到 Linux BSP</h2></div><Link className="button" href="/roadmap/">查看完整路线</Link></div>
+      <div className="domain-grid">{domains.map((domain, index) => <Link className="domain-card" href={domain.href} key={domain.id}><span className="domain-index">{index + 1}</span><div><h3>{domain.title}</h3><p>{domain.summary}</p></div><span className="domain-arrow">→</span></Link>)}</div>
+    </section>
+
+    <section className="home-section">
+      <div className="section-heading"><div><div className="eyebrow">主动回忆</div><h2>随机复习状态</h2></div><Link className="button" href="/review/">打开复习</Link></div>
+      <div className="grid grid-3 recall-summary-grid"><div className="panel"><span className="recall-dot familiar" />熟悉<strong>{markCounts.familiar}</strong></div><div className="panel"><span className="recall-dot uncertain" />模糊<strong>{markCounts.uncertain}</strong></div><div className="panel"><span className="recall-dot unknown" />不会<strong>{markCounts.unknown}</strong></div></div>
+    </section>
   </>;
 }

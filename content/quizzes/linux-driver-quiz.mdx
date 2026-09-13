@@ -1,0 +1,31 @@
+---
+id: linux-driver-quiz
+type: quiz-question
+title: platform driver 的 probe 被调用说明了什么？
+slug: linux-driver-quiz
+pillar: linux-bsp
+module: driver-model
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: D
+scope: linux-bsp
+platforms: [linux, imx6ull]
+prerequisites: []
+related: [linux-driver-probe-question]
+sourceIds: [linux-driver-api, linux-device-tree]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [platform driver, probe, Linux]
+---
+
+题干：`probe` 被调用最准确的含义是什么？
+
+- A. 设备业务已经通过真板验证
+- B. 用户态一定能正常读写
+- C. 硬件寄存器值与手册完全一致
+- D. 匹配和初始化路径至少进入了驱动的 probe 阶段
+
+参考答案：D。仍需检查资源申请、错误回滚、设备节点和硬件功能证据。

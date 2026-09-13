@@ -76,7 +76,7 @@ Linux：Linux version、Machine model、Kernel command line、rootfs 挂载结�
 1. 保存完整串口日志、镜像校验值、U-Boot/内核/DTB/rootfs 版本和板卡丝印。
 2. 每次只替换一个输入，重新记录加载地址、文件大小和返回码。
 3. eMMC 场景优先核对 `mmcblk1boot0`、`mmcblk1p1`、`mmcblk1p2` 和 `root=` 是否一致。
-4. 反例：把 `start.txt` 中的 NFS 注册日志解释成 NFS rootfs，或把另一块板的偏移套入当前镜像。
+4. 反例：在当前没有 `start.txt` 的情况下虚构 NFS 注册日志，或把另一块板的偏移套入当前镜像；TFTP/NFS 只能作为通用教程对照。
 
 ## 30 秒回答与展开回答
 
@@ -96,4 +96,4 @@ Linux：Linux version、Machine model、Kernel command line、rootfs 挂载结�
 
 ## 来源与证据边界
 
-NXP、U-Boot、Linux 官方文档以及本地正点原子用户手册支撑通用和 eMMC 资料级结论；`start.txt` 仍只代表一次观测，未证明脚本实际运行成功。
+NXP、U-Boot、Linux 官方文档以及本地正点原子用户手册支撑通用和 eMMC 资料级结论。当前工作区没有 `start.txt`，因此没有一次真实启动日志可引用；脚本和教程不等于脚本已经在本机运行成功，TFTP/NFS 仅作通用对照。

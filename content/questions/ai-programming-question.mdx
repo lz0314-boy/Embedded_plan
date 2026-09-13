@@ -1,0 +1,43 @@
+---
+id: ai-programming-question
+type: interview-question
+title: 如何让 AI 辅助嵌入式编程而不引入臆测？
+slug: ai-programming-question
+pillar: c
+module: ai-assisted-programming
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: rtos-generic
+platforms: [standard-c, gcc, git]
+prerequisites: [ai-assisted-programming]
+related: [c-debugging-diagnostics]
+sourceIds: [ai-engineering-guidance, gcc-warning-options]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [AI 编程, Prompt, Context, Harness, MCP]
+---
+
+## 参考回答
+
+先在 Prompt 中写清目标、修改范围和验收，再提供型号、版本、代码、日志和来源作为 Context；要求 AI 只给最小补丁和未验证项。用 Harness 执行类型检查、lint、单元测试、构建或真板回归，再把失败原样反馈形成 Loop。Skill 固化检查清单，MCP 只提供最小必要且可审计的工具权限。
+
+## 评分点
+
+- 能区分模型建议、工具检查和人工/硬件证据。
+- 能说明上下文必须包含型号、版本和边界，不能让 AI 猜寄存器或日志。
+- 能给出最小权限、脱敏、回滚和测试闭环。
+
+## 30 秒回答
+
+AI 负责生成候选方案，人和工具负责验证。我的提示词会明确证据边界、最小改动、测试命令和未验证项，并拒绝把一次编译通过说成真板成功。
+
+## 递进追问
+
+1. 生成的驱动补丁通过单元测试但没有真板日志，发布说明应该怎么写？
+2. 如何限制一个 MCP 工具只能读取指定目录并返回脱敏结果？
+
+## 证据边界
+
+本题讨论工程流程，不承诺任何模型或工具在特定芯片上自动正确，也不涉及运行时语音功能。

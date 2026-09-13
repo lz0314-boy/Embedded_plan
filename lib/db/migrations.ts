@@ -46,6 +46,7 @@ function parseRecords(data: BackupData) {
     data.notes.forEach((value) => validateDocumentPayload("note", value));
     data.bookmarks.forEach((value) => bookmarkSchema.parse(value));
     data.reviewCards.forEach((value) => reviewCardSchema.parse(value));
+    (data.recallMarks ?? []).forEach((value) => z.object({ contentId: z.string().min(1), label: z.enum(["familiar", "uncertain", "unknown"]), updatedAt: z.string(), lastReviewedAt: z.string() }).strict().parse(value));
     data.quizAttempts.forEach((value) => quizAttemptSchema.parse(value));
     data.wrongQuestions.forEach((value) => wrongQuestionSchema.parse(value));
     (data.interviewSessions ?? []).forEach((value) => validateDocumentPayload("interview_session", value));
@@ -65,6 +66,7 @@ export function migrateBackup(input: unknown): BackupPackage {
   if (data.interviewSessions !== undefined && !Array.isArray(data.interviewSessions)) throw new Error("备份字段无效：interviewSessions");
   if (data.codeDrafts !== undefined && !Array.isArray(data.codeDrafts)) throw new Error("备份字段无效：codeDrafts");
   if (data.projectCases !== undefined && !Array.isArray(data.projectCases)) throw new Error("备份字段无效：projectCases");
+  if (data.recallMarks !== undefined && !Array.isArray(data.recallMarks)) throw new Error("备份字段无效：recallMarks");
   parseRecords(data);
   return { format: candidate.format, schemaVersion: 1, exportedAt: String(candidate.exportedAt), contentVersion: String(candidate.contentVersion), checksum: String(candidate.checksum), data };
 }

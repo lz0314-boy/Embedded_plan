@@ -1,0 +1,43 @@
+---
+id: bootloader-low-power-question
+type: interview-question
+title: MCU Bootloader 如何处理断电升级和回滚？
+slug: bootloader-low-power-question
+pillar: c
+module: embedded-foundations
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: chip
+platforms: [generic-mcu, stm32f103c8t6]
+prerequisites: [embedded-bootloader-low-power]
+related: [embedded-bootloader-low-power]
+sourceIds: [stm32f1-rm0008, arm-cortex-m3-guide]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [Bootloader, OTA, 回滚, 断电保护]
+---
+
+## 参考回答
+
+把升级拆成接收、校验、提交和启动四个状态。镜像写入期间标记为 RECEIVING，完成后校验长度、CRC/签名和版本，再用可原子更新的元数据提交 VALID；启动失败或掉电时不能跳入半写入镜像，必要时保留旧镜像或恢复槽位。具体 Flash 页、向量表偏移和写入对齐必须查目标芯片资料与链接脚本。
+
+## 评分点
+
+- 能画出状态机并说明每次状态写入的掉电边界。
+- 能区分完整性校验、版本策略和回滚策略。
+- 能明确说明没有型号和日志时不能给出地址、页大小或刷写成功结论。
+
+## 30 秒回答
+
+Bootloader 的关键不是“能跳转到 App”，而是镜像可验证、状态可恢复、失败可回滚；任何启动地址和 Flash 布局都要绑定型号、链接脚本和实测证据。
+
+## 递进追问
+
+1. 元数据本身在擦写中断电，如何设计双备份或序列号？
+2. 应用启动后如何向 Bootloader 反馈“本次启动成功”？
+
+## 证据边界
+
+本题没有执行真实刷写，不把示例状态机称为某块板的量产方案。

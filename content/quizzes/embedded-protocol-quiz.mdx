@@ -1,0 +1,31 @@
+---
+id: embedded-protocol-quiz
+type: quiz-question
+title: 哪种协议更适合多主机总线仲裁？
+slug: embedded-protocol-quiz
+pillar: c
+module: embedded-foundations
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: C
+scope: chip
+platforms: [generic-mcu, stm32f103c8t6]
+prerequisites: []
+related: [embedded-protocol-question]
+sourceIds: [stm32f1-rm0008]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [CAN, 仲裁, 协议]
+---
+
+题干：哪种协议原生面向多主机总线仲裁？
+
+- A. UART
+- B. SPI
+- C. CAN
+- D. LIN
+
+参考答案：C。CAN 使用标识符参与仲裁，并定义了错误处理机制；具体收发器、终端和位速率仍需按硬件资料核对。

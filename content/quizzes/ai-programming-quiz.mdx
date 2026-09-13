@@ -1,0 +1,31 @@
+---
+id: ai-programming-quiz
+type: quiz-question
+title: AI 生成驱动补丁后最可靠的下一步是什么？
+slug: ai-programming-quiz
+pillar: c
+module: ai-assisted-programming
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: B
+scope: rtos-generic
+platforms: [standard-c, gcc, git]
+prerequisites: []
+related: [ai-programming-question]
+sourceIds: [ai-engineering-guidance, gcc-warning-options]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [AI 编程, 测试, Harness]
+---
+
+题干：AI 生成驱动补丁后，哪项最能降低臆测风险？
+
+- A. 直接烧录并相信模型说明
+- B. 运行类型检查、测试、构建并核对型号资料和差异
+- C. 删除失败测试
+- D. 把所有工具权限打开
+
+参考答案：B。自动检查、资料核对和人工审查共同构成 Harness；没有真板日志时必须明确写出未验证。

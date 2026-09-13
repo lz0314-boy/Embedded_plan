@@ -231,3 +231,11 @@ sources:
     accessedAt: 2026-09-09
     platforms: posix
     citationNote: POSIX 接口语义与可移植性边界
+  - id: ai-engineering-guidance
+    title: OpenAI Prompt Engineering Guide
+    organization: OpenAI
+    url: https://platform.openai.com/docs/guides/prompt-engineering
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-13
+    platforms: ai-assisted-development
+    citationNote: 用于提示词结构、上下文约束和评估闭环；不把模型输出当作未经验证的事实或代码

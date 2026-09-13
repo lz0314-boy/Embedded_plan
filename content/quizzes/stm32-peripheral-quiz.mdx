@@ -1,0 +1,31 @@
+---
+id: stm32-peripheral-quiz
+type: quiz-question
+title: STM32F103 外设初始化通常首先确认什么？
+slug: stm32-peripheral-quiz
+pillar: cortex-m
+module: stm32f103-peripherals
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: A
+scope: chip
+platforms: [stm32f103c8t6, cortex-m3]
+prerequisites: []
+related: [stm32-peripheral-question]
+sourceIds: [stm32f1-rm0008]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [STM32F103, 时钟, GPIO, 外设]
+---
+
+题干：外设没有输出时，最先应该确认哪一层？
+
+- A. 外设时钟是否开启以及 GPIO 复用是否正确
+- B. 直接更换另一型号 DMA 通道
+- C. 只增加软件延时
+- D. 只查看应用层打印
+
+参考答案：A。时钟和引脚复用是外设链路的前置条件；之后还要检查寄存器、状态位和实际波形。

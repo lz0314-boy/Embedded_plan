@@ -1,0 +1,31 @@
+---
+id: linux-ipc-quiz
+type: quiz-question
+title: 共享内存为什么仍然需要同步机制？
+slug: linux-ipc-quiz
+pillar: linux-user
+module: ipc-and-commands
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: C
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: []
+related: [linux-ipc-question]
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [共享内存, 同步, 互斥]
+---
+
+题干：共享内存最需要额外设计什么？
+
+- A. 让所有进程使用同一个 PID
+- B. 关闭所有系统调用
+- C. 数据版本、可见性和互斥/同步协议
+- D. 把所有数据转成字符串
+
+参考答案：C。共享内存减少拷贝，但不自动提供消息边界、锁顺序或一致性协议。

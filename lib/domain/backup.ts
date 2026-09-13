@@ -7,6 +7,7 @@ export type BackupData = {
   notes: unknown[];
   bookmarks: unknown[];
   reviewCards: unknown[];
+  recallMarks?: unknown[];
   quizAttempts: unknown[];
   wrongQuestions: unknown[];
   interviewSessions?: unknown[];
@@ -48,6 +49,7 @@ export async function collectBackupData(): Promise<BackupData> {
     notes: await db.notes.toArray(),
     bookmarks: await db.bookmarks.toArray(),
     reviewCards: await db.reviewCards.toArray(),
+    recallMarks: await db.recallMarks.toArray(),
     quizAttempts: await db.quizAttempts.toArray(),
     wrongQuestions: await db.wrongQuestions.toArray(),
     interviewSessions: await db.interviewSessions.toArray(),

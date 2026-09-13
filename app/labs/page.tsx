@@ -5,7 +5,7 @@ import { siteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "代码与分析实验",
-  description: "面向标准 C 的可终止浏览器实验，以及 Cortex-M、RT-Thread、ESP32 和 Linux BSP 的分析练习。",
+  description: "保留给旧书签的标准 C 与嵌入式分析实验兼容目录，不属于主学习路线。",
   alternates: { canonical: siteUrl("/labs/") },
   robots: { index: true, follow: true },
   openGraph: { title: "代码与分析实验", description: "嵌入式软件代码与分析实验目录。", type: "website" },

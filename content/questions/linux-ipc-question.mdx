@@ -1,0 +1,43 @@
+---
+id: linux-ipc-question
+type: interview-question
+title: 匿名管道、有名管道、共享内存和消息队列如何选择？
+slug: linux-ipc-question
+pillar: linux-user
+module: ipc-and-commands
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: [linux-ipc-and-commands]
+related: [linux-user-debugging-workflow]
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [IPC, 管道, 共享内存, 消息队列, Socket]
+---
+
+## 参考回答
+
+匿名管道适合有亲缘关系的流式单向通信，有名管道通过文件系统名字连接无亲缘进程；共享内存适合大块数据但必须另配锁、信号量或协议；消息队列保留消息边界；Socket 适合跨进程甚至跨主机。选择时还要说明生命周期、权限、阻塞/超时和故障恢复。
+
+## 评分点
+
+- 能把数据传输与同步/互斥分开。
+- 能说明流与消息边界、命名与权限、同机与跨机差异。
+- 能给出 `ps`、`wchan`、`strace` 或程序日志的验证办法。
+
+## 30 秒回答
+
+小型父子进程流可用匿名管道；无亲缘本机流可用有名管道；大数据共享用共享内存但必须自定义同步；需要消息边界用消息队列；跨主机用 Socket。
+
+## 递进追问
+
+1. 为什么 `volatile` 不能替代共享内存的同步协议？
+2. 读端一直阻塞时如何证明是写端未关闭描述符，而不是调度问题？
+
+## 证据边界
+
+系统调用细节以目标内核和 man-pages 版本为准，不把某一发行版的默认权限当作 POSIX 保证。

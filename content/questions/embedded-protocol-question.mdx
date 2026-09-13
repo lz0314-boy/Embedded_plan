@@ -1,0 +1,43 @@
+---
+id: embedded-protocol-question
+type: interview-question
+title: UART、I2C、SPI、CAN 应该如何选型？
+slug: embedded-protocol-question
+pillar: c
+module: embedded-foundations
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: chip
+platforms: [generic-mcu, stm32f103c8t6]
+prerequisites: [embedded-protocols]
+related: [embedded-protocols]
+sourceIds: [stm32f1-rm0008]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [UART, I2C, SPI, CAN, 协议选型]
+---
+
+## 参考回答
+
+先问物理层和拓扑，再问帧边界、时钟、仲裁和故障恢复。UART 适合异步点对点；I2C 用地址、ACK 和上拉共享两根线；SPI 由主机提供时钟并用片选换吞吐；CAN 面向多主机总线，靠标识符仲裁和错误处理。RS485 是差分物理层，常与自定义帧结合，不能直接等同于某种上层协议。
+
+## 评分点
+
+- 能区分物理层、链路帧和 MCU 外设三个层次。
+- 能说出至少三种协议的拓扑、时序或仲裁差异。
+- 能给出抓包、ACK、方向脚或错误状态等验证证据，而不是只背带宽。
+
+## 30 秒回答
+
+协议不是按“谁最快”选择，而是按距离、拓扑、实时性、主从/多主和故障模型选择；最终还要核对收发器、电平、引脚复用和目标 MCU 手册。
+
+## 递进追问
+
+1. RS485 发送后没有响应，如何区分 DE/RE 方向时序和从机协议错误？
+2. I2C 被拉低时，为什么无限重试可能掩盖硬件故障？
+
+## 证据边界
+
+答案只覆盖通用协议模型和 STM32F1 外设入口；没有具体原理图、收发器和抓包时，不给出板级电平、终端电阻或速率结论。

@@ -51,6 +51,15 @@ export type ReviewCard = {
   algorithmVersion: string;
 };
 
+export type RecallLabel = "familiar" | "uncertain" | "unknown";
+
+export type RecallMark = {
+  contentId: string;
+  label: RecallLabel;
+  updatedAt: string;
+  lastReviewedAt: string;
+};
+
 export type QuizAttempt = {
   id: string;
   quizId: string;

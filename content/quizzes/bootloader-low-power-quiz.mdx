@@ -1,0 +1,31 @@
+---
+id: bootloader-low-power-quiz
+type: quiz-question
+title: Bootloader 为什么要区分 RECEIVING 和 VALID？
+slug: bootloader-low-power-quiz
+pillar: c
+module: embedded-foundations
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: B
+scope: chip
+platforms: [generic-mcu, stm32f103c8t6]
+prerequisites: []
+related: [bootloader-low-power-question]
+sourceIds: [stm32f1-rm0008]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [Bootloader, 掉电, 状态机]
+---
+
+题干：为什么不能在镜像尚未完成校验时直接标记为可启动？
+
+- A. 会降低串口波特率
+- B. 掉电后可能跳入半写入或损坏镜像
+- C. 会让 CPU 进入低功耗
+- D. 会自动修改向量表
+
+参考答案：B。接收、校验和提交必须有明确的掉电边界；地址和元数据布局不能从通用教程猜测。

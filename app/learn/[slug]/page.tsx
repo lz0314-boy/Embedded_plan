@@ -36,7 +36,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function ContentPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params; const item = getContentBySlug(slug); if (!item) notFound();
   const sources = item.sourceIds.map(getSourceById).filter((source): source is NonNullable<ReturnType<typeof getSourceById>> => Boolean(source));
-  const verified = item.status === "verified" && Boolean(item.verifiedAt);
   const toc = tableOfContents(item.html);
   const related = item.related.map((id) => contentCatalog.find((candidate) => candidate.id === id || candidate.slug === id)).filter((candidate): candidate is NonNullable<typeof candidate> => Boolean(candidate));
   return <>
@@ -47,7 +46,7 @@ export default async function ContentPage({ params }: { params: Promise<{ slug: 
     <div className="learning-layout">
       <div className="learning-main">
         <article className="content-body" dangerouslySetInnerHTML={{ __html: item.html }} />
-        <section className="panel learning-sources"><h2>来源与边界</h2><p><span className={`status ${verified ? "verified" : "pending"}`}>{verified ? "已核验" : "待核验"}</span></p><ul>{item.sourceIds.map((id) => { const source = getSourceById(id); return <li key={id}>{source ? <Link href={source.url} target="_blank" rel="noreferrer">{source.title}</Link> : id}</li>; })}</ul><p className="muted">{verified ? "本条内容已绑定版本化资料并完成核验。" : "本条内容可以直接学习；证据状态仅说明资料覆盖程度，未完成逐条核验的板级结论会单独标注。"}</p>{related.length ? <><h3>相关内容</h3><ul>{related.map((candidate) => <li key={candidate.id}><Link href={`/learn/${candidate.slug}/`}>{candidate.title}</Link></li>)}</ul></> : null}</section>
+        <section className="panel learning-sources"><h2>参考资料与适用边界</h2><p className="muted">以下资料用于支撑本篇课程的概念、实现或板级背景；具体结论仍以课程中标注的型号、版本和日志范围为准。</p><ul>{item.sourceIds.map((id) => { const source = getSourceById(id); return <li key={id}>{source ? <Link href={source.url} target="_blank" rel="noreferrer">{source.title}</Link> : id}</li>; })}</ul>{related.length ? <><h3>相关内容</h3><ul>{related.map((candidate) => <li key={candidate.id}><Link href={`/learn/${candidate.slug}/`}>{candidate.title}</Link></li>)}</ul></> : null}</section>
       </div>
       <aside className="learning-sidebar">
         {toc.length ? <section className="panel"><h2>本页导航</h2><nav className="learning-toc" aria-label="本页导航">{toc.map((heading) => <a className={`level-${heading.level}`} href={`#${heading.id}`} key={heading.id}>{heading.label}</a>)}</nav></section> : null}

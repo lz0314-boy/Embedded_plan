@@ -7,34 +7,27 @@ import { localUrl, basePath } from "@/lib/pwa/config";
 type NavigationItem = { href: string; label: string };
 
 const learningLinks: NavigationItem[] = [
-  { href: "/", label: "今日学习" },
+  { href: "/", label: "首页" },
   { href: "/roadmap/", label: "知识地图" },
   { href: "/questions/", label: "面试题库" },
   { href: "/quiz/", label: "章节测验" },
-  { href: "/review/", label: "到期复习" },
+  { href: "/review/", label: "随机复习" },
 ];
 
 const toolLinks: NavigationItem[] = [
-  { href: "/labs/", label: "代码实验" },
-  { href: "/interview/", label: "模拟面试" },
+  { href: "/interview/", label: "面试练习" },
   { href: "/notes/", label: "我的笔记" },
-  { href: "/stats/", label: "学习统计" },
-  { href: "/projects/", label: "项目经历" },
-];
-
-const systemLinks: NavigationItem[] = [
-  { href: "/settings/", label: "设置与数据" },
-  { href: "/offline/", label: "离线状态" },
+  { href: "/settings/", label: "数据管理" },
 ];
 
 const mobilePrimaryLinks: NavigationItem[] = [
   { href: "/", label: "今日" },
   { href: "/roadmap/", label: "路线" },
   { href: "/questions/", label: "题库" },
-  { href: "/review/", label: "复习" },
+  { href: "/review/", label: "随机复习" },
 ];
 
-const mobileMoreLinks = [learningLinks[3], ...toolLinks, ...systemLinks];
+const mobileMoreLinks = [learningLinks[3], ...toolLinks];
 
 function normalizePath(path: string) {
   const withoutBase = basePath && path.startsWith(basePath) ? path.slice(basePath.length) : path;
@@ -65,8 +58,7 @@ export function DesktopNavigation() {
   return <nav className="desktop-navigation" aria-label="主导航">
     <NavigationSearch id="desktop-site-search" />
     <div className="nav-section"><div className="nav-section-title">学习</div>{learningLinks.map((item) => <NavigationLink item={item} key={item.href} />)}</div>
-    <div className="nav-section"><div className="nav-section-title">工具</div>{toolLinks.map((item) => <NavigationLink item={item} key={item.href} />)}</div>
-    <div className="nav-section"><div className="nav-section-title">系统</div>{systemLinks.map((item) => <NavigationLink item={item} key={item.href} />)}</div>
+    <div className="nav-section"><div className="nav-section-title">更多</div>{toolLinks.map((item) => <NavigationLink item={item} key={item.href} />)}</div>
   </nav>;
 }
 
