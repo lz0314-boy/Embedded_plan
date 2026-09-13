@@ -1,0 +1,43 @@
+---
+id: stm32-timer-frequency-question
+type: interview-question
+title: STM32 定时器输出频率和计算值不一致怎么查？
+slug: stm32-timer-frequency-debug
+pillar: cortex-m
+module: stm32f103-peripherals
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 7
+scope: chip
+platforms: [stm32f103c8t6, cortex-m3]
+prerequisites: []
+related: [stm32-timer-pwm-watchdog]
+sourceIds: [stm32f1-rm0008]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [STM32F103, 定时器, PWM, APB, PSC, ARR]
+---
+
+## 参考回答
+
+先从 RCC 时钟树确认 APB 分频和定时器输入时钟，再核对预分频 PSC、自动重装 ARR、计数方向、更新事件和预装载生效时机。公式通常是 `f_timer / ((PSC+1)*(ARR+1))`，但 `f_timer` 不能直接假定等于 CPU 主频。最后用示波器测量输出，保留时钟寄存器和编译版本。
+
+## 评分点
+
+- 能指出 APB 分频和定时器时钟来源。
+- 正确写出 PSC/ARR 的周期关系并说明边界条件。
+- 用实测波形而不是软件延时作为证据。
+
+## 30 秒回答
+
+先核对 RCC 到定时器的真实时钟，再检查 PSC、ARR 和更新事件，最后用示波器验证，不能直接用主频套公式。
+
+## 递进追问
+
+1. 修改 ARR 后为什么可能要产生更新事件？
+2. 输入捕获测频时如何处理计数器溢出？
+
+## 证据边界
+
+时钟和定时器规则以 STM32F1 RM0008 为准，具体频率必须绑定时钟配置和测量日志。

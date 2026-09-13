@@ -1,0 +1,43 @@
+---
+id: stm32-exti-nvic-question
+type: interview-question
+title: STM32F103 按键中断为什么会重复触发或完全不进中断？
+slug: stm32f103-exti-nvic-debug
+pillar: cortex-m
+module: stm32f103-peripherals
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: chip
+platforms: [stm32f103c8t6, cortex-m3]
+prerequisites: []
+related: [stm32-gpio-exti-nvic]
+sourceIds: [stm32f1-rm0008, arm-cortex-m3-guide]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [STM32F103, EXTI, NVIC, GPIO, 按键消抖, pending]
+---
+
+## 参考回答
+
+我会按 GPIO 输入模式和电平、AFIO 到 EXTI 线路映射、触发边沿、EXTI pending、NVIC enable/priority、ISR 清 pending 六层检查。完全不进通常是时钟/映射/使能链缺一环；重复触发还要观察机械抖动和 pending 清除时机，消抖应放到定时器或线程，不在 ISR 中延时。
+
+## 评分点
+
+- 能列出 GPIO、AFIO、EXTI、NVIC、ISR 的完整链路。
+- 能区分映射错误与机械抖动的证据。
+- 说明 ISR 清 pending 和非阻塞消抖策略。
+
+## 30 秒回答
+
+先看引脚、AFIO 映射、边沿、pending 和 NVIC 状态，再看 ISR 是否清 pending。重复触发要用波形确认抖动，并在 ISR 外消抖。
+
+## 递进追问
+
+1. 共享 IRQ 时如何处理多条 EXTI 线？
+2. 为什么只读取 GPIO 电平不能可靠判断触发边沿？
+
+## 证据边界
+
+寄存器和中断号必须以 STM32F103C8T6 RM0008、数据手册和工程启动文件为准，不据其他 STM32 型号推断。

@@ -1,0 +1,43 @@
+---
+id: ai-harness-question
+type: interview-question
+title: AI Harness 和普通脚本的区别是什么？
+slug: ai-harness-code-validation
+pillar: c
+module: ai-assisted-programming
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: rtos-generic
+platforms: [ai-assisted-development, c, linux]
+prerequisites: []
+related: [ai-harness-loop]
+sourceIds: [ai-engineering-guidance]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [AI, Harness, 权限, 测试, 回滚, 工具]
+---
+
+## 参考回答
+
+Harness 不只是执行命令，还定义 AI 可读写的目录、可运行的检查、环境信息、超时、输出格式和失败回滚边界。它把一次协作变成可重复的验证入口，默认拒绝网络发布、删除数据和凭据访问；不同项目可以用脚本实现，但关键是权限和证据契约。
+
+## 评分点
+
+- 说出权限、环境、检查和回滚四类边界。
+- 强调最小权限和可重复性。
+- 能区分脚本动作和协作契约。
+
+## 30 秒回答
+
+Harness 是带权限、环境、验收和回滚契约的执行边界，不只是跑一条命令；它让 AI 协作可重复、可审计。
+
+## 递进追问
+
+1. 如何限制 Harness 只能修改指定目录并运行测试？
+2. 测试通过但页面截图失败时，Harness 应输出哪些证据？
+
+## 证据边界
+
+Harness 是工程设计概念，具体沙箱和权限能力由运行平台实现，不能把概念当作安全保证。

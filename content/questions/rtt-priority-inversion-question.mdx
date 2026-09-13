@@ -1,0 +1,43 @@
+---
+id: rtt-priority-inversion-question
+type: interview-question
+title: RTOS 优先级反转如何形成，如何证明和缓解？
+slug: rtos-priority-inversion-debug
+pillar: rt-thread
+module: debugging
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 9
+scope: rt-thread
+platforms: [rt-thread, cortex-m3]
+prerequisites: []
+related: [rtt-memory-priority-deadlock, rtt-ipc-primitives]
+sourceIds: [rtt-ipc-source, rtt-thread-manual]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [RTOS, 优先级反转, RT-Thread, 互斥量, 调度]
+---
+
+## 参考回答
+
+低优先级线程持有锁，中优先级线程持续运行，高优先级线程因等待该锁反而无法运行，就形成优先级反转。证明时记录三线程优先级、锁持有者、等待开始和调度时间；缓解方式包括互斥量的优先级继承（若版本支持）、缩短临界区、统一资源分层或改用消息传递。
+
+## 评分点
+
+- 描述低/中/高三个线程的交互。
+- 给出时间线或日志证据，而非只说“系统变慢”。
+- 说明缓解方案依赖具体 RT-Thread 配置和实现。
+
+## 30 秒回答
+
+优先级反转是高优先级线程等待低优先级持锁者，而中优先级线程阻塞低优先级运行。要记录锁和调度时间，再按版本选择继承、缩短临界区或消息化。
+
+## 递进追问
+
+1. 如何区分优先级反转与普通锁竞争？
+2. 为什么延长高优先级线程超时不是根治方案？
+
+## 证据边界
+
+是否实现优先级继承和具体配置以 RT-Thread 版本源码为准；本题不把所有 RTOS 行为泛化为 RT-Thread 保证。

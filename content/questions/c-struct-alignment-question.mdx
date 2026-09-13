@@ -1,0 +1,43 @@
+---
+id: c-struct-alignment-question
+type: interview-question
+title: 结构体为什么会有填充，如何判断成员偏移？
+slug: c-struct-padding-alignment
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 7
+scope: rtos-generic
+platforms: [standard-c, arm-none-eabi]
+prerequisites: []
+related: [c-struct-union-bitfield-endian, c-memory-layout-alignment-ub]
+sourceIds: [c-wg14-n1256]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [C, 结构体, 填充, 对齐, offsetof]
+---
+
+## 参考回答
+
+实现可以在成员之间或尾部插入填充，使每个成员满足 ABI 对齐要求，数组中的下一个结构体也能正确对齐。成员顺序通常保持声明顺序，但具体偏移要用 `offsetof`、`sizeof` 和编译器生成的 map/调试信息确认。协议不能直接发送结构体，因为填充、字节序和位域布局可能不同。
+
+## 评分点
+
+- 解释对齐和填充的目的。
+- 指出布局属于实现/ABI，并给出测量方法。
+- 说明网络或 Flash 格式需要显式序列化。
+
+## 30 秒回答
+
+填充是为了满足成员和整体对齐，具体偏移由 ABI 决定。用 `offsetof` 和 `sizeof` 验证，跨设备数据按字段序列化而不是直接发送结构体。
+
+## 递进追问
+
+1. `packed` 结构体解决了什么问题，又引入什么风险？
+2. 如何验证编译器升级没有改变持久化结构布局？
+
+## 证据边界
+
+C99 规定成员顺序等语言约束；对齐和填充需结合目标 ABI、编译器和构建选项核对。

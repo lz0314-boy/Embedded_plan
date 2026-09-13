@@ -28,6 +28,7 @@ export default function ReviewPage() {
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
+  const [showAllQuestions, setShowAllQuestions] = useState(false);
   const [ready, setReady] = useState(false);
 
   useEffect(() => { db.recallMarks.toArray().then((value) => { setMarks(value); setReady(true); }); }, []);
@@ -37,11 +38,12 @@ export default function ReviewPage() {
   const visibleMarks = useMemo(() => marks.filter((mark) => filter === "all" || mark.label === filter), [filter, marks]);
   const markedIds = new Set(marks.map((mark) => mark.contentId));
   const filteredItems = filter === "unmarked" ? pool.filter((item) => !markedIds.has(item.id)) : filter === "all" ? pool : pool.filter((item) => marksById.get(item.id)?.label === filter);
-  const counts = { familiar: marks.filter((mark) => mark.label === "familiar").length, uncertain: marks.filter((mark) => mark.label === "uncertain").length, unknown: marks.filter((mark) => mark.label === "unknown").length, unmarked: Math.max(0, pool.length - marks.length) };
+  const counts = { familiar: pool.filter((item) => marksById.get(item.id)?.label === "familiar").length, uncertain: pool.filter((item) => marksById.get(item.id)?.label === "uncertain").length, unknown: pool.filter((item) => marksById.get(item.id)?.label === "unknown").length, unmarked: pool.filter((item) => !markedIds.has(item.id)).length };
   const markListItems = (() => {
-    if (filter === "unmarked") return filteredItems.slice(0, 12).map((item) => ({ item, mark: undefined }));
+    if (filter === "unmarked") return filteredItems.map((item) => ({ item, mark: undefined }));
+    if (filter === "all" && showAllQuestions) return filteredItems.map((item) => ({ item, mark: marksById.get(item.id) }));
     if (filter === "all") return [...visibleMarks].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 12).map((mark) => ({ item: getContentById(mark.contentId), mark }));
-    return filteredItems.slice(0, 12).map((item) => ({ item, mark: marksById.get(item.id) }));
+    return filteredItems.map((item) => ({ item, mark: marksById.get(item.id) }));
   })();
 
   async function saveMark(contentId: string, label: RecallLabel) {
@@ -67,6 +69,11 @@ export default function ReviewPage() {
 
   async function changeLabel(contentId: string, label: RecallLabel) { await saveMark(contentId, label); }
 
+  function changeFilter(nextFilter: Filter) {
+    setFilter(nextFilter);
+    setShowAllQuestions(false);
+  }
+
   if (!ready) return <p className="muted">正在恢复本机复习状态…</p>;
   return <>
     <div className="eyebrow">主动回忆</div>
@@ -84,8 +91,8 @@ export default function ReviewPage() {
       </section>
 
       <aside className="recall-sidebar">
-        <section className="panel"><h2>当前状态</h2><div className="recall-stat-grid"><button className={filter === "familiar" ? "active" : ""} onClick={() => setFilter("familiar")}><span className="recall-dot familiar" />熟悉<strong>{counts.familiar}</strong></button><button className={filter === "uncertain" ? "active" : ""} onClick={() => setFilter("uncertain")}><span className="recall-dot uncertain" />模糊<strong>{counts.uncertain}</strong></button><button className={filter === "unknown" ? "active" : ""} onClick={() => setFilter("unknown")}><span className="recall-dot unknown" />不会<strong>{counts.unknown}</strong></button><button className={filter === "unmarked" ? "active" : ""} onClick={() => setFilter("unmarked")}><span className="recall-dot unmarked" />未标记<strong>{counts.unmarked}</strong></button></div><button className={`recall-all-filter ${filter === "all" ? "active" : ""}`} onClick={() => setFilter("all")}>查看全部 {pool.length} 道题</button></section>
-        <section className="panel"><h2>{filter === "all" ? "最近标记" : `${filter === "unmarked" ? "未标记" : labelText[filter]}题目`}</h2>{markListItems.length ? <div className="recall-mark-list">{markListItems.map(({ item, mark }) => { if (!item) return null; return <div className="recall-mark-row" key={item.id}><Link href={`/learn/${item.slug}/`}>{item.title}</Link><select aria-label={`${item.title}熟悉度`} value={mark?.label ?? ""} onChange={(event) => { if (event.target.value) void changeLabel(item.id, event.target.value as RecallLabel); }}><option value="">未标记</option><option value="familiar">熟悉</option><option value="uncertain">模糊</option><option value="unknown">不会</option></select></div>; })}</div> : <p className="muted">还没有符合条件的题目。</p>}</section>
+        <section className="panel"><h2>当前状态</h2><div className="recall-stat-grid"><button className={filter === "familiar" ? "active" : ""} onClick={() => changeFilter("familiar")}><span className="recall-dot familiar" />熟悉<strong>{counts.familiar}</strong></button><button className={filter === "uncertain" ? "active" : ""} onClick={() => changeFilter("uncertain")}><span className="recall-dot uncertain" />模糊<strong>{counts.uncertain}</strong></button><button className={filter === "unknown" ? "active" : ""} onClick={() => changeFilter("unknown")}><span className="recall-dot unknown" />不会<strong>{counts.unknown}</strong></button><button className={filter === "unmarked" ? "active" : ""} onClick={() => changeFilter("unmarked")}><span className="recall-dot unmarked" />未标记<strong>{counts.unmarked}</strong></button></div><button className={`recall-all-filter ${filter === "all" && showAllQuestions ? "active" : ""}`} onClick={() => { setFilter("all"); setShowAllQuestions((value) => !value); }}>{filter === "all" && showAllQuestions ? "收起全部题目" : `查看全部 ${pool.length} 道题`}</button></section>
+        <section className="panel"><h2>{filter === "all" ? (showAllQuestions ? `全部题目（${pool.length}）` : "最近标记") : `${filter === "unmarked" ? "未标记" : labelText[filter]}题目`}</h2>{markListItems.length ? <div className="recall-mark-list">{markListItems.map(({ item, mark }) => { if (!item) return null; return <div className="recall-mark-row" key={item.id}><Link href={`/learn/${item.slug}/`}>{item.title}</Link><select aria-label={`${item.title}熟悉度`} value={mark?.label ?? ""} onChange={(event) => { if (event.target.value) void changeLabel(item.id, event.target.value as RecallLabel); }}><option value="">未标记</option><option value="familiar">熟悉</option><option value="uncertain">模糊</option><option value="unknown">不会</option></select></div>; })}</div> : <p className="muted">还没有符合条件的题目。</p>}</section>
         <section className="panel recall-help"><h2>怎么用</h2><ol><li>先在心里回答，再选择熟悉程度。</li><li>模糊和不会会展开完整参考答案。</li><li>在右侧列表随时改标签，统计会立即更新。</li></ol></section>
       </aside>
     </div>

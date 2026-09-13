@@ -1,0 +1,43 @@
+---
+id: c-undefined-behavior-question
+type: interview-question
+title: C 中未定义行为为什么常在开启优化后暴露？
+slug: c-undefined-behavior-optimization
+pillar: c
+module: debugging
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 9
+scope: rtos-generic
+platforms: [standard-c, gcc, arm-none-eabi]
+prerequisites: []
+related: [c-memory-layout-alignment-ub, c-debugging-diagnostics]
+sourceIds: [c-wg14-n1256, gcc-warning-options]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [C, 未定义行为, 优化, 越界, 严格别名, 编译器]
+---
+
+## 参考回答
+
+未定义行为意味着标准不规定结果，编译器可以基于“该行为不会发生”的假设重排或删除代码。未优化构建可能恰好保留某种内存布局，因此看起来正常；优化后寄存器分配、内联和死代码消除让问题暴露。排查要建立最小复现，打开告警和 Sanitizer，检查越界、悬空指针、非法移位、整数溢出和严格别名，再回到目标 ABI 验证。
+
+## 评分点
+
+- 解释编译器可利用 UB 假设优化，而不是“优化器引入 bug”。
+- 至少举出两类 UB 和对应工具/证据。
+- 能区分标准语义、编译器扩展和目标硬件偶然现象。
+
+## 30 秒回答
+
+优化版暴露 UB 是因为编译器可基于标准未定义条件做更激进的变换。应保留最小复现，用告警、Sanitizer 和调试现场证明根因，不能靠关闭优化修复。
+
+## 递进追问
+
+1. 为什么 `volatile` 不能修复越界或数据竞争？
+2. 裸机 HardFault 时怎样把 PC、LR 和访问地址与源码行对应起来？
+
+## 证据边界
+
+UB 边界以 C99 标准为准，告警和 Sanitizer 属于具体 GCC/工具链能力；硬件异常现场需结合 Cortex-M 端口验证。

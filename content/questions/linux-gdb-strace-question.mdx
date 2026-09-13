@@ -1,0 +1,43 @@
+---
+id: linux-gdb-strace-question
+type: interview-question
+title: Linux 用户态程序卡死，GDB 和 strace 如何配合？
+slug: linux-gdb-strace-hang-debug
+pillar: linux-user
+module: debugging
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: linux-user
+platforms: [linux, arm32-linux]
+prerequisites: []
+related: [linux-user-debugging-workflow]
+sourceIds: [gdb-user-manual, linux-man-pages]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [Linux, GDB, strace, 卡死, futex, 系统调用]
+---
+
+## 参考回答
+
+先用 `strace -f -tt -p PID` 判断进程是否卡在 `futex`、IO、网络或重启系统调用，再用 GDB `thread apply all bt` 查看所有线程栈、锁等待和当前源码行。对照线程状态、文件描述符和超时设置，建立“系统调用—线程栈—资源所有者”时间线；不要只看主线程回溯。
+
+## 评分点
+
+- 能说明 strace 看系统调用，GDB 看线程栈和变量。
+- 使用 `-f`/时间戳和全线程回溯。
+- 能结合 futex、IO 和锁所有者定位。
+
+## 30 秒回答
+
+strace 先确定卡在哪类系统调用，GDB 再看全线程栈和锁等待，最后用时间线对齐资源所有者和超时，而不是只看主线程。
+
+## 递进追问
+
+1. `futex` 长时间等待如何进一步定位到哪把用户态锁？
+2. 进程在 D 状态时，GDB 和 strace 的证据有什么限制？
+
+## 证据边界
+
+命令选项和系统调用语义以目标 Linux/GDB/strace 版本为准；不同发行版权限和调试符号配置会影响结果。

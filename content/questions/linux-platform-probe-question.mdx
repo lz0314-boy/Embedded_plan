@@ -1,0 +1,43 @@
+---
+id: linux-platform-probe-question
+type: interview-question
+title: platform 驱动 probe 失败时如何区分匹配、资源和硬件问题？
+slug: linux-platform-probe-failure
+pillar: linux-bsp
+module: driver-model
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 9
+scope: linux-bsp
+platforms: [linux, arm32-linux]
+prerequisites: []
+related: [linux-platform-probe-resources, linux-dt-gpio-irq-clock]
+sourceIds: [linux-driver-api, linux-device-tree]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [Linux, platform, probe, EPROBE_DEFER, 设备树, 资源]
+---
+
+## 参考回答
+
+先看设备是否由正确 DTB 创建、`of_match_table` 是否命中；命中后按资源获取日志区分缺属性/格式错误、provider 尚未就绪的 `-EPROBE_DEFER`、资源冲突和映射失败。probe 返回成功前不注册上层接口，失败路径要验证 devm 或手动清理没有残留节点、中断和时钟引用。
+
+## 评分点
+
+- 区分匹配失败与 probe 内部失败。
+- 说明 `EPROBE_DEFER` 不是普通硬件错误。
+- 能验证资源回滚和日志证据。
+
+## 30 秒回答
+
+先确认 DTB 和匹配表，再逐项记录资源 API 返回值，区分缺属性、defer、冲突和映射失败；成功前不注册接口，失败要回滚。
+
+## 递进追问
+
+1. 为什么改了 DTS 但运行系统行为不变？
+2. 如何测试 probe 在任一资源失败时都能安全卸载？
+
+## 证据边界
+
+设备树和 platform 行为取决于 DTB、内核版本和具体 SoC，必须保留节点路径、commit 和 errno。

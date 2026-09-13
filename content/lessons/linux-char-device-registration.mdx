@@ -1,0 +1,84 @@
+---
+id: linux-char-device-registration
+type: lesson
+title: Linux 字符设备驱动注册链：从 cdev 到用户态 read/write
+slug: linux-char-device-registration
+pillar: linux-bsp
+module: driver-model
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 34
+scope: linux-bsp
+platforms: [linux, arm32-linux]
+prerequisites: [linux-driver-device-tree]
+related: [linux-block-io-path, linux-platform-probe-resources]
+sourceIds: [linux-driver-api, linux-man-pages]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [Linux, 字符设备, cdev, file_operations, udev, read, write, ioctl]
+---
+
+## 一句话结论
+
+字符设备驱动要把设备号、`cdev`、`class/device` 节点和 `file_operations` 串起来，用户态看到的 `/dev` 文件只是访问入口，不等于硬件已经工作。
+
+## 适用范围与前置知识
+
+适用于主线 Linux 驱动模型和常见 ARM BSP，API 以目标内核版本头文件为准。前置知识是系统调用、设备节点、并发和内核内存边界。
+
+## 注册与访问流程图
+
+```mermaid
+flowchart LR
+  A[模块加载] --> B[申请设备号]
+  B --> C[cdev_add]
+  C --> D[class_create/device_create]
+  D --> E[/dev 节点]
+  E --> F[open/read/write/ioctl]
+  F --> G[file_operations]
+```
+
+文字降级：模块申请设备号并注册 cdev，再创建用户态可见节点；每个系统调用最终进入驱动的操作表，卸载时按相反顺序回滚。
+
+## 核心代码（接口示意）
+
+```c
+static const struct file_operations demo_fops = {
+    .owner = THIS_MODULE,
+    .read = demo_read,
+    .write = demo_write,
+    .unlocked_ioctl = demo_ioctl,
+};
+```
+
+`copy_to_user`/`copy_from_user` 的返回值必须检查，不能直接解引用用户指针；读写阻塞、非阻塞和并发语义要在接口文档中写清楚。
+
+## 调试方法
+
+1. 查看 `dmesg`、`/proc/devices` 和 `/sys/class`，确认注册、节点和卸载路径。
+2. 用 `strace` 对齐 open/read/write/ioctl 的返回值和 errno，区分用户参数错误与硬件错误。
+3. 用并发读写、短缓冲区、信号中断和模块卸载测试错误回滚。
+4. 检查设备号释放、class/device 销毁和引用计数，避免重复注册或 use-after-free。
+
+反例：节点存在就断言 probe 成功；把用户指针直接传给 `memcpy`；错误路径只打印日志不释放已申请资源。
+
+## 30 秒回答与展开回答
+
+30 秒回答：字符驱动的访问链是设备号、cdev、sysfs/dev 节点、file_operations 和系统调用。调试要看 dmesg/sysfs/strace，并验证 copy_to_user、并发和卸载回滚。
+
+展开回答：设备节点只是 VFS 入口，真正硬件资源通常在 probe 中获取。实现时要定义阻塞和错误语义，所有注册步骤必须有对应的反向清理。
+
+## 递进追问
+
+1. `read` 返回 0、`-EAGAIN` 和 `-ERESTARTSYS` 分别可能表示什么？
+2. 如何为一个环形缓冲区字符设备设计 poll/阻塞读而不丢唤醒？
+
+## 自测与主动回忆
+
+- 自测：按加载、注册、节点、系统调用、回滚写出五步，并列出每步可观察的 Linux 文件或日志。
+- 主动回忆：解释 `/dev` 节点、cdev 和硬件资源之间的区别。
+
+## 来源和证据边界
+
+驱动注册和用户访问接口以 Linux Driver Implementer's API Guide、内核头文件和目标内核版本为准；本课不承诺某个发行版 udev 规则或设备号。

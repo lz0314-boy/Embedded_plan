@@ -1,0 +1,43 @@
+---
+id: ai-prompt-question
+type: interview-question
+title: 如何写一个能让 AI 可靠修改代码的 Prompt？
+slug: ai-reliable-code-prompt
+pillar: c
+module: ai-assisted-programming
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 7
+scope: rtos-generic
+platforms: [ai-assisted-development, c, linux]
+prerequisites: []
+related: [ai-prompt-context-engineering]
+sourceIds: [ai-engineering-guidance]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [AI, Prompt, Context, 约束, 验收, 代码修改]
+---
+
+## 参考回答
+
+Prompt 至少包含目标文件和行为、已知事实（版本/接口/日志）、不可违反的约束、验收命令和输出格式。要求 AI 先列假设和影响范围，再给小步 diff，最后报告测试结果和未证实风险。上下文优先放相关源码、测试和失败日志，避免把无关仓库全部塞入。
+
+## 评分点
+
+- 包含目标、事实、约束、验收四类信息。
+- 要求先说明假设、输出 diff 和测试证据。
+- 能控制 Context 范围。
+
+## 30 秒回答
+
+把目标、事实、约束、验收写清楚，让 AI 先列假设再小步修改，并用真实命令和人工 diff 验证。
+
+## 递进追问
+
+1. 失败测试如何变成下一轮最有用的 Context？
+2. 涉及芯片寄存器或启动偏移时，Prompt 还应增加什么证据要求？
+
+## 证据边界
+
+提示词方法参考 AI Engineering Guidance，实际效果受模型、上下文和工具权限影响，不能保证一次生成正确。

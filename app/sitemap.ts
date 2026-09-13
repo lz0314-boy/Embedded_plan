@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { contentCatalog } from "@/lib/content/catalog";
+import { roadmapModules } from "@/lib/content/roadmap";
 import { siteUrl } from "@/lib/site";
 
 export const dynamic = "force-static";
@@ -12,6 +13,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // the product navigation or any default learning/review pool.
     { url: siteUrl("/labs/") },
   ];
+  const moduleRoutes = roadmapModules.map((module) => ({ url: siteUrl(`/roadmap/${module.id}/`) }));
   const publicContent = contentCatalog.filter((item) => item.status === "verified" && item.verifiedAt && ["lesson", "interview-question"].includes(item.type));
-  return [...routes, ...publicContent.map((item) => ({ url: siteUrl(`/learn/${item.slug}/`), lastModified: item.verifiedAt ?? undefined }))];
+  return [...routes, ...moduleRoutes, ...publicContent.map((item) => ({ url: siteUrl(`/learn/${item.slug}/`), lastModified: item.verifiedAt ?? undefined }))];
 }

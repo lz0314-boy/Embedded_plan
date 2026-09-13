@@ -1,0 +1,43 @@
+---
+id: ai-code-review-question
+type: interview-question
+title: 如何用 AI 做代码审查而不把风险交给模型？
+slug: ai-code-review-with-evidence
+pillar: c
+module: ai-assisted-programming
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 9
+scope: rtos-generic
+platforms: [ai-assisted-development, c, linux]
+prerequisites: []
+related: [ai-harness-loop, ai-prompt-context-engineering]
+sourceIds: [ai-engineering-guidance]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [AI, 代码审查, 回归测试, 证据, 安全, diff]
+---
+
+## 参考回答
+
+先限定 diff、接口和风险清单，让 AI 只提出可定位的假设和反例，再由人运行编译、测试、静态检查和关键页面/硬件验证。对模型说“没有发现问题”不作安全结论；审查记录要保留版本、命令、输出和未覆盖范围。涉及权限、内存安全、并发和板级参数时必须人工复核来源。
+
+## 评分点
+
+- 强调 diff 范围、反例和真实验证。
+- 区分模型意见与测试/来源证据。
+- 指出高风险领域需要人工确认。
+
+## 30 秒回答
+
+让 AI 基于限定 diff 提出风险和反例，人类用真实构建、测试和来源核对验证；模型的“通过”不是安全证明。
+
+## 递进追问
+
+1. 如何为并发代码设计让 AI 难以遗漏的测试矩阵？
+2. 代码审查和页面截图发现矛盾时，下一轮 Loop 怎样收敛？
+
+## 证据边界
+
+AI 审查只能辅助发现问题，不能替代编译器、测试、硬件测量和人工发布决策。

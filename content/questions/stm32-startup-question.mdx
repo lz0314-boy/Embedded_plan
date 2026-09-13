@@ -1,0 +1,43 @@
+---
+id: stm32-startup-question
+type: interview-question
+title: STM32 启动后进不了 main，如何从向量表定位？
+slug: stm32-startup-vector-debug
+pillar: cortex-m
+module: startup-and-vector-table
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 9
+scope: chip
+platforms: [stm32f103c8t6, cortex-m3]
+prerequisites: []
+related: [stm32-startup-linker-vector, cortex-m-startup-flow]
+sourceIds: [arm-cortex-m3-guide, stm32f1-rm0008, binutils-ld-manual]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [STM32, 向量表, MSP, Reset_Handler, 链接脚本, main]
+---
+
+## 参考回答
+
+先在复位入口读取向量表第 0 项 MSP 和第 1 项 Reset_Handler，检查 PC/MSP 是否落在芯片有效地址范围；再看启动代码的 `.data` 搬运、`.bss` 清零、系统时钟和 C 运行库初始化。结合 map 文件和链接脚本核对段的加载/运行地址，逐步断点到 `main`，不要用别的型号启动文件替换。
+
+## 评分点
+
+- 说出 MSP、Reset_Handler 和向量表读取顺序。
+- 能结合 map/链接脚本定位 `.data/.bss` 初始化。
+- 明确芯片地址范围和启动文件必须绑定具体型号。
+
+## 30 秒回答
+
+从向量表验证 MSP 和 Reset_Handler，再逐步检查 `.data/.bss`、时钟和运行库，配合 map 文件确认地址，最后断点到 main。
+
+## 递进追问
+
+1. `.data` 为什么有加载地址和运行地址？
+2. 修改向量表基址后怎样验证中断确实使用了新表？
+
+## 证据边界
+
+Cortex-M3 复位机制以 Arm 指南为准，STM32F103 地址范围与启动文件以 ST 文档和工程 map 为准。

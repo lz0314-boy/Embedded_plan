@@ -1,0 +1,43 @@
+---
+id: linux-char-device-question
+type: interview-question
+title: Linux 字符设备驱动从加载到用户态访问经历哪些步骤？
+slug: linux-char-device-registration-interview
+pillar: linux-bsp
+module: driver-model
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: linux-bsp
+platforms: [linux, arm32-linux]
+prerequisites: []
+related: [linux-char-device-registration]
+sourceIds: [linux-driver-api, linux-man-pages]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [Linux, 字符设备, cdev, 设备号, file_operations, udev]
+---
+
+## 参考回答
+
+模块初始化时申请设备号并初始化/添加 `cdev`，再创建 class/device 或由系统规则生成 `/dev` 节点；用户态 `open/read/write/ioctl/poll` 通过 VFS 进入 `file_operations`。卸载要先阻止新访问，再撤销节点、cdev 和设备号，错误路径按已完成步骤逆序清理。
+
+## 评分点
+
+- 说出设备号、cdev、节点和 file_operations 链路。
+- 说明用户指针、阻塞和并发边界。
+- 说明卸载和错误回滚顺序。
+
+## 30 秒回答
+
+申请设备号并注册 cdev，创建节点后系统调用进入 file_operations；调试看 dmesg、sysfs、strace，卸载按逆序回滚。
+
+## 递进追问
+
+1. 节点存在但 read 返回 `-ENODEV`，你会检查哪一层？
+2. 如何实现阻塞读和 poll 而避免丢失唤醒？
+
+## 证据边界
+
+API 以目标 Linux 内核版本为准，设备号和 udev 行为不能从通用示例推断。

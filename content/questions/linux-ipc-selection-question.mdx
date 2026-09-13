@@ -1,0 +1,43 @@
+---
+id: linux-ipc-selection-question
+type: interview-question
+title: Linux 管道、共享内存、消息队列和 socket 如何选型？
+slug: linux-ipc-selection
+pillar: linux-user
+module: ipc-and-commands
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: linux-user
+platforms: [linux, arm32-linux]
+prerequisites: []
+related: [linux-ipc-and-commands, linux-driver-socket-boundary]
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [Linux, IPC, 管道, 共享内存, 消息队列, socket]
+---
+
+## 参考回答
+
+匿名管道适合有亲缘关系进程的一次性字节流，有名管道通过文件系统名字连接无亲缘关系进程；共享内存吞吐高但必须另配互斥/信号量和生命周期协议；消息队列保留消息边界并可按优先级组织；socket 适合本机或网络的双向通信。选型要同时看数据量、边界、阻塞、持久性、权限和故障恢复。
+
+## 评分点
+
+- 区分匿名/有名管道和消息边界。
+- 说明共享内存必须配合同步。
+- 能从吞吐、双向、网络和生命周期做取舍。
+
+## 30 秒回答
+
+管道是简单字节流，消息队列保留边界，共享内存追求吞吐但要另做同步，socket 支持本机/网络双向通信；最终按边界、阻塞、权限和恢复选型。
+
+## 递进追问
+
+1. 共享内存环形队列如何处理生产者和消费者的内存可见性？
+2. TCP socket 为什么还需要应用层分帧？
+
+## 证据边界
+
+接口语义以 Linux man-pages/POSIX 和目标内核配置为准，性能结论需要实际基准而非经验数字。

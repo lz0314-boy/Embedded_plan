@@ -1,0 +1,43 @@
+---
+id: c-array-sizeof-question
+type: interview-question
+title: 函数参数中的数组为什么不能用 sizeof 求长度？
+slug: c-array-sizeof-parameter
+pillar: c
+module: language-and-memory
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 6
+scope: rtos-generic
+platforms: [standard-c, arm-none-eabi]
+prerequisites: []
+related: [c-arrays-pointers-functions]
+sourceIds: [c-wg14-n1256]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [C, 数组, sizeof, 指针, 函数参数]
+---
+
+## 参考回答
+
+数组作为函数参数声明时会调整为指针参数，因此函数体内的 `sizeof(buffer)` 得到的是指针大小，而不是调用者数组的元素总字节数。接口应显式传入元素数量或字节长度，并由被调用者检查容量。二维数组参数仍需提供后续维度，因为指针步长依赖这一维。
+
+## 评分点
+
+- 说明数组参数调整为指针，`sizeof` 不能恢复原数组大小。
+- 给出地址加长度的接口设计，并说明边界检查。
+- 能区分一维数组和二维数组的参数步长问题。
+
+## 30 秒回答
+
+函数参数中的数组会调整为指针，`sizeof` 只能得到指针大小，所以必须把长度作为独立参数传入并检查。
+
+## 递进追问
+
+1. 为什么 `sizeof` 在调用者作用域中又能得到整个数组大小？
+2. 如何为 DMA 环形缓冲区设计不会混淆容量和有效长度的接口？
+
+## 证据边界
+
+数组参数调整和 `sizeof` 规则来自 C99；具体指针宽度属于目标 ABI，不能从标准 C 推断。

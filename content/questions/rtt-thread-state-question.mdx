@@ -1,0 +1,43 @@
+---
+id: rtt-thread-state-question
+type: interview-question
+title: RT-Thread 线程状态和调度点如何串起来？
+slug: rt-thread-thread-state-scheduling
+pillar: rt-thread
+module: scheduler
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: rt-thread
+platforms: [rt-thread, cortex-m3]
+prerequisites: []
+related: [rtt-scheduler, rtt-thread-lifecycle-tick]
+sourceIds: [rtt-thread-manual, rtt-scheduler-source]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [RT-Thread, 线程状态, 调度点, 就绪队列, PendSV]
+---
+
+## 参考回答
+
+线程创建后进入就绪，调度器选择最高优先级就绪线程运行；主动延时、等待 IPC 或被挂起会移出就绪队列，事件满足或超时后重新加入。调度点发生在状态变化、tick 或中断返回等路径，是否触发 PendSV 要结合 RT-Thread 版本和 Cortex-M port 源码确认。
+
+## 评分点
+
+- 说出就绪队列和线程状态的变化。
+- 能区分阻塞、时间片和抢占。
+- 明确 PendSV/端口实现需绑定版本。
+
+## 30 秒回答
+
+线程状态变化先更新就绪队列，调度点再选择最高优先级线程，若当前线程改变才进入端口上下文切换。
+
+## 递进追问
+
+1. 高优先级线程解除阻塞时，哪个证据能证明发生了抢占？
+2. Tick 中断和 PendSV 在上下文切换中分别负责什么？
+
+## 证据边界
+
+线程管理和调度实现以 RT-Thread v5.2.2 手册、commit 源码和目标 Cortex-M port 为准。

@@ -1,0 +1,43 @@
+---
+id: ai-context-question
+type: interview-question
+title: AI 编程的 Context 为什么不是越多越好？
+slug: ai-context-selection
+pillar: c
+module: ai-assisted-programming
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 7
+scope: rtos-generic
+platforms: [ai-assisted-development, c, linux]
+prerequisites: []
+related: [ai-prompt-context-engineering]
+sourceIds: [ai-engineering-guidance]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [AI, Context, 上下文, 代码库, 证据]
+---
+
+## 参考回答
+
+Context 应保留会改变决策的事实：接口契约、相关实现、测试、编译版本、失败日志和约束。无关文件会稀释注意力并引入相互矛盾的假设；更好的做法是分层提供信息，先给入口和错误，再按需要展开实现。每轮都应验证 AI 是否正确复述事实。
+
+## 评分点
+
+- 说明 Context 的选择标准是影响决策，而非数量。
+- 能提出分层提供和验证复述。
+- 能识别矛盾或过时上下文风险。
+
+## 30 秒回答
+
+只提供影响当前决策的接口、实现、测试和日志，分层补充并让 AI 复述；无关上下文会增加误解和过时假设。
+
+## 递进追问
+
+1. 如何判断一份日志是否足以证明板级结论？
+2. 同一文件有用户未提交修改时，Context 和 diff 应如何处理？
+
+## 证据边界
+
+Context 策略是工程实践，不是模型能力保证；隐私、凭据和未授权目录不应进入上下文。

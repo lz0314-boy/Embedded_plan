@@ -1,0 +1,43 @@
+---
+id: rtt-ipc-choice-question
+type: interview-question
+title: RT-Thread 中互斥量和信号量有什么区别？
+slug: rt-thread-mutex-semaphore-choice
+pillar: rt-thread
+module: ipc
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 7
+scope: rt-thread
+platforms: [rt-thread, cortex-m3]
+prerequisites: []
+related: [rtt-ipc-primitives]
+sourceIds: [rtt-ipc-source, rtt-thread-manual]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [RT-Thread, 互斥量, 信号量, IPC, 优先级继承]
+---
+
+## 参考回答
+
+互斥量表达“谁拥有并释放资源”，通常用于保护总线、设备或临界数据；信号量表达计数或事件同步，释放者不一定是获取者。互斥量是否支持优先级继承、递归等行为要看 RT-Thread 版本实现，不能把二值信号量当作等价替代。
+
+## 评分点
+
+- 说清所有权和计数/同步语义。
+- 能举资源保护和生产者消费者场景。
+- 提醒优先级继承和 ISR 使用边界需核对。
+
+## 30 秒回答
+
+互斥量保护有所有权的资源，信号量做计数或同步；选择时看语义，并核对优先级继承、递归和中断上下文限制。
+
+## 递进追问
+
+1. 为什么用二值信号量保护 SPI 总线可能导致错误释放？
+2. ISR 通知线程时，应该选择哪种非阻塞方式？
+
+## 证据边界
+
+对象语义和实现细节以 RT-Thread v5.2.2 IPC 源码及手册为准。

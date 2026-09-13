@@ -1,0 +1,43 @@
+---
+id: linux-emmc-boot-question
+type: interview-question
+title: ALPHA 开发板 eMMC 启动失败时怎样建立证据链？
+slug: linux-alpha-emmc-boot-debug
+pillar: linux-bsp
+module: boot-chain
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 10
+scope: alpha-board
+platforms: [imx6ull, alpha-v2.4-plus]
+prerequisites: []
+related: [imx6ull-boot-chain, linux-bsp-boot-debugging]
+sourceIds: [alientek-alpha-v24, nxp-imx6ull, uboot-bootz, linux-arm-boot]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [ALPHA, i.MX6ULL, eMMC, U-Boot, 启动日志, bootargs]
+---
+
+## 参考回答
+
+先确认板卡型号、资料包版本、拨码状态和本次串口日志，再按 ROM/存储介质、U-Boot、内核、设备树、rootfs 五层记录每一层的实际输出。`start.txt` 只能说明“本次日志观察到”的内容；没有对应 `start..txt` 或实测输出时，不把 TFTP/NFS 命令写成真实证据，也不猜 eMMC 偏移、分区或脚本参数。使用官方资料中的脚本和分区说明时要记录文件版本。
+
+## 评分点
+
+- 固定 ALPHA 具体资料和本次日志，分层定位。
+- 区分启动介质、U-Boot、内核、DTB、rootfs。
+- 明确日志证据边界，不虚构网络启动或偏移。
+
+## 30 秒回答
+
+我会先固定板卡和资料包，再用本次串口日志按启动层逐段对齐，只有日志或官方脚本明确出现的 eMMC 参数才作为结论；TFTP/NFS 仅作通用对照。
+
+## 递进追问
+
+1. U-Boot 能启动内核但 rootfs 挂载失败，下一步看哪些 bootargs 和存储证据？
+2. 同一脚本在不同资料包版本中变化时，如何避免把旧偏移带入新镜像？
+
+## 证据边界
+
+板级结论仅绑定 正点原子 ALPHA V2.4+资料包和实际日志；本题不扩展到未提供型号或未运行的启动方式。

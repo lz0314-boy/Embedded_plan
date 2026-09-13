@@ -1,0 +1,43 @@
+---
+id: stm32-adc-dma-question
+type: interview-question
+title: STM32F103 ADC + DMA 数据偶发跳变如何定位？
+slug: stm32f103-adc-dma-debug
+pillar: cortex-m
+module: stm32f103-peripherals
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 9
+scope: chip
+platforms: [stm32f103c8t6, cortex-m3]
+prerequisites: []
+related: [stm32f103-peripherals]
+sourceIds: [stm32f1-rm0008]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [STM32F103, ADC, DMA, 采样触发, 数据宽度, 缓冲区]
+---
+
+## 参考回答
+
+固定采样时钟、通道顺序和输入信号后，分别检查 ADC 校准/采样时间、外部触发源、DMA 通道映射、数据宽度、循环模式、半传输/传输完成边界和缓冲区并发读取。用稳定电压与示波器/逻辑分析仪对齐采样触发，再记录 DMA 计数器和错误标志，才能区分真实噪声、配置错和软件读写竞争。
+
+## 评分点
+
+- 能覆盖 ADC 模拟配置、触发和 DMA 数据搬运三层。
+- 能指出缓冲区边界、半传输和并发读取风险。
+- 明确需要稳定输入和测量证据，不把跳变直接归因于传感器。
+
+## 30 秒回答
+
+先固定输入和采样触发，再看 ADC 通道/采样时间、DMA 映射与数据宽度、缓冲区边界和并发读取，用计数器与波形对齐证据。
+
+## 递进追问
+
+1. DMA 循环缓冲区如何避免线程读到正在写入的一半？
+2. 采样时间过短会出现什么现象，如何与数字配置错误区分？
+
+## 证据边界
+
+ADC 和 DMA 通道/触发关系必须按 STM32F103C8T6 RM0008 与数据手册核对，不把其他 STM32 系列映射表照搬。

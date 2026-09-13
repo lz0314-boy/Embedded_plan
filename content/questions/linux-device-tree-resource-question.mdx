@@ -1,0 +1,43 @@
+---
+id: linux-device-tree-resource-question
+type: interview-question
+title: 设备树中的 reg、GPIO、IRQ、clock 如何与驱动参数对应？
+slug: linux-device-tree-resource-mapping
+pillar: linux-bsp
+module: driver-model
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: linux-bsp
+platforms: [linux, arm32-linux]
+prerequisites: []
+related: [linux-dt-gpio-irq-clock]
+sourceIds: [linux-device-tree, linux-driver-api]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [Linux, DTS, reg, GPIO, IRQ, clock, phandle]
+---
+
+## 参考回答
+
+`reg` 的解释依赖父节点的 address/size cells，GPIO、IRQ 和 clock 通常通过 phandle 指向 provider 并带索引/标志。驱动使用对应 API 读取，必须检查返回值和 `-EPROBE_DEFER`。验证时保存实际 DTB、节点完整路径、内核版本，并用 debugfs 或波形确认物理资源，不把属性数字直接当虚拟地址或引脚号。
+
+## 评分点
+
+- 说出父节点 cells、phandle/provider 和标志位的作用。
+- 能指出驱动 API 与错误码检查。
+- 说明 DTB 和物理波形是不同层证据。
+
+## 30 秒回答
+
+设备树属性通过父节点 cells 和 provider phandle 定义资源，驱动用 API 读取并处理 defer；要用实际 DTB、内核日志和波形闭环验证。
+
+## 递进追问
+
+1. GPIO 极性标志写反会出现哪些软件和电气证据？
+2. 同一节点在不同 SoC 的 `reg` 格式为何不能直接复制？
+
+## 证据边界
+
+属性格式和资源索引必须以具体 SoC DTSI、板级 DTS 和内核版本为准。

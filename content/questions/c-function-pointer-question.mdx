@@ -1,0 +1,43 @@
+---
+id: c-function-pointer-question
+type: interview-question
+title: 函数指针回调设计时最容易踩哪些坑？
+slug: c-function-pointer-callback-pitfalls
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: rtos-generic
+platforms: [standard-c, arm-none-eabi]
+prerequisites: []
+related: [c-arrays-pointers-functions]
+sourceIds: [c-wg14-n1256]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [C, 函数指针, 回调, 上下文, ABI]
+---
+
+## 参考回答
+
+常见问题有四类：回调签名不兼容却靠强制类型转换；函数或上下文对象生命周期结束后仍被调用；ISR 与线程共享上下文但没有同步；回调错误码和所有权没有写进契约。应定义明确的返回类型、参数、`void *ctx` 所有权和调用上下文，并在注册/注销时处理并发。
+
+## 评分点
+
+- 能指出函数类型不兼容不能靠强转修复。
+- 说明上下文生命周期、注销和并发边界。
+- 能给出 ISR 只投递事件、线程执行重活的设计。
+
+## 30 秒回答
+
+回调接口要固定签名、上下文所有权和执行上下文，注册与注销要有生命周期协议；强转函数指针和在 ISR 做阻塞操作都不安全。
+
+## 递进追问
+
+1. 为什么不同调用约定下函数指针强转可能破坏寄存器或栈？
+2. 如何安全地注销一个仍可能被 ISR 调用的回调？
+
+## 证据边界
+
+函数指针兼容性属于 C 语言和 ABI 共同边界；中断调用约定与 RTOS 同步需结合目标端口核对。

@@ -1,0 +1,86 @@
+---
+id: c-arrays-pointers-functions
+type: lesson
+title: C 数组、指针与函数指针：嵌入式代码如何避免越界
+slug: c-arrays-pointers-functions
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 28
+scope: rtos-generic
+platforms: [standard-c, arm-none-eabi]
+prerequisites: [c99-pointer-lifetime]
+related: [c-memory-model, c-debugging-diagnostics]
+sourceIds: [c-wg14-n1256, gcc-warning-options]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [C, 数组, 指针, 函数指针, 越界, 回调]
+---
+
+## 一句话结论
+
+数组在表达式中通常退化为指向首元素的指针，但数组本身不是指针；嵌入式接口必须同时传递缓冲区地址和长度，并在函数指针回调中明确调用约定。
+
+## 适用范围与前置知识
+
+适用于 C99 语义和常见 GCC 交叉编译工程，不把某个 ABI 的结构扩展当作标准保证。前置知识是对象生命周期、指针和基本函数调用。
+
+## 数据流图
+
+```mermaid
+flowchart LR
+  A[数组对象] --> B[首元素地址]
+  B --> C[指针与长度]
+  C --> D[边界检查]
+  D --> E[处理函数]
+  E --> F[返回结果或错误]
+```
+
+文字降级：调用者持有数组对象，传递地址和长度；被调用者先校验长度再读写，回调函数只处理已验证的区间。
+
+## 核心代码
+
+```c
+typedef void (*frame_handler)(const uint8_t *data, size_t length, void *ctx);
+
+static int dispatch_frame(const uint8_t *buffer, size_t capacity,
+                          size_t frame_length, frame_handler handler, void *ctx)
+{
+    if (buffer == NULL || handler == NULL || frame_length > capacity) return -1;
+    handler(buffer, frame_length, ctx);
+    return 0;
+}
+```
+
+`buffer` 不携带长度，`sizeof(buffer)` 在函数参数中得到的是指针大小；长度必须由接口契约单独传入。函数指针的参数类型、返回类型和上下文指针要与注册点一致。
+
+## 调试方法
+
+1. 编译打开 `-Wall -Wextra -Warray-bounds -Wconversion`，先消除静态告警。
+2. 在接收边界记录容量、实际长度、写指针和丢弃原因，避免只打印“解析失败”。
+3. 用长度为 0、1、容量、容量加 1 的固定帧回归，观察是否访问越界。
+4. 在调试器中检查回调地址和上下文生命周期，确认没有调用已经释放的对象。
+
+反例：把 `uint8_t *` 当成固定数组使用；只传 `buffer` 不传长度；通过强制类型转换把不兼容的函数转换成回调类型。
+
+## 30 秒回答与展开回答
+
+30 秒回答：数组和指针相关的 bug 通常来自退化规则和缺失长度。接口应该传地址、容量和实际长度，先做边界检查，再调用签名一致的回调，并用编译告警和边界测试验证。
+
+展开回答：数组对象有自己的存储空间和大小，作为参数时才转换成首元素指针；函数内部不能再用 `sizeof` 得到原数组长度。回调还需要处理上下文所有权和并发关系，不能靠强转掩盖 ABI 不匹配。
+
+## 递进追问
+
+1. 为什么二维数组参数需要写出第二维，`uint8_t **` 又为什么不能替代它？
+2. DMA 环形缓冲区把写指针交给线程时，除了 `volatile` 还需要哪些原子性和内存顺序约束？
+
+## 自测与主动回忆
+
+- 自测：写出一个不会使用 `sizeof` 误判长度的 `parse_frame` 函数签名，并列出三个拒绝输入的条件。
+- 主动回忆：合上页面解释“数组对象、首元素指针、长度、回调签名、上下文”五者的关系。
+
+## 来源和证据边界
+
+C99 对数组、指针和函数调用的语义来自 WG14 N1256；告警名称属于 GCC 实现。具体 DMA 并发行为还必须结合目标 Cortex-M 端口和编译器原子性实现核对。

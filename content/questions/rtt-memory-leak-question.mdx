@@ -1,0 +1,43 @@
+---
+id: rtt-memory-leak-question
+type: interview-question
+title: RT-Thread 中如何排查内存泄漏、碎片和线程栈溢出？
+slug: rt-thread-memory-leak-stack-debug
+pillar: rt-thread
+module: memory
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: rt-thread
+platforms: [rt-thread, cortex-m3]
+prerequisites: []
+related: [rtt-memory-priority-deadlock]
+sourceIds: [rtt-memory-source, rtt-thread-manual]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [RT-Thread, 内存泄漏, 碎片, 线程栈, 内存池]
+---
+
+## 参考回答
+
+先记录分配/释放调用点、当前和峰值用量、失败次数、空闲块或池水位，再单独读取每个线程栈高水位。固定大小消息优先用内存池，长期运行测试观察碎片和失败趋势；栈溢出要结合保护字、异常现场和线程栈配置判断，不能用增加堆大小掩盖。
+
+## 评分点
+
+- 区分泄漏、碎片和栈溢出三类现象。
+- 能给出统计/钩子/高水位的证据。
+- 说明分配器和配置差异。
+
+## 30 秒回答
+
+用分配统计查泄漏，用空闲块/池水位查碎片，用线程栈高水位和保护字查栈溢出，三者不能混为一谈。
+
+## 递进追问
+
+1. 为什么固定块内存池能降低碎片但不保证没有泄漏？
+2. 线程栈高水位长期不变能否证明没有瞬时溢出？
+
+## 证据边界
+
+内存管理器、统计接口和栈检查能力以 RT-Thread v5.2.2 配置和源码为准。

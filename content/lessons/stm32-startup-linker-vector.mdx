@@ -1,0 +1,82 @@
+---
+id: stm32-startup-linker-vector
+type: lesson
+title: STM32F103 启动文件、链接脚本与向量表：复位后第一条指令在哪里
+slug: stm32f103-startup-linker-vector
+pillar: cortex-m
+module: startup-and-vector-table
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 34
+scope: chip
+platforms: [stm32f103c8t6, cortex-m3]
+prerequisites: [cortex-m-startup-flow]
+related: [cortex-m-exception-model, c-memory-layout-alignment-ub]
+sourceIds: [stm32f1-rm0008, arm-cortex-m3-guide, binutils-ld-manual]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [STM32F103, 启动文件, 向量表, 链接脚本, Reset_Handler, .data, .bss]
+---
+
+## 一句话结论
+
+Cortex-M3 复位时从向量表取初始 MSP 和 Reset_Handler，启动代码再完成 `.data` 搬运、`.bss` 清零和时钟初始化后进入 `main`；这些地址由链接脚本和镜像布局共同决定。
+
+## 适用范围与前置知识
+
+适用于 STM32F103C8T6、Cortex-M3 和 GNU ld/常见 IDE 工程。前置知识是 ELF 段、栈堆和异常向量；具体 Flash/RAM 大小须查芯片数据手册，不能套用其他 F1 型号。
+
+## 启动链流程图
+
+```mermaid
+flowchart LR
+  A[复位] --> B[读取向量表第 0 项 MSP]
+  B --> C[读取第 1 项 Reset_Handler]
+  C --> D[初始化 .data/.bss]
+  D --> E[系统时钟与运行库]
+  E --> F[main]
+```
+
+文字降级：向量表给出栈顶和入口；Reset_Handler 做内存初始化和运行库准备，随后才是应用 `main`。
+
+## 核心代码与镜像检查
+
+```c
+extern unsigned long _estack;
+extern void Reset_Handler(void);
+
+__attribute__((section(".isr_vector")))
+const void *vector[] = { &_estack, Reset_Handler };
+```
+
+示例只说明关系，真实向量表还包含异常和中断入口，语法和段名以工具链启动文件为准。用 `arm-none-eabi-readelf -S`、`nm` 和 map 文件核对符号地址，不凭文件名猜偏移。
+
+## 调试方法
+
+1. 在复位入口断点，读取 MSP、PC 和向量表基址，确认落在有效 Flash/RAM 范围。
+2. 检查 map 文件中 `.text/.data/.bss` 的装载地址、运行地址和大小。
+3. 对比启动前后的 `.data` 内容与 `.bss` 是否清零，记录编译器和链接脚本版本。
+4. 若跳不到 `main`，按向量表、栈、拷贝循环、时钟初始化顺序逐层缩小。
+
+反例：把另一颗 MCU 的启动文件直接复制；把链接地址当作运行时地址；看到 `main` 没有打印就断言 CPU 没有启动。
+
+## 30 秒回答与展开回答
+
+30 秒回答：复位先从向量表取 MSP 和 Reset_Handler，启动代码完成 `.data`/`.bss` 初始化后进入 `main`。我会结合芯片内存规格、启动文件、链接脚本和 map/调试器现场核对，不猜 Flash 偏移。
+
+展开回答：链接脚本决定符号和段布局，启动代码使用这些符号完成搬运和清零；异常入口再由向量表关联。遇到早期崩溃要保存 PC/MSP 并确认是否落在合法区域。
+
+## 递进追问
+
+1. 为什么 `.data` 同时有加载地址和运行地址，启动时需要做什么？
+2. 修改向量表基址后，如何证明中断已经使用新表而不是旧镜像？
+
+## 自测与主动回忆
+
+- 自测：按复位、MSP、PC、`.data`、`.bss`、时钟、`main` 写出启动顺序，并为每步列一个工具证据。
+- 主动回忆：合上页面说明启动文件、链接脚本和向量表各自负责哪一层。
+
+## 来源和证据边界
+
+Cortex-M3 复位和异常机制以 Arm Generic User Guide 为准，STM32F103 内存边界以 RM0008/数据手册为准，段布局实现以 GNU ld 和实际 map 文件为准。
