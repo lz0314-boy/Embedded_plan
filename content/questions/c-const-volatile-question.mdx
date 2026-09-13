@@ -1,0 +1,44 @@
+---
+id: c-const-volatile-question
+type: interview-question
+title: const 和 volatile 分别解决什么问题，volatile 为什么不能保证线程安全？
+slug: c-const-volatile-question
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: rtos-generic
+platforms: [standard-c, gcc, cortex-m3]
+prerequisites: [c-qualifiers-visibility]
+related: [cortex-m-exception-model]
+sourceIds: [c-wg14-n1256, arm-cortex-m3-guide]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [const, volatile, 原子性, 线程安全, ISR]
+---
+
+## 参考回答
+
+`const` 限制通过某个左值修改对象，具体修饰对象还是指针要沿声明读取；它不保证底层对象不会被其他别名修改。`volatile` 要求实现按易变对象规则保留访问，适合表达普通控制流之外可能变化的对象，但不提供原子读改写、互斥、内存顺序或事件计数。线程或 ISR 共享状态仍要按目标环境使用原子操作、临界区、锁或 RTOS IPC；寄存器访问还要查芯片手册的访问宽度和副作用。
+
+## 评分点
+
+- 分清修改权限与易变访问。
+- 明确 `counter++` 是读改写，volatile 不能使其原子化。
+- 能把普通对象、并发共享对象和内存映射寄存器分层。
+- 不用一次反汇编或运行结果证明并发协议正确。
+
+## 30 秒回答
+
+`const` 管“能否通过这个表达式修改”，`volatile` 管“这次访问不能被当成普通不变值随意省略”。两者都不是同步原语；共享数据仍需原子、锁或临界区，设备寄存器还要遵循具体芯片协议。
+
+## 递进追问
+
+1. 为什么 `const int *p` 指向的对象仍可能被另一个 `int *` 修改？
+2. ISR 置位而主循环读后清零时如何丢事件，什么时候应该使用计数器或 RTOS 事件？
+
+## 证据边界
+
+回答基于 C99 限定符语义和 Cortex-M3 架构背景；具体 ISR 临界区和寄存器规则需绑定 MCU、编译器和 RTOS 实现。

@@ -1,0 +1,44 @@
+---
+id: linux-sync-socket-question
+type: interview-question
+title: 互斥锁、读写锁、信号量如何选择，TCP 为什么还需要消息分帧？
+slug: linux-sync-socket-question
+pillar: linux-user
+module: ipc-and-commands
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 9
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: [linux-ipc-and-commands]
+related: [linux-ipc-question]
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [互斥锁, 读写锁, 信号量, TCP, 消息边界, IPC]
+---
+
+## 参考回答
+
+互斥锁表达单一所有者对共享不变量的保护；读写锁允许多个读者并发，但写者需要独占，只有读多写少且临界区足够大时才可能值得；信号量是计数/许可同步，不天然表达所有权。它们解决同步，不替代数据传输协议。TCP 提供可靠有序字节流，不保留应用消息边界，一次 `send` 可能被多次 `recv` 取得，多次发送也可能一次读到，因此应用必须定义长度前缀、定长记录或明确分隔，并循环处理短读、短写、EOF、EINTR 和超时。
+
+## 评分点
+
+- 说明互斥锁的所有权与共享不变量。
+- 说明读写锁适用条件，不宣称一定更快。
+- 说明信号量是计数/许可而非消息载荷。
+- 明确 TCP 是字节流并给出分帧及短读处理。
+
+## 30 秒回答
+
+锁和信号量负责同步：互斥锁保护独占不变量，读写锁适合确实读多写少的场景，信号量表达许可计数。TCP 只提供字节流，应用仍要做分帧并循环处理短读短写和连接关闭。
+
+## 递进追问
+
+1. 读写锁在读线程持续到来时可能给写线程带来什么问题，如何验证而不是凭感觉优化？
+2. 长度前缀协议收到半个头部或异常大长度时，应怎样限制资源并恢复连接状态？
+
+## 证据边界
+
+POSIX/Linux API 细节以目标 libc、内核和 man-pages 为准；性能结论必须通过目标负载测量，不能从机制名称直接推出。

@@ -1,0 +1,26 @@
+---
+id: linux-socket-stream-quiz
+type: quiz-question
+title: TCP 接收端为什么不能假设一次 recv 得到一条完整消息？
+slug: linux-socket-stream-quiz
+pillar: linux-user
+module: ipc-and-commands
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 4
+questionType: short-answer
+scoringPoints: [指出 TCP 是字节流, 说明一次发送可被拆分或合并读取, 给出长度前缀或定长分帧, 覆盖短读 EOF EINTR 与超时]
+scope: linux-user
+platforms: [linux, posix]
+prerequisites: [linux-ipc-and-commands]
+related: [linux-sync-socket-question]
+sourceIds: [linux-man-pages, posix-2024]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [TCP, recv, 字节流, 消息边界, 短读]
+---
+
+题干：发送端连续调用两次 `send()` 发送两条业务消息，接收端为什么不能用一次 `recv()` 对应一条消息？请给出处理策略。
+
+参考答案：TCP 保证可靠有序字节流，但不保留应用调用边界；一次发送可能拆成多次读取，多次发送也可能被一次读取取得。应用应定义长度前缀、定长记录或可靠分隔符，并用状态机循环处理短读、EOF、EINTR、超时和异常长度。

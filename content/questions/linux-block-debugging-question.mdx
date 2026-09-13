@@ -1,0 +1,44 @@
+---
+id: linux-block-debugging-question
+type: interview-question
+title: Linux 写文件超时或掉电后丢数据，如何分层定位？
+slug: linux-block-debugging-question
+pillar: linux-bsp
+module: driver-model
+difficulty: advanced
+priority: core
+contentRole: core
+estimatedMinutes: 10
+scope: linux-bsp
+platforms: [linux, imx6ull, arm32-linux]
+prerequisites: [linux-block-io-path]
+related: [linux-bsp-boot-debugging, imx6ull-boot-chain]
+sourceIds: [linux-block-docs, linux-driver-api]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [写超时, 掉电, fsync, 块层, eMMC, 调试]
+---
+
+## 参考回答
+
+先固定文件、挂载点、文件系统、设备映射、负载和掉电模型，记录系统调用返回值与 `errno`。然后判断数据是否仍在页缓存、是否触发回写/`fsync`，请求是否进入块层，控制器是否完成，以及介质是否报告超时或错误。用 `findmnt`、`lsblk`、sysfs 和 `dmesg` 串起文件系统、分区、整盘与控制器；必要时保存块 I/O 跟踪和应用时间线。掉电问题还要区分应用提交、文件系统提交、设备缓存与介质持久化，不能用一次重启后文件存在证明策略可靠。
+
+## 评分点
+
+- 先固定复现条件和文件到设备映射。
+- 区分页缓存、文件系统、块层、控制器和介质。
+- 区分 `write()`、`fsync()` 与抗掉电持久化。
+- 避免在已挂载根分区直接做破坏性覆盖测试。
+
+## 30 秒回答
+
+我会先把文件映射到真实块设备，再沿系统调用、页缓存/文件系统、块层请求、控制器完成和介质状态逐层查。掉电丢数据必须明确 `fsync` 和设备持久化语义，不能只看 `write()` 成功。
+
+## 递进追问
+
+1. `fsync()` 延迟突然升高但块设备没有 I/O error，应收集哪些文件系统和队列拥塞证据？
+2. eMMC 能启动但持续写入超时，为什么启动链正常不能排除运行时电源、时钟或控制器问题？
+
+## 证据边界
+
+本回答不提供写盘测试命令，也不推断 ALPHA 板设备名、分区号或控制器参数；这些必须来自匹配版本的 DTS、内核配置和真实日志。

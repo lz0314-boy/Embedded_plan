@@ -1,0 +1,44 @@
+---
+id: c-static-extern-question
+type: interview-question
+title: C 中 static 和 extern 如何影响作用域、存储期与链接属性？
+slug: c-static-extern-question
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: rtos-generic
+platforms: [standard-c, gcc]
+prerequisites: [c-preprocess-compile-link]
+related: [c-const-volatile-question]
+sourceIds: [c-wg14-n1256, binutils-ld-manual]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [static, extern, 作用域, 存储期, 链接属性]
+---
+
+## 参考回答
+
+文件作用域的 `static` 对象或函数具有内部链接，名字只在当前翻译单元参与绑定；函数内部的 `static` 对象具有静态存储期，但名字仍是块作用域。`extern` 通常声明一个具有外部链接、定义位于本翻译单元或其他翻译单元的对象/函数，本身不等于分配一份新的对象。回答时应把作用域、存储期和链接属性分别说明，不能把“全局变量”和“永久存在”混为一谈。
+
+## 评分点
+
+- 说清文件作用域 static 的内部链接。
+- 说清块作用域 static 的静态存储期与块作用域。
+- 说清 extern 声明与唯一外部定义的关系。
+- 能解释头文件放外部定义为什么可能产生重复符号。
+
+## 30 秒回答
+
+文件级 `static` 主要限制链接可见性，函数内 `static` 主要改变对象存储期，`extern` 用来引用外部链接实体。三者必须结合声明位置，并分开讨论作用域、存储期和链接属性。
+
+## 递进追问
+
+1. include guard 为什么不能阻止同一头文件被两个 `.c` 各自包含后产生两个外部定义？
+2. 符号只在优化构建中消失时，如何区分内部链接、死代码消除和条件编译？
+
+## 证据边界
+
+C 语义以 WG14 N1256 为准；`nm`/ELF 符号表现属于工具链实现，需要记录实际编译和链接参数。

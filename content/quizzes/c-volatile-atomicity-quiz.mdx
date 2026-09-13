@@ -1,0 +1,26 @@
+---
+id: c-volatile-atomicity-quiz
+type: quiz-question
+title: volatile counter++ 为什么仍可能丢更新？
+slug: c-volatile-atomicity-quiz
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 4
+questionType: short-answer
+scoringPoints: [指出自增包含读改写, 指出 volatile 不提供原子性, 给出临界区或目标原子机制, 区分编译器访问与并发协议]
+scope: rtos-generic
+platforms: [standard-c, cortex-m3]
+prerequisites: [c-qualifiers-visibility]
+related: [c-const-volatile-question]
+sourceIds: [c-wg14-n1256, arm-cortex-m3-guide]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [volatile, 自增, 原子性, 竞争]
+---
+
+题干：线程或 ISR 与主循环都执行 `volatile unsigned counter` 的读写。解释为什么 `counter++` 仍可能丢更新，并给出正确的分析方向。
+
+参考答案：自增通常是读、计算、写回的复合操作，另一执行上下文可在中间插入并覆盖结果。volatile 只约束易变访问，不提供原子性或互斥；应按目标环境选择临界区、原子操作、锁或消息/事件机制，并说明中断窗口和允许丢失的业务语义。

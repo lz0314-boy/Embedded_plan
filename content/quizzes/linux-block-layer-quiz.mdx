@@ -1,0 +1,31 @@
+---
+id: linux-block-layer-quiz
+type: quiz-question
+title: 文件 write 返回成功能否证明数据已经抗掉电持久化？
+slug: linux-block-layer-quiz
+pillar: linux-bsp
+module: driver-model
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: D
+scope: linux-bsp
+platforms: [linux, imx6ull]
+prerequisites: [linux-block-io-path]
+related: [linux-block-debugging-question]
+sourceIds: [linux-block-docs, linux-driver-api]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [write, fsync, 页缓存, 持久化, eMMC]
+---
+
+题干：普通文件的 `write()` 返回了完整长度，以下哪项最准确？
+
+- A. 数据必然已经写入非易失介质
+- B. 文件系统和设备缓存一定都已刷新
+- C. 设备已经通过掉电测试
+- D. 数据已被当前系统调用接受，但持久化还取决于缓存、文件系统和设备语义
+
+参考答案：D。`write()`、`fsync()`、设备完成和掉电后仍存在是不同层级的结论，需要分别验证。

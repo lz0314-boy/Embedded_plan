@@ -239,3 +239,35 @@ sources:
     accessedAt: 2026-09-13
     platforms: ai-assisted-development
     citationNote: 用于提示词结构、上下文约束和评估闭环；不把模型输出当作未经验证的事实或代码
+  - id: gcc-c-preprocessor
+    title: GNU CPP Manual
+    organization: GNU Project
+    url: https://gcc.gnu.org/onlinedocs/cpp/
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-13
+    platforms: gcc, c-preprocessor
+    citationNote: 用于 GNU C 预处理器的宏展开、条件编译和头文件行为；标准 C 翻译阶段仍以 WG14 N1256 为准
+  - id: gcc-directory-options
+    title: GCC Options for Directory Search
+    organization: GNU Project
+    url: https://gcc.gnu.org/onlinedocs/gcc/Directory-Options.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-13
+    platforms: gcc, c
+    citationNote: 用于解释 GCC 头文件搜索选项；具体构建结果必须保留实际命令行和编译器版本
+  - id: binutils-ld-manual
+    title: GNU ld Manual
+    organization: GNU Project
+    url: https://sourceware.org/binutils/docs/ld/
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-13
+    platforms: binutils, elf
+    citationNote: 用于链接、符号解析、段布局和链接脚本的 GNU ld 实现边界，不作为 ISO C 的保证
+  - id: linux-block-docs
+    title: Linux Kernel Block Documentation
+    organization: Linux kernel
+    url: https://docs.kernel.org/block/index.html
+    versionOrCommit: latest-page-at-research-time
+    accessedAt: 2026-09-13
+    platforms: linux, block-layer
+    citationNote: 用于主线 Linux 块层、请求队列和 blk-mq 概念；具体驱动 API 必须绑定目标内核版本

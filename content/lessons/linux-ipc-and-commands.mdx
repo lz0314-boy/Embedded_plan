@@ -53,22 +53,48 @@ flowchart TD
 | 信号量/互斥锁 | 资源计数或所有权 | 持有者、顺序、超时 | 死锁、优先级和异常退出 |
 | Socket | 跨进程/跨主机 | 字节流或报文边界 | 连接、超时、半关闭和重连 |
 
-## 核心代码与观察命令
+## 同步原语与锁的选择
+
+| 机制 | 表达的核心关系 | 适合场景 | 常见误区 |
+| --- | --- | --- | --- |
+| 互斥锁 | 单一所有者保护共享不变量 | 临界区需要独占且进入退出成对 | 忘记异常路径释放或形成锁顺序环 |
+| 读写锁 | 多读者共享、写者独占 | 确实读多写少且临界区成本足够高 | 认为读写锁一定更快，忽略写者等待策略 |
+| 信号量 | 可用许可的计数 | 资源池、生产/消费唤醒 | 当成有所有权的互斥锁，跨模块随意 post |
+| 条件变量 | 在互斥锁保护的谓词上等待 | 状态改变后唤醒并重新检查条件 | 用一次唤醒代替 while 谓词检查 |
+
+锁保护的是共享不变量，信号量表达的是数量或许可，二者都不是消息载荷。选择之前先写出“不变量是什么、谁能修改、阻塞是否有超时、异常退出如何恢复”。读写锁只有在目标负载实测后才能得出性能收益结论。
+
+## Socket 字节流边界
+
+TCP 不保留应用消息边界：一次 `send()` 的内容可能分多次 `recv()` 返回，多次发送也可能合并到一次读取。应用层需要选择长度前缀、定长记录或有转义规则的分隔符，并限制最大消息长度。
 
 ```c
-ssize_t read_full(int fd, void *buf, size_t length)
+#include <errno.h>
+#include <stddef.h>
+#include <unistd.h>
+
+ssize_t read_exact(int fd, void *buffer, size_t length)
 {
     size_t done = 0;
     while (done < length) {
-        ssize_t n = read(fd, (char *)buf + done, length - done);
-        if (n <= 0) return n;
-        done += (size_t)n;
+        ssize_t count = read(fd, (char *)buffer + done, length - done);
+        if (count > 0) {
+            done += (size_t)count;
+        } else if (count == 0) {
+            break;
+        } else if (errno != EINTR) {
+            return -1;
+        }
     }
     return (ssize_t)done;
 }
 ```
 
-可复现观察顺序：`ps -o pid,ppid,stat,wchan:24,cmd` → `top -H -p <pid>` → `strace -f -tt -p <pid>`。这些命令显示进程/线程和系统调用边界，不能单独证明应用层协议正确。
+该示例只处理固定长度读取与 `EINTR`，没有定义超时、非阻塞 I/O、长度前缀字节序或连接恢复策略，也未在目标系统运行。
+
+## 观察命令
+
+可复现观察顺序：`ps -o pid,ppid,stat,wchan:24,cmd` → `top -H -p <pid>` → `strace -f -tt -p <pid>`。系统级压力可再结合 `vmstat` 观察运行队列、内存和换页，使用目标系统实际提供的 `iostat` 观察设备吞吐与等待；不同 procps/sysstat 版本字段会变化。这些命令显示状态和系统调用边界，不能单独证明应用层协议正确。
 
 ## 调试方法与反例
 

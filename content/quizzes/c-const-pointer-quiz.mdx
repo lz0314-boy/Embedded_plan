@@ -1,0 +1,31 @@
+---
+id: c-const-pointer-quiz
+type: quiz-question
+title: const int *p 限制了什么？
+slug: c-const-pointer-quiz
+pillar: c
+module: language-and-memory
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: B
+scope: rtos-generic
+platforms: [standard-c]
+prerequisites: [c-qualifiers-visibility]
+related: [c-const-volatile-question]
+sourceIds: [c-wg14-n1256]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [const, 指针, 类型限定符]
+---
+
+题干：对声明 `const int *p`，以下哪项最准确？
+
+- A. `p` 永远不能指向另一个对象
+- B. 不能通过 `p` 修改所指对象，但 `p` 本身可以改指向
+- C. 所指对象绝不可能被其他别名修改
+- D. `p` 的读写自动具备原子性
+
+参考答案：B。const 限制的是通过该左值的修改权限，不保证对象没有其他可写别名。

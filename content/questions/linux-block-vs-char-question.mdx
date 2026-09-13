@@ -1,0 +1,44 @@
+---
+id: linux-block-vs-char-question
+type: interview-question
+title: Linux 字符设备和块设备的核心区别是什么？
+slug: linux-block-vs-char-question
+pillar: linux-bsp
+module: driver-model
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 8
+scope: linux-bsp
+platforms: [linux, imx6ull]
+prerequisites: [linux-block-io-path]
+related: [linux-driver-probe-question]
+sourceIds: [linux-block-docs, linux-driver-api]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [字符设备, 块设备, 块层, 页缓存, 文件系统]
+---
+
+## 参考回答
+
+字符设备通常由驱动通过 file operations 定义字节流或设备专用语义；块设备提供可寻址块，接入块层的请求队列，通常承载分区、文件系统和页缓存，也可能使用 direct I/O。区别不只是“一个按字节、一个按块”，还包括上层栈、请求合并/调度、容量与队列限制、完成和错误传播。设备节点存在只说明注册链路的一部分，不证明介质读写或持久化正确。
+
+## 评分点
+
+- 覆盖访问模型和上层栈，而非只背“字节/块”。
+- 提到块层请求、文件系统/页缓存或分区。
+- 能说明完成、错误和持久化不是同一个结论。
+- 不把 `/dev` 节点存在当作硬件验证。
+
+## 30 秒回答
+
+字符设备接口语义主要由具体驱动定义；块设备通过块层提供可寻址块，承载分区和文件系统，并涉及请求队列与缓存。排查块设备要沿文件系统、块层、控制器和介质逐层取证。
+
+## 递进追问
+
+1. 为什么普通文件 `write()` 返回成功时，数据可能还只在页缓存中？
+2. direct I/O 是否等于数据一定抗掉电持久化，为什么？
+
+## 证据边界
+
+回答是主线 Linux 通用模型；具体子系统 API、缓存策略和 eMMC 控制器行为依赖内核、文件系统、硬件与挂载配置。

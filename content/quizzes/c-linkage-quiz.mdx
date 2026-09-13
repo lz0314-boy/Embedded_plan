@@ -1,0 +1,31 @@
+---
+id: c-linkage-quiz
+type: quiz-question
+title: 文件作用域 static 函数的链接属性是什么？
+slug: c-linkage-quiz
+pillar: c
+module: language-and-memory
+difficulty: beginner
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: C
+scope: rtos-generic
+platforms: [standard-c]
+prerequisites: [c-preprocess-compile-link]
+related: [c-static-extern-question]
+sourceIds: [c-wg14-n1256]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [static, 内部链接, 翻译单元]
+---
+
+题干：在文件作用域声明 `static void reset_state(void)`，最准确的解释是什么？
+
+- A. 函数只在程序启动时执行一次
+- B. 函数被放入静态 RAM
+- C. 名字具有内部链接，只在当前翻译单元参与绑定
+- D. 函数不能被编译器内联
+
+参考答案：C。static 在这里限制链接可见性，不等于执行次数、内存区域或禁止内联。

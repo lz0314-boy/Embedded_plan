@@ -1,0 +1,44 @@
+---
+id: c-build-pipeline-question
+type: interview-question
+title: 一个 C 源文件如何变成可执行镜像，问题应怎样按阶段排查？
+slug: c-build-pipeline-question
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 9
+scope: rtos-generic
+platforms: [standard-c, gcc, binutils, elf]
+prerequisites: [c-preprocess-compile-link]
+related: [c-debugging-diagnostics, cortex-m-startup-flow]
+sourceIds: [c-wg14-n1256, gcc-c-preprocessor, binutils-ld-manual]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [预处理, 编译, 汇编, 链接, ELF, 链接脚本]
+---
+
+## 参考回答
+
+源文件与头文件先经预处理形成翻译单元，编译和汇编产生包含符号与重定位信息的目标文件，链接器再解析外部符号、选择库并按默认规则或链接脚本布局段，最后形成 ELF/镜像。宏和条件编译问题看预处理输出，类型与语义错误看单翻译单元诊断，重复/未定义符号看链接命令与符号表，嵌入式启动问题还要连接 map、链接脚本、启动代码、装载地址和目标日志。
+
+## 评分点
+
+- 顺序覆盖预处理、编译/汇编、目标文件和链接。
+- 能把典型错误归到正确阶段。
+- 能说出 `-E`、`nm/readelf`、map 文件至少三类证据。
+- 不用主机默认链接布局推断 MCU 地址。
+
+## 30 秒回答
+
+先预处理展开头文件和宏，再独立编译各 `.c` 为 `.o`，最后由链接器解析符号和重定位并布局镜像。排障要看对应阶段产物；MCU 能否启动还要核对链接脚本、启动文件和实际加载证据。
+
+## 递进追问
+
+1. 编译通过但出现 `undefined reference`，你会检查哪些目标文件、条件宏、库顺序和符号信息？
+2. ELF 入口和段地址看起来正确但上板失败，哪些结论必须由真实烧录与启动日志确认？
+
+## 证据边界
+
+翻译阶段使用 C99 和 GNU 工具链文档解释；具体命令选项、ELF 布局及 MCU 地址必须绑定构建环境和目标链接脚本。

@@ -1,0 +1,31 @@
+---
+id: c-macro-evaluation-quiz
+type: quiz-question
+title: MAX 宏接收 i++ 时最大的风险是什么？
+slug: c-macro-evaluation-quiz
+pillar: c
+module: language-and-memory
+difficulty: intermediate
+priority: core
+contentRole: core
+estimatedMinutes: 3
+questionType: single-choice
+correctAnswer: A
+scope: rtos-generic
+platforms: [standard-c, gcc]
+prerequisites: [c-preprocess-compile-link]
+related: [c-build-pipeline-question]
+sourceIds: [c-wg14-n1256, gcc-c-preprocessor]
+verifiedAt: 2026-09-13
+status: verified
+keywords: [宏, 副作用, 多次求值, 预处理]
+---
+
+题干：`#define MAX(a,b) ((a) > (b) ? (a) : (b))` 接收 `i++` 参数时，主要风险是什么？
+
+- A. 参数可能被求值多次，副作用次数不符合调用者预期
+- B. 预处理器会自动把宏改成函数
+- C. 宏参数一定只求值一次
+- D. include guard 会消除副作用
+
+参考答案：A。括号能改善运算符优先级，但不能避免条件与结果分支重复展开同一参数；优先使用类型明确的函数并避免向宏传递有副作用的表达式。
