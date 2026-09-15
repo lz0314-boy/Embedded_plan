@@ -1,4 +1,4 @@
-import type { ContentRecord } from "@/lib/content/schema";
+import type { ContentIndexItem } from "@/lib/content/content-index";
 import type { InterviewDirection, InterviewDifficulty, InterviewPriority } from "@/lib/domain/types";
 
 export type InterviewSelection = {
@@ -21,14 +21,16 @@ function hash(value: string) {
   return result >>> 0;
 }
 
-export function selectInterviewQuestionIds(items: ContentRecord[], selection: InterviewSelection, weakQuestionIds: ReadonlySet<string>, completedQuestionIds: ReadonlySet<string>) {
+type InterviewContent = Pick<ContentIndexItem, "id" | "type" | "contentRole" | "status" | "pillar" | "platforms" | "module" | "difficulty">;
+
+export function selectInterviewQuestionIds(items: InterviewContent[], selection: InterviewSelection, weakQuestionIds: ReadonlySet<string>, completedQuestionIds: ReadonlySet<string>) {
   const candidates = items.filter((item) => {
     if (item.type !== "interview-question") return false;
     // Interview practice is a learner-facing surface too: generic roadmap
     // placeholders have no reference answer and must never be selected.
     if (item.contentRole === "placeholder" || item.status === "deprecated") return false;
     if (selection.direction !== "all" && item.pillar !== selection.direction) return false;
-    if (selection.platform && !item.platforms.includes(selection.platform)) return false;
+    if (selection.platform && !item.platforms?.includes(selection.platform)) return false;
     if (selection.module && item.module !== selection.module) return false;
     if (selection.difficulty !== "any" && item.difficulty !== selection.difficulty) return false;
     return true;

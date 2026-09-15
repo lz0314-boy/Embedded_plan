@@ -19,7 +19,7 @@ let packageOperation = false;
 const onlyPublic: SerwistPlugin = {
   cacheWillUpdate: async ({ response }) => response.status === 200 && response.type !== "opaque" ? response : null,
 };
-const contentStrategy = new StaleWhileRevalidate({ cacheName: runtimeCache, plugins: [onlyPublic, new ExpirationPlugin({ maxEntries: 64 })] });
+const contentStrategy = new StaleWhileRevalidate({ cacheName: runtimeCache, plugins: [onlyPublic, new ExpirationPlugin({ maxEntries: 640 })] });
 
 async function installedPackages() {
   const installed: InstalledPackage[] = [];
@@ -66,6 +66,9 @@ serwist = new Serwist({
       }
       return (await serwist.matchPrecache(`${scope}offline/`)) ?? Response.error();
     },
+  }, {
+    matcher: ({ url }) => url.origin === origin && url.pathname.startsWith(`${scope}content-items/`),
+    handler: contentStrategy,
   }, {
     matcher: () => true,
     handler: new NetworkOnly(),

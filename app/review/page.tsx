@@ -2,9 +2,10 @@
 
 import Link from "@/components/static-link";
 import { useEffect, useMemo, useState } from "react";
-import { contentCatalog, getContentById } from "@/lib/content/catalog";
+import { contentIndex } from "@/lib/content/content-index";
+import { fetchContentDetail } from "@/lib/content/client-details";
 import { db, nowIso } from "@/lib/db/database";
-import type { ContentRecord } from "@/lib/content/schema";
+import type { ContentIndexItem } from "@/lib/content/content-index";
 import type { RecallLabel, RecallMark } from "@/lib/domain/types";
 
 type Filter = "all" | "unmarked" | RecallLabel;
@@ -12,14 +13,12 @@ type Filter = "all" | "unmarked" | RecallLabel;
 const labelText: Record<RecallLabel, string> = { familiar: "熟悉", uncertain: "模糊", unknown: "不会" };
 const labelDescription: Record<RecallLabel, string> = { familiar: "可以直接说出结论和关键边界", uncertain: "知道方向，但回答还不稳定", unknown: "暂时答不上来，需要马上回顾" };
 
-function promptText(item: ContentRecord) {
-  const answerStart = item.body.search(/^(?:##\s+参考回答|参考答案：|答案：)/m);
-  const source = answerStart >= 0 ? item.body.slice(0, answerStart) : item.body;
-  return source.replace(/^#.*$/gm, "").replace(/```[\s\S]*?```/g, "代码片段请在答案中展开").replace(/[`*_>#-]/g, "").replace(/\s+/g, " ").trim().slice(0, 520);
+function promptText(item: ContentIndexItem) {
+  return item.promptPreview?.replace(/\s+/g, " ").trim().slice(0, 520) ?? "";
 }
 
 function questionPool() {
-  return contentCatalog.filter((item) => (item.type === "interview-question" || item.type === "quiz-question") && item.contentRole !== "placeholder" && item.status !== "deprecated");
+  return contentIndex.filter((item) => (item.type === "interview-question" || item.type === "quiz-question") && item.contentRole !== "placeholder" && item.status !== "deprecated");
 }
 
 export default function ReviewPage() {
@@ -29,6 +28,9 @@ export default function ReviewPage() {
   const [revealed, setRevealed] = useState(false);
   const [filter, setFilter] = useState<Filter>("all");
   const [showAllQuestions, setShowAllQuestions] = useState(false);
+  const [answerHtml, setAnswerHtml] = useState("");
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [detailError, setDetailError] = useState("");
   const [ready, setReady] = useState(false);
 
   useEffect(() => { db.recallMarks.toArray().then((value) => { setMarks(value); setReady(true); }); }, []);
@@ -42,7 +44,7 @@ export default function ReviewPage() {
   const markListItems = (() => {
     if (filter === "unmarked") return filteredItems.map((item) => ({ item, mark: undefined }));
     if (filter === "all" && showAllQuestions) return filteredItems.map((item) => ({ item, mark: marksById.get(item.id) }));
-    if (filter === "all") return [...visibleMarks].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 12).map((mark) => ({ item: getContentById(mark.contentId), mark }));
+    if (filter === "all") return [...visibleMarks].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)).slice(0, 12).map((mark) => ({ item: contentIndex.find((candidate) => candidate.id === mark.contentId), mark }));
     return filteredItems.map((item) => ({ item, mark: marksById.get(item.id) }));
   })();
 
@@ -58,13 +60,31 @@ export default function ReviewPage() {
     if (!current) return;
     await saveMark(current.id, label);
     if (label === "familiar") nextCard();
-    else setRevealed(true);
+    else {
+      setRevealed(false);
+      setDetailLoading(true);
+      setDetailError("");
+      try {
+        const detail = await fetchContentDetail(current.id);
+        if (detail.id === current.id) {
+          setAnswerHtml(detail.html);
+          setRevealed(true);
+        }
+      } catch (error) {
+        setDetailError(error instanceof Error ? error.message : "参考答案加载失败，请打开题目详情查看。");
+      } finally {
+        setDetailLoading(false);
+      }
+    }
   }
 
   function nextCard() {
     if (!pool.length) return;
     setIndex((previous) => pool.length === 1 ? previous : (previous + 1 + Math.floor(Math.random() * (pool.length - 1))) % pool.length);
     setRevealed(false);
+    setAnswerHtml("");
+    setDetailError("");
+    setDetailLoading(false);
   }
 
   async function changeLabel(contentId: string, label: RecallLabel) { await saveMark(contentId, label); }
@@ -86,7 +106,9 @@ export default function ReviewPage() {
           <h2>{current.title}</h2>
           <p className="recall-prompt">{promptText(current) || "请先用自己的话回答这道题，再选择熟悉程度。"}</p>
           <div className="recall-choice-grid">{(Object.keys(labelText) as RecallLabel[]).map((label) => <button className={`recall-choice ${label}`} key={label} onClick={() => void choose(label)}><strong>{labelText[label]}</strong><span>{labelDescription[label]}</span></button>)}</div>
-          {revealed && <div className="recall-answer"><div className="recall-answer-heading"><h3>参考答案</h3><button className="button" onClick={nextCard}>下一张</button></div><div className="content-body" dangerouslySetInnerHTML={{ __html: current.html }} /></div>}
+          {detailLoading && <p className="muted" role="status">正在加载参考答案…</p>}
+          {detailError && <p className="muted" role="alert">{detailError} <Link href={`/learn/${current.slug}/`}>打开题目详情</Link></p>}
+          {revealed && answerHtml && <div className="recall-answer"><div className="recall-answer-heading"><h3>参考答案</h3><button className="button" onClick={nextCard}>下一张</button></div><div className="content-body" dangerouslySetInnerHTML={{ __html: answerHtml }} /></div>}
         </> : <><h2>暂无可复习题目</h2><p className="muted">题库正在建设中，完成的非占位题目会自动进入这里。</p><Link className="button primary" href="/roadmap/">查看知识地图</Link></>}
       </section>
 

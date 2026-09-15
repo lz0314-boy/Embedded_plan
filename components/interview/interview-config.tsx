@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { contentCatalog } from "@/lib/content/catalog";
+import { contentIndex } from "@/lib/content/content-index";
 import { db, nowIso } from "@/lib/db/database";
 import { selectInterviewQuestionIds, type InterviewSelection } from "@/lib/interview/session";
 import type { InterviewDirection, InterviewDifficulty, InterviewPriority, InterviewSession } from "@/lib/domain/types";
@@ -30,7 +30,7 @@ export function InterviewConfig() {
 
   async function startSession() {
     const [wrong, progress] = await Promise.all([db.wrongQuestions.where("status").equals("active").toArray(), db.contentProgress.toArray()]);
-    const questionIds = selectInterviewQuestionIds(contentCatalog, selection, new Set(wrong.map((item) => item.questionId)), new Set(progress.filter((item) => item.status === "completed").map((item) => item.contentId)));
+    const questionIds = selectInterviewQuestionIds(contentIndex, selection, new Set(wrong.map((item) => item.questionId)), new Set(progress.filter((item) => item.status === "completed").map((item) => item.contentId)));
     if (!questionIds.length) {
       setMessage("当前筛选没有可用题目，请放宽主线、平台或难度条件。");
       return;

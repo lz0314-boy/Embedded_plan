@@ -3,7 +3,7 @@
 import Link from "@/components/static-link";
 import { useEffect, useMemo, useState } from "react";
 import { learningCatalog } from "@/lib/content/learning-catalog";
-import { contentIndex } from "@/lib/content/content-index";
+import { questionCount } from "@/lib/content/content-stats";
 import { db } from "@/lib/db/database";
 import type { ContentProgress, RecallMark } from "@/lib/domain/types";
 
@@ -45,7 +45,6 @@ export function HomePage() {
     const active = progress.find((item) => item.status === "in-progress");
     return orderedLessons.find((item) => item.id === active?.contentId) ?? orderedLessons.find((item) => !progress.some((entry) => entry.contentId === item.id && entry.status === "completed"));
   }, [orderedLessons, progress]);
-  const questions = contentIndex.filter((item) => (item.type === "interview-question" || item.type === "quiz-question") && item.contentRole !== "placeholder" && item.status !== "deprecated");
   const markCounts = { familiar: marks.filter((item) => item.label === "familiar").length, uncertain: marks.filter((item) => item.label === "uncertain").length, unknown: marks.filter((item) => item.label === "unknown").length };
 
   if (!ready) return <p className="muted">正在从本机恢复学习状态…</p>;
@@ -66,7 +65,7 @@ export function HomePage() {
       </div>
       <div className="panel home-hero-stats">
         <div><span className="muted">课程完成</span><strong>{completed}/{learningCatalog.length}</strong></div>
-        <div><span className="muted">可练习问答</span><strong>{questions.length}</strong></div>
+        <div><span className="muted">可练习问答</span><strong>{questionCount}</strong></div>
         <div><span className="muted">已标记卡片</span><strong>{marks.length}</strong></div>
       </div>
     </section>

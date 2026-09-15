@@ -71,13 +71,16 @@ const contentHash = digest(JSON.stringify({ content: catalog.content, sources: c
 const contentVersion = `local-${contentHash.slice(0, 16)}`;
 const shellRoutes = ["", "roadmap/", "questions/", "labs/", "review/", "quiz/", "settings/", "stats/", "offline/"];
 const shell = await Promise.all(shellRoutes.map((route) => describeAsset(`${route}index.html`, urlFor(route))));
+const detailAssets = await Promise.all(catalog.content
+  .filter((item) => (item.type === "interview-question" || item.type === "quiz-question") && item.contentRole !== "placeholder" && item.status !== "deprecated")
+  .map((item) => describeAsset(`content-items/${item.id}.json`, urlFor(`content-items/${item.id}.json`))));
 const files = await fs.readdir(output, { recursive: true });
 const staticAssets = await Promise.all(files.filter((file) => /^(?:_next[\\/]static|icons)[\\/].*\.(?:js|css|png|svg)$/.test(file)).map((file) => describeAsset(file)));
 const appVersion = `${packageInfo.version}-${digest(JSON.stringify([...shell, ...staticAssets])).slice(0, 16)}`;
 const index = { appVersion, contentVersion, packages, pageUrls: [...shell.map((entry) => entry.url), ...packages.flatMap((item) => item.assets.map((asset) => asset.url))] };
 await fs.writeFile(path.join(output, "pwa/offline-index.json"), JSON.stringify(index));
 const extras = await Promise.all(["manifest.webmanifest", "pwa/offline-index.json"].map((file) => describeAsset(file)));
-const entries = [...shell, ...staticAssets, ...extras].map(({ url, revision }) => ({ url, revision }));
+const entries = [...shell, ...detailAssets, ...staticAssets, ...extras].map(({ url, revision }) => ({ url, revision }));
 
 await build({
   entryPoints: ["app/sw.ts"], outfile: ".pwa-worker.js", bundle: true, minify: true,

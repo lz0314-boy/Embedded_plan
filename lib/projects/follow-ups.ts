@@ -18,7 +18,7 @@ const fieldTemplates = [
   { id: "lessons", field: "lessons", prompt: "如果重新做一次，你会改变什么？这个改变依据什么证据？", reason: "复盘与改进" },
 ] as const;
 
-export function buildProjectFollowUps(project: ProjectCase, catalog: ContentRecord[]): ProjectFollowUp[] {
+export function buildProjectFollowUps(project: ProjectCase, catalog: Pick<ContentRecord, "id" | "title">[]): ProjectFollowUp[] {
   const followUps = fieldTemplates.map((template) => ({
     id: `field:${template.id}`,
     prompt: template.prompt,

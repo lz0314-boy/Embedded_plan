@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { contentCatalog } from "@/lib/content/catalog";
+import { contentIndex } from "@/lib/content/content-index";
 import { db, nowIso } from "@/lib/db/database";
 import type { ProjectCase } from "@/lib/domain/types";
 import { buildProjectFollowUps, emptyProjectCase } from "@/lib/projects/follow-ups";
@@ -16,7 +16,7 @@ const editableFields = [
   ["results", "结果与验证证据", "写测试、日志、指标、失败案例或尚未完成的验证。"],
   ["lessons", "复盘与下一步", "记录真实教训、遗留风险和如果重做会改变的地方。"],
 ] as const;
-const knowledgeCandidates = contentCatalog.filter((item) => item.type === "lesson");
+const knowledgeCandidates = contentIndex.filter((item) => item.type === "lesson");
 
 type TextField = (typeof editableFields)[number][0];
 
@@ -44,7 +44,7 @@ export function ProjectWorkspace() {
     return () => { active = false; };
   }, []);
 
-  const followUps = useMemo(() => draft ? buildProjectFollowUps(draft, contentCatalog) : [], [draft]);
+  const followUps = useMemo(() => draft ? buildProjectFollowUps(draft, contentIndex) : [], [draft]);
 
   function updateDraft(patch: Partial<ProjectCase>) {
     setDraft((current) => current ? { ...current, ...patch } : current);
